@@ -1,11 +1,11 @@
 <?php
 
-// Une autre methode ?
-require '../vendor/autoload.php';
-
+use Lib\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
 
-$request = Request::create('', 'GET', ['name' => 'Thomas']);
+require '../vendor/autoload.php';
 
-dump($request);
-dump($request->get('name'));
+$request = Request::createFromGlobals();
+
+$router = new Router;
+dump($router->callController($request));
