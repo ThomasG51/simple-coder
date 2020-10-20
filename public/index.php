@@ -7,5 +7,4 @@ require '../vendor/autoload.php';
 
 $request = Request::createFromGlobals();
 
-$router = new Router;
-dump($router->callController($request));
+$router = new Router($request);

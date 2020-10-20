@@ -2,17 +2,26 @@
 
 namespace Lib\Router;
 
+use ReflectionClass;
+use ReflectionMethod;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\HttpFoundation\Request;
 
-class Router {
-
+class Router 
+{
     /**
-     * Returns a routes collection from the Yaml File
-     *
-     * @return array
+     * @var Request
      */
-    public function getRouteCollection() : array
+    private $request;
+    
+    /**
+     * @var array
+     */
+    private $routesCollection;
+    
+    public function __construct(Request $request)
     {
+        // Get route collection from Yaml file
         $routesCollection = [];
         $routes = Yaml::parseFile('../config/routes.yaml');
 
@@ -22,45 +31,42 @@ class Router {
             $routesCollection[$routesNames] = $route;
         }
 
-        return $routesCollection;
-    }
+        $this->routesCollection = $routesCollection;
 
+        // Set request attribute
+        $this->request = $request;
+
+        // Start router
+        $this->run();
+    }
     
     /**
-     * Returns the controller called by the request
-     *
      * @param Request $request
-     * @return string
+     * @return Route
      */
-    public function getRouteFromRequest($request) : string
+    public function getRouteFromRequest(): Route
     {
-        $uri = $request->getPathInfo();
-        $routeCollection = $this->getRouteCollection();
-
-        foreach($routeCollection as $route)
+        foreach ($this->routesCollection as $route)
         {
-            if ($uri == $route->getPath()) {
-                return $route->getController();
+            if($route->checkMatch($this->request->getPathInfo()))
+            {
+                return $route;
             }
         }
     }
 
-    /**
-     * Call of the controller
-     *
-     * @param Request $request
-     * @return string
-     */
-    public function callController($request) : string
+    public function run()
     {
-        $pattern = array('(([a-zA-Z]+\W[a-zA-Z]+\W)([a-zA-Z]+)(\W+)([a-zA-Z]+))');
-        $controllerName = array('$2');
-        $methodName = array('$4');
-        $subject = $this->getRouteFromRequest($request);
-        
-        $controller = preg_replace($pattern, $controllerName, $subject);
-        $method = preg_replace($pattern, $methodName, $subject);
+        $route = $this->getRouteFromRequest();
 
-        return 'Controller : ' . $controller . ' - Method : ' . $method;
+        list($controller, $method) = explode("::", $route->getController());
+        $args = $route->getArgs(); 
+
+        // Comment fonctionne en detail le tableau en premier parametre pour instancier l'objet ?
+        call_user_func_array([$controller, $method], $args);
+
+        // $reflectionClass = new ReflectionClass($controller); a voir !!!
+
+        dump($route);
     }
 }

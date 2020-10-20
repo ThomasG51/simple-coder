@@ -6,10 +6,6 @@ admin:
   path: /dashboard
   controller: App\Controller\AdminController::index
 
-show_post:
-  path: /post/{slug}
-  controller: App\Controller\PostController::show
-
 create_post:
   path: /post/create
   controller: App\Controller\PostController::create
@@ -37,6 +33,10 @@ like_post:
 dislike_post:
   path: /post/dislike/{slug}
   controller: App\Controller\PostController::dislike
+
+show_post:
+  path: /post/{slug}
+  controller: App\Controller\PostController::show
 
 show_comments:
   path: /comments
