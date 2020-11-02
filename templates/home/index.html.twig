@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <section class="container-fluid mb-4">
+        <div class="row vh-65">
+            <div id="carouselExampleIndicators" class="carousel slide h-100" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+                </ol>
+                <div class="carousel-inner h-100">
+                    <div class="carousel-item active h-100">
+                        <img src="{{ asset('images/bg-header-1.jpg') }}" class="d-block w-100 cover" alt="...">
+                    </div>
+                    <div class="carousel-item h-100">
+                        <img src="{{ asset('images/bg-header-2.jpg') }}" class="d-block w-100 cover" alt="...">
+                    </div>
+                    <div class="carousel-item h-100">
+                        <img src="{{ asset('images/bg-header-3.jpg') }}" class="d-block w-100 cover" alt="...">
+                    </div>
+                    <div class="carousel-item h-100">
+                        <img src="{{ asset('images/bg-header-4.jpg') }}" class="d-block w-100 cover" alt="...">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="row">
+            <div class="col-xl-8 mt-4">
+                <article class="mb-4">
+                    <div class="row">
+                        <figure class="col-xl-4">
+                            <img src="{{ asset('images/bg-header-2.jpg') }}" alt="" class="cover">
+                        </figure>
+                        <div class="col-xl-8 pl-0">
+                            <h1 class="article-title">Lorem ipsum dolor sit amet consectetur.</h1>
+
+                            <h6 class="article-infos mb-1">
+                                <i class="far fa-calendar-alt mr-1"></i>30-10-2020 - <i class="far fa-clock mr-1"></i>14:04
+                            </h6>
+                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>Développement</h6>
+                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>Thomas George</h6>
+                        </div>
+                    </div>
+
+                    <p class="mt-1 text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a.
+                        <br/><br/>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
+                    </p>
+
+                    <a href="/post/1"><button class="btn btn-dark d-block ml-auto mb-4"><i class="fas fa-book-reader mr-1"></i> Lire
+                            l'article</button></a>
+                </article>
+                <article class="mb-4">
+                    <div class="row">
+                        <figure class="col-xl-4">
+                            <img src="{{ asset('images/bg-header-1.jpg') }}" alt="" class="cover">
+                        </figure>
+                        <div class="col-xl-8 pl-0">
+                            <h1 class="article-title">Lorem ipsum dolor.</h1>
+
+                            <h6 class="article-infos mb-1">
+                                <i class="far fa-calendar-alt mr-1"></i>30-10-2020 - <i class="far fa-clock mr-1"></i>14:04
+                            </h6>
+                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>Développement</h6>
+                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>Thomas George</h6>
+                        </div>
+                    </div>
+
+                    <p class="mt-3 text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a.
+                        <br/><br/>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
+                    </p>
+
+                    <a href="/post/1"><button class="btn btn-dark d-block ml-auto mb-4"><i class="fas fa-book-reader mr-1"></i> Lire
+                            l'article</button></a>
+                </article>
+                <article class="mb-4">
+                    <div class="row">
+                        <figure class="col-xl-4">
+                            <img src="{{ asset('images/bg-header-4.jpg') }}" alt="" class="cover">
+                        </figure>
+                        <div class="col-xl-8 pl-0">
+                            <h1 class="article-title">Lorem ipsum dolor sit amet.</h1>
+
+                            <h6 class="article-infos mb-1">
+                                <i class="far fa-calendar-alt mr-1"></i>30-10-2020 - <i class="far fa-clock mr-1"></i>14:04
+                            </h6>
+                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>Développement</h6>
+                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>Thomas George</h6>
+                        </div>
+                    </div>
+
+                    <p class="mt-3 text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a.
+                        <br/><br/>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
+                    </p>
+
+                    <a href="/post/1"><button class="btn btn-dark d-block ml-auto mb-4"><i class="fas fa-book-reader mr-1"></i> Lire
+                            l'article</button></a>
+                </article>
+
+                <div aria-label="Page navigation example" class="mb-5">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <aside class="col-xl-4 vh-100 mt-4">
+                <form class="mb-4">
+                    <div class="form-row align-items-center">
+                        <div class="col-auto ml-auto w-100">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <button type="submit" class="btn btn-outline-dark"><i class="fas fa-search"></i></button>
+                                </div>
+                                <input type="text" class="form-control" id="inlineFormInputGroup" style="border: 1px solid #000000;" placeholder="Rechercher">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="text-right mb-4">
+                    <i class="fab fa-github c-github social-links"></i>
+                    <i class="fab fa-linkedin c-linkedin social-links ml-1"></i>
+                    <i class="fab fa-twitter c-twitter social-links ml-1"></i>
+                    <i class="fab fa-instagram c-instagram social-links ml-1"></i>
+                    <i class="fab fa-discord c-discord social-links ml-1"></i>
+                </div>
+
+                <div class="mb-4">
+                    <a class="twitter-timeline" data-lang="fr" data-height="600" data-theme="light" href="https://twitter.com/ThomasG51?ref_src=twsrc%5Etfw">Tweets by ThomasG51</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                </div>
+
+            </aside>
+        </div>
+    </main>
+
+{% endblock %}

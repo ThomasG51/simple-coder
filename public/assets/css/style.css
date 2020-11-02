@@ -1,0 +1,64 @@
+a:hover {
+    text-decoration: none;
+}
+
+article {
+    border-bottom: 1px solid #E3E8EC;
+}
+
+.article-title {
+    font-size: 2em;
+    color: #000000;
+}
+
+.article-infos {
+    font-size: 0.8em;
+    color: #646464;
+    font-weight: 400;
+}
+
+.comment {
+    border-top: 1px solid #E3E8EC;
+}
+
+.page-link {
+    color: #000000;
+}
+
+.b-l-grey {
+    border-left: 1px solid #646464;
+}
+
+.b-r-grey {
+    border-right: 1px solid #646464;
+}
+
+.b-t-light {
+    border-top: 1px solid #E3E8EC;
+}
+
+.b-b-light {
+    border-bottom: 1px solid #E3E8EC;
+}
+
+.social-links {
+    font-size: 2em;
+    cursor: pointer;
+}
+
+.tech-font {
+    font-family: 'Share Tech', sans-serif;
+}
+
+.thumbs {
+    font-size: 1.4em;
+    cursor: pointer;
+}
+
+li {
+    list-style: none;
+}
+
+.text-light-grey {
+    color: #bfc3c7;
+}

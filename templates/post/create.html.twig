@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <section class="container-fluid mb-4">
+        <figure class="row vh-65">
+            <img src="{{ asset('images/bg-write.jpg') }}" alt="" class="cover">
+        </figure>
+    </section>
+
+    <main class="container">
+        <form action="">
+            <div class="row mt-5">
+                <div class="col-xl-8">
+                    <div class="form-group">
+                        <h4 class="tech-font">Titre de l'article</h4>
+                        <input class="form-control" type="text" name="title">
+                    </div>
+                    <div class="form-group mt-5">
+                        <h4 class="tech-font">Contenu de l'article</h4>
+                        <textarea class="form-control wysiwyg" name="content" rows="30"></textarea>
+                    </div>
+                </div>
+                <aside class="col-xl-4 text-right">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <h4 class="tech-font">Couverture</h4>
+
+                            <input class="form-control" type="file">
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-xl-12">
+                            <h4 class="tech-font">Catégories</h4>
+
+                            <select class="form-control mt-3">
+                                <option selected>Développement</option>
+                                <option>Webdesign</option>
+                                <option>Formations</option>
+                            </select>
+                            <small class="text-light-grey pointer"><i class="fas fa-plus mr-1"></i>Ajouter une nouvelle catégorie</small>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-xl-12">
+                            <h4 class="tech-font">Tags</h4>
+
+                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                <input class="pointer" type="checkbox" id="php-checkbox">
+                                <label class="pointer mt-2 mb-1" for="php-checkbox">
+                                    PHP
+                                </label>
+                            </div>
+                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                <input class="pointer" type="checkbox" id="symfony-checkbox">
+                                <label class="pointer mt-2 mb-1" for="symfony-checkbox">
+                                    Symfony
+                                </label>
+                            </div>
+                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                <input class="pointer" type="checkbox" id="javascript-checkbox">
+                                <label class="pointer mt-2 mb-1" for="javascript-checkbox">
+                                    Javascript
+                                </label>
+                            </div>
+                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                <input class="pointer" type="checkbox" id="vue-checkbox">
+                                <label class="pointer mt-2 mb-1" for="vue-checkbox">
+                                    Vue.JS
+                                </label>
+                            </div>
+                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                <input class="pointer" type="checkbox" id="jquery-checkbox">
+                                <label class="pointer mt-2 mb-1" for="jquery-checkbox">
+                                    jQuery
+                                </label>
+                            </div>
+                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                <input class="pointer" type="checkbox" id="bootstrap-checkbox">
+                                <label class="pointer mt-2 mb-1" for="bootstrap-checkbox">
+                                    Bootstrap
+                                </label>
+                            </div>
+                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                <input class="pointer" type="checkbox" id="css-checkbox">
+                                <label class="pointer mt-2 mb-1" for="css-checkbox">
+                                    CSS3
+                                </label>
+                            </div>
+                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                <input class="pointer" type="checkbox" id="html-checkbox">
+                                <label class="pointer mt-2 mb-1" for="html-checkbox">
+                                    HTML5
+                                </label>
+                            </div>
+
+                            <small class="d-block text-light-grey pointer"><i class="fas fa-plus mr-1"></i>Ajouter un nouveau tag</small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 mt-5">Publier l'article<i class="fas fa-pencil-alt ml-2"></i></button>
+                </aside>
+            </div>
+        </form>
+    </main>
+
+{% endblock %}

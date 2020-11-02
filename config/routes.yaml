@@ -1,0 +1,55 @@
+home:
+  path: /
+  controller: App\Controller\HomeController::index
+
+admin:
+  path: /dashboard
+  controller: App\Controller\AdminController::index
+
+create_post:
+  path: /post/create
+  controller: App\Controller\PostController::create
+
+update_post:
+  path: /post/update/{slug}
+  controller: App\Controller\PostController::update
+
+delete_post:
+  path: /post/delete/{slug}
+  controller: App\Controller\PostController::delete
+
+pin_post:
+  path: /post/pin/{slug}
+  controller: App\Controller\PostController::pin
+
+show_pined_posts:
+  path: /post/favorites
+  controller: App\Controller\PostController::show_pined
+
+like_post:
+  path: /post/like/{slug}
+  controller: App\Controller\PostController::like
+
+dislike_post:
+  path: /post/dislike/{slug}
+  controller: App\Controller\PostController::dislike
+
+show_post:
+  path: /post/{slug}
+  controller: App\Controller\PostController::show
+
+show_comments:
+  path: /comments
+  controller: App\Controller\CommentController::show
+
+create_comment:
+  path: /comment/create
+  controller: App\Controller\CommentController::create
+
+update_comment:
+  path: /comment/update/{slug}
+  controller: App\Controller\CommentController::update
+
+delete_comment:
+  path: /comment/delete/{slug}
+  controller: App\Controller\CommentController::delete
