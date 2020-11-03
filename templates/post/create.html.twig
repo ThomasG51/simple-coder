@@ -1,5 +1,17 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+
+    <!-- Trumbowyg -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/ui/trumbowyg.min.css" integrity="sha512-XjpikIIW1P7jUS8ZWIznGs9KHujZQxhbnEsqMVQ5GBTTRmmJe32+ULipOxFePB8F8j9ahKmCjyJJ22VNEX60yg==" crossorigin="anonymous" />
+
+    <!-- Trumbowyg Plugins -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/emoji/ui/trumbowyg.emoji.min.css" integrity="sha512-HHkhRBTKPhCV3wLmPUkJ7Fsh5bqPktafM9E+kHfrJUOzwBvO3P6dIPHBHQhN84hNolWM3/OZ74555jng1uAaaQ==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/colors/ui/trumbowyg.colors.min.css" integrity="sha512-bt6OjXIcEvAqCXgYV7WuqbOSgC5uzxTE0KKpKoKKYlGLN80yHsgp0h/17Nwm1oGuA74g4IUV0BeIeO8TWtx2ew==" crossorigin="anonymous" />
+
+{% endblock %}
+
+
 {% block body %}
 
     <section class="container-fluid mb-4">
@@ -18,7 +30,7 @@
                     </div>
                     <div class="form-group mt-5">
                         <h4 class="tech-font">Contenu de l'article</h4>
-                        <textarea class="form-control wysiwyg" name="content" rows="30"></textarea>
+                        <textarea id="wysiwyg" class="form-control wysiwyg" name="content" rows="30"></textarea>
                     </div>
                 </div>
                 <aside class="col-xl-4 text-right">
@@ -102,5 +114,49 @@
             </div>
         </form>
     </main>
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+    <!-- Trumbowyg -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/trumbowyg.min.js" integrity="sha512-l6MMck8/SpFCgbJnIEfVsWQ8MaNK/n2ppTiELW3I2BFY5pAm/WjkNHSt+2OD7+CZtygs+jr+dAgzNdjNuCU7kw==" crossorigin="anonymous"></script>
+
+    <!-- Trumbowyg plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/emoji/trumbowyg.emoji.min.js" integrity="sha512-jtbiwT9IGZNlEvNs1ucp5he8rMC16gHopV82UnT/MiNjNZ2JQaIhmGym0BZcKAWOKM5JB1QjeC1O/S38nezrQA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/colors/trumbowyg.colors.min.js" integrity="sha512-MtdxZ2i4tikTLm/2YRpUNcnDIXMEzJ0cHO7wR7qzBUBoGlTl68K6Wg9wWxTuY6erAFJij6twNNLaooPn8rz1SA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/fontsize/trumbowyg.fontsize.min.js" integrity="sha512-GLY8MrCsOC5bS3L+wvum47RI7PS1f87fFi2GghrC6nzZkwNyZVARaCfy/IMAtYhz2+xr+CtlKje8PInZa17Sgw==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/fontfamily/trumbowyg.fontfamily.min.js" integrity="sha512-FXaZ7KeSU9t4ldiebiah3YAMbRpGyw2rJRa7UDllV8aCPgBsqz8PVoglFiHjAATnlnWgOztIZDT8G4T8PkkLHA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/upload/trumbowyg.upload.min.js" integrity="sha512-g5wjYAiDs8BUjvYsS72hTfj1N255lOfulYWK/c+SM5JyldgDD9E5cpUSsCqighP7PiSqX+6FlTW48RI85BDqKw==" crossorigin="anonymous"></script>
+
+    <!-- Init Trumbowyg -->
+    <script>
+        $('#wysiwyg').trumbowyg({
+            btns: [
+                ['viewHTML'],
+                ['undo', 'redo'], // Only supported in Blink browsers
+                ['formatting'],
+                ['fontsize'],
+                ['fontfamily'],
+                ['strong', 'em', 'del'],
+                ['superscript', 'subscript'],
+                ['link'],
+                ['insertImage'],
+                ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+                ['unorderedList', 'orderedList'],
+                ['horizontalRule'],
+                ['removeformat'],
+                ['fullscreen'],
+                ['emoji'],
+                ['foreColor', 'backColor'],
+                ['upload']
+            ],
+            plugins: {
+                upload: {}
+            },
+            autogrow: true
+        });
+    </script>
 
 {% endblock %}
