@@ -11,6 +11,13 @@ use Twig\TwigFunction;
 
 abstract class AbstractController
 {
+    /**
+     *  Twig render system
+     *
+     * @param string $view
+     * @param array $params
+     * @return Response
+     */
     public function render(string $view, array $params): Response
     {
         $loader = new FilesystemLoader(__DIR__ . '/../templates');

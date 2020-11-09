@@ -10,13 +10,13 @@
     <main class="container mb-5">
         <div class="row">
             <div class="col-xl-12 mb-5 mt-5">
-                <h1 class="article-title">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi.</h1>
+                <h1 class="article-title">{{ post.title }}</h1>
 
                 <h6 class="article-infos mb-1">
-                    <i class="far fa-calendar-alt mr-1"></i>30-10-2020
-                    <i class="far fa-clock mr-1 ml-3"></i>14:04
-                    <i class="fas fa-tags mr-1 ml-3"></i>Développement
-                    <i class="fas fa-user mr-1 ml-3"></i>Thomas George
+                    <i class="far fa-calendar-alt mr-1"></i>{{ post.date | date('d/m/Y') }}
+                    <i class="far fa-clock mr-1 ml-3"></i>{{ psot.date | date('H:i:s') }}
+                    <i class="fas fa-tags mr-1 ml-3"></i>{{ post.category.name }}
+                    <i class="fas fa-user mr-1 ml-3"></i>{{ post.user.firstname }} {{ post.user.lastname }}
                 </h6>
 
                 <div>
@@ -26,28 +26,11 @@
             </div>
         </div>
         <div class="row">
+
             <div class="col-xl-8 mt-2">
                 <article class="mb-4">
                     <p class="text-justify">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a. Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a.
-                    </p>
-                    <br/>
-                    <figure class="w-100 vh-30"><img src="{{ asset('images/bg-header-1.jpg') }}" class="cover"></figure>
-                    <br/>
-                    <p class="text-justify">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
-                    </p>
-                    <br/>
-                    <figure class="w-100 vh-30"><img src="{{ asset('images/bg-header-3.jpg') }}" class="cover"></figure>
-                    <br/>
-                    <p class="text-justify">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
-                    </p>
-                    <br/>
-                    <figure class="w-100 vh-30"><img src="{{ asset('images/bg-header-4.jpg') }}" class="cover"></figure>
-                    <br/>
-                    <p class="text-justify">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
+                        {{ post.text | nl2br }}
                     </p>
                 </article>
 
@@ -77,6 +60,7 @@
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
                 </div>
             </div>
+
             <aside class="col-xl-4 vh-100 mt-2">
                 <div class="row mt-0">
                     <div class="col-xl-3 bg-linkedin text-center pointer"><i class="fab fa-linkedin social-links text-white py-4"></i></div>
@@ -103,6 +87,7 @@
                     </div>
                 </div>
             </aside>
+
         </div>
     </main>
 {% endblock %}

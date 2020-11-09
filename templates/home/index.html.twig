@@ -40,78 +40,33 @@
     <main class="container">
         <div class="row">
             <div class="col-xl-8 mt-4">
-                <article class="mb-4">
+                {% for post in posts %}
+                    <article class="mb-4">
                     <div class="row">
                         <figure class="col-xl-4">
                             <img src="{{ asset('images/bg-header-2.jpg') }}" alt="" class="cover">
                         </figure>
                         <div class="col-xl-8 pl-0">
-                            <h1 class="article-title">Lorem ipsum dolor sit amet consectetur.</h1>
+                            <a href="/post/{{ post.title | lower | replace({' ': '-', '.': ''}) }}-{{ post.id }}"><h1
+                                        class="article-title">{{ post.title }}</h1></a>
 
                             <h6 class="article-infos mb-1">
-                                <i class="far fa-calendar-alt mr-1"></i>30-10-2020 - <i class="far fa-clock mr-1"></i>14:04
+                                <i class="far fa-calendar-alt mr-1"></i>{{ post.date | date("d/m/Y") }} - <i class="far fa-clock
+                                mr-1"></i>{{ post.date | date("H:i:s") }}
                             </h6>
-                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>Développement</h6>
-                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>Thomas George</h6>
+                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>{{ post.category_id }}</h6>
+                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>{{ post.user_id }}</h6>
                         </div>
                     </div>
 
-                    <p class="mt-1 text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a.
-                        <br/><br/>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
-                    </p>
+                    <p class="mt-1 text-justify">{{ post.text | nl2br }}</p>
 
-                    <a href="/post/1"><button class="btn btn-dark d-block ml-auto mb-4"><i class="fas fa-book-reader mr-1"></i> Lire
-                            l'article</button></a>
+                    <a href="/post/{{ post.title | lower | replace({' ': '-', '.': ''}) }}-{{ post.id }}"><button class="btn btn-dark
+                    d-block
+                    ml-auto mb-4"><i class="fas fa-book-reader
+                    mr-1"></i> Lire l'article</button></a>
                 </article>
-                <article class="mb-4">
-                    <div class="row">
-                        <figure class="col-xl-4">
-                            <img src="{{ asset('images/bg-header-1.jpg') }}" alt="" class="cover">
-                        </figure>
-                        <div class="col-xl-8 pl-0">
-                            <h1 class="article-title">Lorem ipsum dolor.</h1>
-
-                            <h6 class="article-infos mb-1">
-                                <i class="far fa-calendar-alt mr-1"></i>30-10-2020 - <i class="far fa-clock mr-1"></i>14:04
-                            </h6>
-                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>Développement</h6>
-                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>Thomas George</h6>
-                        </div>
-                    </div>
-
-                    <p class="mt-3 text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a.
-                        <br/><br/>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
-                    </p>
-
-                    <a href="/post/1"><button class="btn btn-dark d-block ml-auto mb-4"><i class="fas fa-book-reader mr-1"></i> Lire
-                            l'article</button></a>
-                </article>
-                <article class="mb-4">
-                    <div class="row">
-                        <figure class="col-xl-4">
-                            <img src="{{ asset('images/bg-header-4.jpg') }}" alt="" class="cover">
-                        </figure>
-                        <div class="col-xl-8 pl-0">
-                            <h1 class="article-title">Lorem ipsum dolor sit amet.</h1>
-
-                            <h6 class="article-infos mb-1">
-                                <i class="far fa-calendar-alt mr-1"></i>30-10-2020 - <i class="far fa-clock mr-1"></i>14:04
-                            </h6>
-                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>Développement</h6>
-                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>Thomas George</h6>
-                        </div>
-                    </div>
-
-                    <p class="mt-3 text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo veniam temporibus ipsa libero quos velit, asperiores eaque fuga corporis suscipit aliquid accusamus! Et in modi ipsum vitae. Eum soluta iste optio perspiciatis dolores corporis suscipit fuga ipsam animi praesentium expedita neque a aperiam impedit amet quaerat autem, quo labore quam et similique odio vel atque? Inventore blanditiis qui dicta cumque eveniet dolor architecto aliquam a.
-                        <br/><br/>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Mollitia cupiditate vitae, maxime quae beatae iure porro quaerat blanditiis, numquam sed quibusdam quis eius pariatur, voluptatibus veniam voluptates voluptas deleniti a. Assumenda unde exercitationem modi totam?
-                    </p>
-
-                    <a href="/post/1"><button class="btn btn-dark d-block ml-auto mb-4"><i class="fas fa-book-reader mr-1"></i> Lire
-                            l'article</button></a>
-                </article>
+                {% endfor %}
 
                 <div aria-label="Page navigation example" class="mb-5">
                     <ul class="pagination">
