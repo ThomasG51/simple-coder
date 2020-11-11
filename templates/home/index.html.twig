@@ -41,29 +41,28 @@
         <div class="row">
             <div class="col-xl-8 mt-4">
                 {% for post in posts %}
-                    <article class="mb-4">
+                <article class="mb-5">
                     <div class="row">
-                        <figure class="col-xl-4">
-                            <img src="{{ asset('images/bg-header-2.jpg') }}" alt="" class="cover">
+                        <figure class="col-xl-4 mb-0">
+                            <img src="{{ asset('../upload/' ~ post.cover) }}" alt="" class="cover">
                         </figure>
                         <div class="col-xl-8 pl-0">
-                            <a href="/post/{{ post.title | lower | replace({' ': '-', '.': ''}) }}-{{ post.id }}"><h1
-                                        class="article-title">{{ post.title }}</h1></a>
+                            <a href="/post/{{ post.slug }}"><h1 class="article-title">{{ post.title }}</h1></a>
 
                             <h6 class="article-infos mb-1">
                                 <i class="far fa-calendar-alt mr-1"></i>{{ post.date | date("d/m/Y") }} - <i class="far fa-clock
                                 mr-1"></i>{{ post.date | date("H:i:s") }}
                             </h6>
-                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>{{ post.category_id }}</h6>
-                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>{{ post.user_id }}</h6>
+                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>{{ post.name }}</h6>
+                            <h6 class="article-infos"><i class="fas fa-user mr-1"></i>{{ post.firstname }} {{ post.lastname }}</h6>
                         </div>
                     </div>
 
-                    <p class="mt-1 text-justify">{{ post.text | nl2br }}</p>
+                    <p class="mt-1 text-justify">{{ post.text | raw }}</p>
 
-                    <a href="/post/{{ post.title | lower | replace({' ': '-', '.': ''}) }}-{{ post.id }}"><button class="btn btn-dark
+                    <a href="/post/{{ post.slug }}"><button class="btn btn-dark
                     d-block
-                    ml-auto mb-4"><i class="fas fa-book-reader
+                    ml-auto my-4"><i class="fas fa-book-reader
                     mr-1"></i> Lire l'article</button></a>
                 </article>
                 {% endfor %}

@@ -3,7 +3,7 @@
 {% block body %}
     <section class="container-fluid mb-4">
         <figure class="row vh-65">
-            <img src="{{ asset('images/bg-header-2.jpg') }}" alt="" class="cover">
+            <img src="{{ asset('../upload/' ~ post.cover) }}" alt="" class="cover">
         </figure>
     </section>
 
@@ -15,8 +15,8 @@
                 <h6 class="article-infos mb-1">
                     <i class="far fa-calendar-alt mr-1"></i>{{ post.date | date('d/m/Y') }}
                     <i class="far fa-clock mr-1 ml-3"></i>{{ psot.date | date('H:i:s') }}
-                    <i class="fas fa-tags mr-1 ml-3"></i>{{ post.category.name }}
-                    <i class="fas fa-user mr-1 ml-3"></i>{{ post.user.firstname }} {{ post.user.lastname }}
+                    <i class="fas fa-tags mr-1 ml-3"></i>{{ post.name }}
+                    <i class="fas fa-user mr-1 ml-3"></i>{{ post.firstname }} {{ post.lastname }}
                 </h6>
 
                 <div>
@@ -27,10 +27,10 @@
         </div>
         <div class="row">
 
-            <div class="col-xl-8 mt-2">
+            <div class="col-xl-8">
                 <article class="mb-4">
                     <p class="text-justify">
-                        {{ post.text | nl2br }}
+                        {{ post.text | raw }}
                     </p>
                 </article>
 
@@ -62,7 +62,7 @@
             </div>
 
             <aside class="col-xl-4 vh-100 mt-2">
-                <div class="row mt-0">
+                <div class="row mt-3">
                     <div class="col-xl-3 bg-linkedin text-center pointer"><i class="fab fa-linkedin social-links text-white py-4"></i></div>
                     <div class="col-xl-3 bg-twitter text-center pointer"><i class="fab fa-twitter social-links text-white py-4"></i></div>
                     <div class="col-xl-3 bg-facebook text-center pointer"><i class="fab fa-facebook-f social-links text-white py-4"></i></div>

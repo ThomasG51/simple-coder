@@ -4,7 +4,7 @@
 namespace Lib;
 
 
-class AbstractRepository
+abstract class AbstractRepository
 {
     /**
      * PDO instance

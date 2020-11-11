@@ -21,34 +21,35 @@
     </section>
 
     <main class="container">
-        <form action="">
+        <form action="/post/create" method="post" enctype="multipart/form-data">
             <div class="row mt-5">
                 <div class="col-xl-8">
                     <div class="form-group">
                         <h4 class="tech-font">Titre de l'article</h4>
-                        <input class="form-control" type="text" name="title">
+                        <input class="form-control" type="text" name="title" required>
                     </div>
                     <div class="form-group mt-5">
                         <h4 class="tech-font">Contenu de l'article</h4>
-                        <textarea id="wysiwyg" class="form-control wysiwyg" name="content" rows="30"></textarea>
+                        <textarea id="wysiwyg" class="form-control wysiwyg" name="content" rows="30" required></textarea>
                     </div>
                 </div>
                 <aside class="col-xl-4 text-right">
                     <div class="row">
                         <div class="col-xl-12">
                             <h4 class="tech-font">Couverture</h4>
-
-                            <input class="form-control" type="file">
+                            <input type="hidden" name="MAX_FILE_SIZE" value="3000000">
+                            <input class="form-control" type="file" name="cover" required>
                         </div>
                     </div>
                     <div class="row mt-5">
                         <div class="col-xl-12">
                             <h4 class="tech-font">Catégories</h4>
 
-                            <select class="form-control mt-3">
-                                <option selected>Développement</option>
-                                <option>Webdesign</option>
-                                <option>Formations</option>
+                            <select class="form-control mt-3" required>
+                                <option name="developpement" selected>Développement</option>
+                                <option name="design">Design</option>
+                                <option name="materiel">Matériel</option>
+                                <option name="logiciel">Logiciel</option>
                             </select>
                             <small class="text-light-grey pointer"><i class="fas fa-plus mr-1"></i>Ajouter une nouvelle catégorie</small>
                         </div>
