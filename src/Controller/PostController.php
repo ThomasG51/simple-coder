@@ -4,7 +4,9 @@
 namespace App\Controller;
 
 
+use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
+use App\Repository\TagsRepository;
 use Lib\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PostController extends AbstractController
 {
     /**
-     * Create post
+     * Create new post
      *
      * @return Response
      */
@@ -24,18 +26,25 @@ class PostController extends AbstractController
         {
             $title = $request->request->get('title');
             $content = $request->request->get('content');
-            $slug = $this->formatSlug($title);
             $coverName = uniqid('upload-', TRUE).'.'.pathinfo($_FILES['cover']['name'], PATHINFO_EXTENSION);
-
-            $this->uploadFile($_FILES['cover'], $coverName);
+            $category = $request->request->get('category');
+            $slug = $this->formatSlug($title);
 
             $postManager = new PostRepository();
-            $postManager->create($title, $coverName, $content, $slug,1, 1);
+            $postManager->create($title, $coverName, $content, $slug,1, $category);
+
+            $this->uploadFile($_FILES['cover'], $coverName);
 
             return $this->redirectToRoute('/');
         }
 
-        return $this->render('post/create.html.twig', []);
+        $categoryManager = new CategoryRepository();
+        $tagsManager = new TagsRepository();
+
+        return $this->render('post/create.html.twig', [
+            'categories' => $categoryManager->findAll(),
+            'tags' => $tagsManager->findAll()
+        ]);
     }
 
 
@@ -48,10 +57,9 @@ class PostController extends AbstractController
     public function show(string $slug): Response
     {
         $postManager = new PostRepository();
-        $post = $postManager->findOne($slug);
 
         return $this->render('post/show.html.twig', [
-            'post' => $post
+            'post' => $postManager->findOne($slug)
         ]);
     }
 }

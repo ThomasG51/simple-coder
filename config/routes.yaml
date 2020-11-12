@@ -53,3 +53,11 @@ update_comment:
 delete_comment:
   path: /comment/delete/{slug}
   controller: App\Controller\CommentController::delete
+
+create_category:
+  path: /category/create
+  controller: App\Controller\CategoryController::create
+
+create_tags:
+  path: /tags/create
+  controller: App\Controller\TagsController::create

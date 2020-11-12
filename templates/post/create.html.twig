@@ -45,69 +45,30 @@
                         <div class="col-xl-12">
                             <h4 class="tech-font">Catégories</h4>
 
-                            <select class="form-control mt-3" required>
-                                <option name="developpement" selected>Développement</option>
-                                <option name="design">Design</option>
-                                <option name="materiel">Matériel</option>
-                                <option name="logiciel">Logiciel</option>
+                            <select class="form-control mt-3" name="category" required>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
                             </select>
-                            <small class="text-light-grey pointer"><i class="fas fa-plus mr-1"></i>Ajouter une nouvelle catégorie</small>
+                            <small class="text-light-grey pointer" data-toggle="modal" data-target="#categoryModal"><i class="fas fa-plus
+                            mr-1"></i>Ajouter une nouvelle catégorie</small>
                         </div>
                     </div>
                     <div class="row mt-5">
                         <div class="col-xl-12">
                             <h4 class="tech-font">Tags</h4>
 
+                            {% for tag in tags %}
                             <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="php-checkbox">
-                                <label class="pointer mt-2 mb-1" for="php-checkbox">
-                                    PHP
+                                <input class="pointer" type="checkbox" id="{{ tag.name }}-checkbox" value="{{ tag.id }}">
+                                <label class="pointer mt-2 mb-1" for="{{ tag.name }}-checkbox">
+                                    {{ tag.name }}
                                 </label>
                             </div>
-                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="symfony-checkbox">
-                                <label class="pointer mt-2 mb-1" for="symfony-checkbox">
-                                    Symfony
-                                </label>
-                            </div>
-                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="javascript-checkbox">
-                                <label class="pointer mt-2 mb-1" for="javascript-checkbox">
-                                    Javascript
-                                </label>
-                            </div>
-                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="vue-checkbox">
-                                <label class="pointer mt-2 mb-1" for="vue-checkbox">
-                                    Vue.JS
-                                </label>
-                            </div>
-                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="jquery-checkbox">
-                                <label class="pointer mt-2 mb-1" for="jquery-checkbox">
-                                    jQuery
-                                </label>
-                            </div>
-                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="bootstrap-checkbox">
-                                <label class="pointer mt-2 mb-1" for="bootstrap-checkbox">
-                                    Bootstrap
-                                </label>
-                            </div>
-                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="css-checkbox">
-                                <label class="pointer mt-2 mb-1" for="css-checkbox">
-                                    CSS3
-                                </label>
-                            </div>
-                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="html-checkbox">
-                                <label class="pointer mt-2 mb-1" for="html-checkbox">
-                                    HTML5
-                                </label>
-                            </div>
+                            {% endfor %}
 
-                            <small class="d-block text-light-grey pointer"><i class="fas fa-plus mr-1"></i>Ajouter un nouveau tag</small>
+                            <small class="d-block text-light-grey pointer" data-toggle="modal" data-target="#tagsModal"><i class="fas
+                             fa-plus mr-1"></i>Ajouter un nouveau tag</small>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success w-100 mt-5">Publier l'article<i class="fas fa-pencil-alt ml-2"></i></button>
@@ -115,6 +76,44 @@
             </div>
         </form>
     </main>
+
+    <!-- Category Modal -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="tech-font mt-3 mb-4 text-center">Ajouter une nouvelle catégorie</h4>
+                    <form action="/category/create" method="post">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success form-control">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tags Modal -->
+    <div class="modal fade" id="tagsModal" tabindex="-1" aria-labelledby="tagsModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="tech-font mt-3 mb-4 text-center">Ajouter un nouveau tag</h4>
+                    <form action="/tags/create" method="post">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success form-control">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
@@ -143,18 +142,21 @@
                 ['strong', 'em', 'del'],
                 ['superscript', 'subscript'],
                 ['link'],
+                ['horizontalRule'],
+                ['removeformat'],
                 ['insertImage'],
                 ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
                 ['unorderedList', 'orderedList'],
-                ['horizontalRule'],
-                ['removeformat'],
                 ['fullscreen'],
                 ['emoji'],
                 ['foreColor', 'backColor'],
                 ['upload']
             ],
             plugins: {
-                upload: {}
+                upload: {
+                    serverPath: 'https://api.imgur.com/3/image',
+                    fileFieldName: 'image'
+                }
             },
             autogrow: true
         });
