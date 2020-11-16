@@ -31,9 +31,23 @@ class PostController extends AbstractController
             $slug = $this->formatSlug($title);
 
             $postManager = new PostRepository();
-            $postManager->create($title, $coverName, $content, $slug,1, $category);
+
+            if ($postManager->findNextId() != null)
+            {
+                $nextId = $postManager->findNextId();
+            }
+            else
+            {
+                $nextId = 0;
+            }
+
+            $postManager->create($nextId, $title, $coverName, $content, $slug,1, $category);
 
             $this->uploadFile($_FILES['cover'], $coverName);
+
+            // Save TagsLine
+            // $tagsLineController = new TagsLineController();
+            // $tagsLineController->create($tags_id, $nextId);
 
             return $this->redirectToRoute('/');
         }

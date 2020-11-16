@@ -71,6 +71,7 @@ class PostRepository extends AbstractRepository
     /**
      * Create new post
      *
+     * @param int $nextId
      * @param string $title
      * @param string $cover
      * @param string $text
@@ -79,14 +80,15 @@ class PostRepository extends AbstractRepository
      * @param int $category_id
      * @return void
      */
-    public function create(string $title, string $cover, string $text, string $slug, int $user_id, int $category_id) : void
+    public function create(int $nextId, string $title, string $cover, string $text, string $slug, int $user_id, int $category_id) : void
     {
         $query = $this->getPDO()->prepare('
-            INSERT INTO post(title, cover, date, text, slug, user_id, category_id) 
-            VALUES (:title, :cover, NOW(), :text, CONCAT(:slug, :next_id), :user_id, :category_id)
+            INSERT INTO post(id, title, cover, date, text, slug, user_id, category_id) 
+            VALUES (:nextId, :title, :cover, NOW(), :text, CONCAT(:slug, :next_id), :user_id, :category_id)
         ');
 
         $query->execute([
+            'nextId' => $nextId,
             'title' => $title,
             'cover' => $cover,
             'text' => $text,
