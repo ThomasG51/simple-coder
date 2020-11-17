@@ -101,7 +101,7 @@ class Route
 
         array_shift($matches);
 
-        $controller = new $controller();
+        $controller = new $controller($request);
 
         return call_user_func_array([$controller, $method], $matches);
     }

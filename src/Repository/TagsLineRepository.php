@@ -18,7 +18,7 @@ class TagsLineRepository extends AbstractRepository
     {
         $query = $this->getPDO()->prepare('
             INSERT INTO tags_lines(tags_id, post_id)
-            VALUES(:tags_id, $post_id)
+            VALUES(:tags_id, :post_id)
         ');
 
         $query->execute([

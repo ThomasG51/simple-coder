@@ -60,8 +60,8 @@
 
                             {% for tag in tags %}
                             <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="{{ tag.name }}-checkbox" value="{{ tag.id }}">
-                                <label class="pointer mt-2 mb-1" for="{{ tag.name }}-checkbox">
+                                <input class="pointer" type="checkbox" id="{{ tag.name }}" name="tags[]" value="{{ tag.id }}">
+                                <label class="pointer mt-2 mb-1" for="{{ tag.name }}">
                                     {{ tag.name }}
                                 </label>
                             </div>
@@ -88,7 +88,7 @@
                             <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-success form-control">Ajouter</button>
+                            <button id="category-btn" type="submit" class="btn btn-success form-control">Ajouter</button>
                         </div>
                     </form>
                 </div>
@@ -131,8 +131,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/upload/trumbowyg.upload.min.js" integrity="sha512-g5wjYAiDs8BUjvYsS72hTfj1N255lOfulYWK/c+SM5JyldgDD9E5cpUSsCqighP7PiSqX+6FlTW48RI85BDqKw==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/noembed/trumbowyg.noembed.min.js" integrity="sha512-TA4pzJI6gt9XiZBx632qD7IWKIOWFubUhr/d4YQGt/Yt5LL/QGuiu7G/3JuY/EdB1RkV4fJeZJMa5QAt8mpUJw==" crossorigin="anonymous"></script>
 
-    <!-- Init Trumbowyg -->
     <script>
+        // Init Trumbowyg
         $('#wysiwyg').trumbowyg({
             btns: [
                 ['viewHTML'],
@@ -162,6 +162,7 @@
             },
             autogrow: true
         });
+
     </script>
 
 {% endblock %}

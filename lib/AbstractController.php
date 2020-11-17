@@ -3,6 +3,8 @@
 namespace Lib;
 
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
@@ -11,6 +13,18 @@ use Twig\TwigFunction;
 
 abstract class AbstractController
 {
+    /**
+     * @var Request
+     */
+    protected $request;
+
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+
     /**
      *  Twig render system
      *
@@ -65,19 +79,21 @@ abstract class AbstractController
 
 
     /**
-     * @param array $file
-     * @param string $coverName
+     * Upload File
+     *
+     * @param UploadedFile $uploadedFile
+     * @return string
      */
-    public function uploadFile(array $file, string $coverName) : void
+    public function uploadFile(UploadedFile $uploadedFile) : string
     {
         $directory = __DIR__.'/../public/upload/';
         $mime = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg'];
         $maxSize = 3000000;
 
-        $fileName = $coverName;
-        $fileTmpName = $file['tmp_name'];
-        $fileMime = mime_content_type($fileTmpName);
-        $fileSize = filesize($fileTmpName);
+        $file = $uploadedFile;
+        $fileName = uniqid('upload-', TRUE).'.'.$file->getClientOriginalExtension();
+        $fileMime = $file->getClientMimeType();
+        $fileSize = $file->getSize();
 
         // Check mime type
         if(!in_array($fileMime, $mime))
@@ -94,7 +110,7 @@ abstract class AbstractController
         }
 
         // Upload
-        if(move_uploaded_file($fileTmpName, $directory.$fileName))
+        if($file->move($directory, $fileName))
         {
             // Return alert : Upload Succeed
         }
@@ -103,5 +119,7 @@ abstract class AbstractController
             dd('Upload Failed');
             // Throw exception
         }
+
+        return $fileName;
     }
 }

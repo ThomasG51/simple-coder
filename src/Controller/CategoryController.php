@@ -11,26 +11,41 @@ use Symfony\Component\HttpFoundation\Request;
 class CategoryController extends AbstractController
 {
     /**
+     * @var CategoryRepository
+     */
+    private $categoryManager;
+
+
+    /**
+     * CategoryController constructor.
+     *
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        parent::__construct($request);
+
+        $this->categoryManager = new CategoryRepository();
+    }
+
+
+    /**
      * Create new category
      *
      * @return Response
      */
     public function create() : Response
     {
-        $request = Request::createFromGlobals();
-
-        if($request->request->get('name'))
+        if($this->request->request->get('name'))
         {
-            $category = $request->request->get('name');
+            $category = $this->request->request->get('name');
 
-            $categoryManager = new CategoryRepository();
-
-            if($categoryManager->findOne($request->request->get('name')))
+            if($this->categoryManager->findOne($this->request->request->get('name')))
             {
                 dd('La catégorie existe déjà.');
             }
 
-            $categoryManager->create($category);
+            $this->categoryManager->create($category);
         }
 
         return $this->redirectToRoute('/post/create');

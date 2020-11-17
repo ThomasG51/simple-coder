@@ -38,4 +38,38 @@ abstract class AbstractRepository
             echo 'Exception reçue : ',  $e->getMessage(), "\n";
         }
     }
+
+
+    /**
+     * Return next id from specific table
+     *
+     * @param string $table
+     * @return int
+     */
+    public function getNextId(string $table) : int
+    {
+        $query = $this->getPDO()->prepare('SELECT MAX(id) FROM ' . $table);
+        $query->execute();
+
+        $id = $query->fetch();
+
+        return $id['MAX(id)'] + 1;
+    }
+
+
+    /**
+     * Return last id from specific table
+     *
+     * @param string $table
+     * @return int
+     */
+    public function getLastId(string $table) : int
+    {
+        $query = $this->getPDO()->prepare('SELECT MAX(id) FROM ' . $table);
+        $query->execute();
+
+        $id = $query->fetch();
+
+        return $id['MAX(id)'];
+    }
 }
