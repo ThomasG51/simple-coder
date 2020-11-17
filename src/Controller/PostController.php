@@ -97,7 +97,8 @@ class PostController extends AbstractController
     public function show(string $slug): Response
     {
         return $this->render('post/show.html.twig', [
-            'post' => $this->postManager->findOne($slug)
+            'post' => $this->postManager->findOne($slug),
+            'tags' => $this->tagsLineManager->findTagsByPost($slug)
         ]);
     }
 }

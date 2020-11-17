@@ -20,8 +20,9 @@
                 </h6>
 
                 <div>
-                    <span class="badge badge-spill badge-dark">#PHP</span>
-                    <span class="badge badge-spill badge-dark">#Symfony</span>
+                    {% for tag in tags %}
+                        <span class="badge badge-spill badge-dark">#{{ tag.name }}</span>
+                    {% endfor %}
                 </div>
             </div>
         </div>
