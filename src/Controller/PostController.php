@@ -57,33 +57,58 @@ class PostController extends AbstractController
      */
     public function create(): Response
     {
-        if(
-            $this->request->getMethod() == 'POST' &&
-            !empty($this->request->request->get('title')) &&
-            !empty($this->request->request->get('content')) &&
-            !empty($this->request->files->get('cover')) &&
-            !empty($this->request->request->get('category'))
-        ) {
-            $title = $this->request->request->get('title');
-            $content = $this->request->request->get('content');
-            $category = $this->request->request->get('category');
-            $tags = $this->request->request->get('tags');
-            $slug = $this->formatSlug($title);
-            $coverName = $this->uploadFile($this->request->files->get('cover'));
+        $errorPost = [];
 
-            $this->postManager->create($title, $coverName, $content, $slug,1, $category);
-
-            foreach($tags as $tag)
+        if($this->request->getMethod() == 'POST')
+        {
+            if(empty($this->request->request->get('title')))
             {
-                $this->tagsLineManager->create($tag, $this->postManager->getLastId('post'));
+                $errorPost += ['title' => 'Erreur : Veuillez remplir le titre.'];
             }
 
-            return $this->redirectToRoute('/');
+            if(empty($this->request->request->get('content')))
+            {
+                $errorPost += ['content' => 'Erreur : Veuillez remplir le contenu.'];
+            }
+
+            if(empty($this->request->files->get('cover')))
+            {
+                $errorPost += ['cover' => 'Erreur : Veuillez selectionner une couverture.'];
+            }
+
+            if(empty($this->request->request->get('category')))
+            {
+                $errorPost += ['category' => 'Erreur : Veuillez selectionner une catégorie.'];
+            }
+
+            if(empty($this->request->request->get('tags')))
+            {
+                $errorPost += ['tags' => 'Erreur : Veuillez cocher des tags.'];
+            }
+
+            if(empty($errorPost))
+            {
+                $title = $this->request->request->get('title');
+                $content = $this->request->request->get('content');
+                $category = $this->request->request->get('category');
+                $tags = $this->request->request->get('tags');
+                $slug = $this->formatSlug($title);
+                $coverName = $this->uploadFile($this->request->files->get('cover'));
+
+                $this->postManager->create($title, $coverName, $content, $slug, 1, $category);
+
+                foreach ($tags as $tag) {
+                    $this->tagsLineManager->create($tag, $this->postManager->getLastId('post'));
+                }
+
+                return $this->redirectToRoute('/');
+            }
         }
 
         return $this->render('post/create.html.twig', [
             'categories' => $this->categoryManager->findAll(),
-            'tags' => $this->tagsManager->findAll()
+            'tags' => $this->tagsManager->findAll(),
+            'error_post' => $errorPost
         ]);
     }
 

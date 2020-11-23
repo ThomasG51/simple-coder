@@ -26,26 +26,38 @@
                 <div class="col-xl-8">
                     <div class="form-group">
                         <h4 class="tech-font">Titre de l'article</h4>
-                        <input class="form-control" type="text" name="title" required>
+                        {% if error_post.title %}
+                            <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.title }}</small>
+                        {% endif %}
+                        <input class="form-control" type="text" name="title" >
                     </div>
                     <div class="form-group mt-5">
                         <h4 class="tech-font">Contenu de l'article</h4>
-                        <textarea id="wysiwyg" class="form-control wysiwyg" name="content" rows="30" required></textarea>
+                        {% if error_post.content %}
+                            <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.content }}</small>
+                        {% endif %}
+                        <textarea id="wysiwyg" class="form-control wysiwyg" name="content" rows="30" ></textarea>
                     </div>
                 </div>
                 <aside class="col-xl-4 text-right">
                     <div class="row">
                         <div class="col-xl-12">
                             <h4 class="tech-font">Couverture</h4>
+                            {% if error_post.cover %}
+                                <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.cover }}</small>
+                            {% endif %}
                             <input type="hidden" name="MAX_FILE_SIZE" value="3000000">
-                            <input class="form-control" type="file" name="cover" required>
+                            <input class="form-control" type="file" name="cover" >
                         </div>
                     </div>
                     <div class="row mt-5">
                         <div class="col-xl-12">
                             <h4 class="tech-font">Catégories</h4>
-
-                            <select id="js_category_container" class="form-control mt-3" name="category" required>
+                            {% if error_post.category %}
+                                <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.category }}</small>
+                            {% endif %}
+                            <select id="js_category_container" class="form-control mt-3" name="category" >
+                                <option value="">...</option>
                                 {% for category in categories %}
                                 <option id="category-{{ category.name }}" value="{{ category.id }}">{{ category.name }}</option>
                                 {% endfor %}
@@ -57,8 +69,10 @@
                     <div class="row mt-5">
                         <div class="col-xl-12">
                             <h4 class="tech-font">Tags</h4>
-
-                            <div class="js_tags_container">
+                            {% if error_post.tags %}
+                                <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.tags }}</small>
+                            {% endif %}
+                            <div class="js_tags_container mt-2">
                                 {% for tag in tags %}
                                 <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
                                     <input class="pointer" type="checkbox" id="tag-{{ tag.name }}" name="tags[]" value="{{ tag.id }}">
