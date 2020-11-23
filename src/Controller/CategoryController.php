@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Repository\CategoryRepository;
 use Lib\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class CategoryController extends AbstractController
@@ -32,9 +33,9 @@ class CategoryController extends AbstractController
     /**
      * Create new category
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function create() : Response
+    public function create() : JsonResponse
     {
         if($this->request->request->get('name'))
         {
@@ -46,8 +47,8 @@ class CategoryController extends AbstractController
             }
 
             $this->categoryManager->create($category);
-        }
 
-        return $this->redirectToRoute('/post/create');
+            return new JsonResponse($this->categoryManager->findLast());
+        }
     }
 }

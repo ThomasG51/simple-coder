@@ -48,6 +48,25 @@ class CategoryRepository extends AbstractRepository
 
 
     /**
+     * Return last category
+     *
+     * @return mixed
+     */
+    public function findLast()
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT *
+            FROM category
+            WHERE id = :lastId
+        ');
+
+        $query->execute(['lastId' => $this->getLastId('category')]);
+
+        return $query->fetch();
+    }
+
+
+    /**
      * Create new category
      *
      * @param string $name

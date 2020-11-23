@@ -6,33 +6,49 @@ namespace App\Controller;
 
 use App\Repository\TagsRepository;
 use Lib\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class TagsController extends AbstractController
 {
     /**
+     * @var TagsRepository
+     */
+    private $tagsManager;
+
+
+    /**
+     * TagsController constructor.
+     *
+     * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        parent::__construct($request);
+
+        $this->tagsManager = new TagsRepository();
+    }
+
+
+    /**
      * Create new tag
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function create() : Response
+    public function create() : JsonResponse
     {
-        $request = Request::createFromGlobals();
-
-        if($request->request->get('name'))
+        if($this->request->request->get('name'))
         {
-            $tags = $request->request->get('name');
+            $tags = $this->request->request->get('name');
 
-            $tagsManager = new TagsRepository();
-
-            if($tagsManager->findOne($request->request->get('name')))
+            if($this->tagsManager->findOne($this->request->request->get('name')))
             {
                 dd('Le tag existe déjà.');
             }
 
-            $tagsManager->create($tags);
-        }
+            $this->tagsManager->create($tags);
 
-        return $this->redirectToRoute('/post/create');
+            return new JsonResponse($this->tagsManager->findLast());
+        }
     }
 }

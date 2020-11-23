@@ -48,6 +48,25 @@ class TagsRepository extends AbstractRepository
 
 
     /**
+     * Return last tag
+     *
+     * @return mixed
+     */
+    public function findLast()
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT *
+            FROM tags
+            WHERE id = :lastId
+        ');
+
+        $query->execute(['lastId' => $this->getLastId('tags')]);
+
+        return $query->fetch();
+    }
+
+
+    /**
      * Create new tag
      *
      * @param string $name

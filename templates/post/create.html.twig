@@ -45,9 +45,9 @@
                         <div class="col-xl-12">
                             <h4 class="tech-font">Catégories</h4>
 
-                            <select class="form-control mt-3" name="category" required>
+                            <select id="js_category_container" class="form-control mt-3" name="category" required>
                                 {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                <option id="category-{{ category.name }}" value="{{ category.id }}">{{ category.name }}</option>
                                 {% endfor %}
                             </select>
                             <small class="text-light-grey pointer" data-toggle="modal" data-target="#categoryModal"><i class="fas fa-plus
@@ -58,14 +58,16 @@
                         <div class="col-xl-12">
                             <h4 class="tech-font">Tags</h4>
 
-                            {% for tag in tags %}
-                            <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
-                                <input class="pointer" type="checkbox" id="{{ tag.name }}" name="tags[]" value="{{ tag.id }}">
-                                <label class="pointer mt-2 mb-1" for="{{ tag.name }}">
-                                    {{ tag.name }}
-                                </label>
+                            <div class="js_tags_container">
+                                {% for tag in tags %}
+                                <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                    <input class="pointer" type="checkbox" id="tag-{{ tag.name }}" name="tags[]" value="{{ tag.id }}">
+                                    <label class="pointer mt-2 mb-1" for="tag-{{ tag.name }}">
+                                        {{ tag.name }}
+                                    </label>
+                                </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
 
                             <small class="d-block text-light-grey pointer" data-toggle="modal" data-target="#tagsModal"><i class="fas
                              fa-plus mr-1"></i>Ajouter un nouveau tag</small>
@@ -85,10 +87,10 @@
                     <h4 class="tech-font mt-3 mb-4 text-center">Ajouter une nouvelle catégorie</h4>
                     <form action="/category/create" method="post">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="name" required>
+                            <input id="categoryName" type="text" class="form-control" name="name" required>
                         </div>
                         <div class="form-group">
-                            <button id="category-btn" type="submit" class="btn btn-success form-control">Ajouter</button>
+                            <button id="categoryName-btn" type="submit" class="btn btn-success form-control" data-dismiss="modal">Ajouter</button>
                         </div>
                     </form>
                 </div>
@@ -104,10 +106,10 @@
                     <h4 class="tech-font mt-3 mb-4 text-center">Ajouter un nouveau tag</h4>
                     <form action="/tags/create" method="post">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="name" required>
+                            <input id="tagName" type="text" class="form-control" name="tagName" required>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-success form-control">Ajouter</button>
+                            <button id="tagName-btn" type="submit" class="btn btn-success form-control" data-dismiss="modal">Ajouter</button>
                         </div>
                     </form>
                 </div>
@@ -132,6 +134,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.21.0/plugins/noembed/trumbowyg.noembed.min.js" integrity="sha512-TA4pzJI6gt9XiZBx632qD7IWKIOWFubUhr/d4YQGt/Yt5LL/QGuiu7G/3JuY/EdB1RkV4fJeZJMa5QAt8mpUJw==" crossorigin="anonymous"></script>
 
     <script>
+
         // Init Trumbowyg
         $('#wysiwyg').trumbowyg({
             btns: [
@@ -161,6 +164,53 @@
                 }
             },
             autogrow: true
+        });
+
+
+        // Add new tag
+        $("#tagName-btn").click(function(){
+            event.preventDefault();
+
+            $.ajax({
+                url: '/tags/create',
+                type: 'POST',
+                data: { //
+                    name : $("#tagName").val()
+                },
+                datatype : 'string'
+            })
+            .done(function(data){
+                $('.js_tags_container').append(
+                    '<div class="badge badge-spill badge-dark ml-1 mb-2 pointer">\n' +
+                    '<input class="pointer" type="checkbox" id="tag-' + data['name'] + '" name="tags[]" value="' + data['id'] + '">\n' +
+                    '<label class="pointer mt-2 mb-1" for="tag-' + data['name'] + '">\n' +
+                    '' + data['name'] + '\n' +
+                    '</label>\n' +
+                    '</div>'
+                );
+                $('#tag-'+data['name']).prop('checked', true);
+            });
+        });
+
+
+        // Add new category
+        $("#categoryName-btn").click(function(){
+            event.preventDefault();
+
+            $.ajax({
+                url: '/category/create',
+                type: 'POST',
+                data: { //
+                    name : $("#categoryName").val()
+                },
+                datatype : 'string'
+            })
+            .done(function(data){
+                $('#js_category_container').append(
+                    '<option id="#category-'+data['name']+'" value="' + data['id'] + '" selected>' + data['name'] + '</option>'
+                );
+                $('#category-'+data['name']).prop('selected', true);
+            });
         });
 
     </script>

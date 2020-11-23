@@ -34,7 +34,7 @@ class TagsLineRepository extends AbstractRepository
      * @param string $slug
      * @return array
      */
-    public function findTagsByPost(string $slug)
+    public function findTagsByPost(string $slug) : array
     {
         $query = $this->getPDO()->prepare('
             SELECT tags.name 
