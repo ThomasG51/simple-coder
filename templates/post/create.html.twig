@@ -53,9 +53,11 @@
                     <div class="row mt-5">
                         <div class="col-xl-12">
                             <h4 class="tech-font">Catégories</h4>
-                            {% if error_post.category %}
-                                <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.category }}</small>
-                            {% endif %}
+                            <div id="category_error_container">
+                                {% if error_post.category %}
+                                    <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.category }}</small>
+                                {% endif %}
+                            </div>
                             <select id="js_category_container" class="form-control mt-3" name="category" >
                                 <option value="">...</option>
                                 {% for category in categories %}
@@ -69,9 +71,11 @@
                     <div class="row mt-5">
                         <div class="col-xl-12">
                             <h4 class="tech-font">Tags</h4>
-                            {% if error_post.tags %}
-                                <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.tags }}</small>
-                            {% endif %}
+                            <div id="tag_error_container">
+                                {% if error_post.tags %}
+                                    <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.tags }}</small>
+                                {% endif %}
+                            </div>
                             <div class="js_tags_container mt-2">
                                 {% for tag in tags %}
                                 <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
@@ -101,7 +105,7 @@
                     <h4 class="tech-font mt-3 mb-4 text-center">Ajouter une nouvelle catégorie</h4>
                     <form action="/category/create" method="post">
                         <div class="form-group">
-                            <input id="categoryName" type="text" class="form-control" name="name" required>
+                            <input id="categoryName" type="text" class="form-control" name="name">
                         </div>
                         <div class="form-group">
                             <button id="categoryName-btn" type="submit" class="btn btn-success form-control" data-dismiss="modal">Ajouter</button>
@@ -120,7 +124,7 @@
                     <h4 class="tech-font mt-3 mb-4 text-center">Ajouter un nouveau tag</h4>
                     <form action="/tags/create" method="post">
                         <div class="form-group">
-                            <input id="tagName" type="text" class="form-control" name="tagName" required>
+                            <input id="tagName" type="text" class="form-control" name="tagName">
                         </div>
                         <div class="form-group">
                             <button id="tagName-btn" type="submit" class="btn btn-success form-control" data-dismiss="modal">Ajouter</button>
@@ -193,16 +197,23 @@
                 },
                 datatype : 'string'
             })
-            .done(function(data){
-                $('.js_tags_container').append(
-                    '<div class="badge badge-spill badge-dark ml-1 mb-2 pointer">\n' +
-                    '<input class="pointer" type="checkbox" id="tag-' + data['name'] + '" name="tags[]" value="' + data['id'] + '">\n' +
-                    '<label class="pointer mt-2 mb-1" for="tag-' + data['name'] + '">\n' +
-                    '' + data['name'] + '\n' +
-                    '</label>\n' +
-                    '</div>'
-                );
-                $('#tag-'+data['name']).prop('checked', true);
+            .done(function(data)
+            {
+                if(data['error'])
+                {
+                    $('#tag_error_container').html('<small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>'+ data['error'] +'</small>');
+                }
+                else
+                {
+                    $('#tag_error_container').html('');
+                    $('.js_tags_container').append(
+                        '<div class="badge badge-spill badge-dark ml-1 mb-2 pointer">\n' +
+                        '<input class="pointer" type="checkbox" id="tag-' + data['name'] + '" name="tags[]" value="' + data['id'] + '">\n' +
+                        '<label class="pointer mt-2 mb-1" for="tag-' + data['name'] + '">\n' + data['name'] + '</label>\n' +
+                        '</div>'
+                    );
+                    $('#tag-'+data['name']).prop('checked', true);
+                }
             });
         });
 
@@ -219,11 +230,20 @@
                 },
                 datatype : 'string'
             })
-            .done(function(data){
-                $('#js_category_container').append(
-                    '<option id="#category-'+data['name']+'" value="' + data['id'] + '" selected>' + data['name'] + '</option>'
-                );
-                $('#category-'+data['name']).prop('selected', true);
+            .done(function(data)
+            {
+                if(data['error'])
+                {
+                    $('#category_error_container').html('<small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>'+ data['error'] +'</small>');
+                }
+                else
+                {
+                    $('#category_error_container').html('');
+                    $('#js_category_container').append(
+                        '<option id="#category-' + data['name'] + '" value="' + data['id'] + '" selected>' + data['name'] + '</option>'
+                    );
+                    $('#category-' + data['name']).prop('selected', true);
+                }
             });
         });
 

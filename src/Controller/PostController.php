@@ -63,27 +63,27 @@ class PostController extends AbstractController
         {
             if(empty($this->request->request->get('title')))
             {
-                $errorPost += ['title' => 'Erreur : Veuillez remplir le titre.'];
+                $errorPost += ['title' => 'Veuillez remplir le titre.'];
             }
 
             if(empty($this->request->request->get('content')))
             {
-                $errorPost += ['content' => 'Erreur : Veuillez remplir le contenu.'];
+                $errorPost += ['content' => 'Veuillez remplir le contenu.'];
             }
 
             if(empty($this->request->files->get('cover')))
             {
-                $errorPost += ['cover' => 'Erreur : Veuillez selectionner une couverture.'];
+                $errorPost += ['cover' => 'Veuillez selectionner une couverture.'];
             }
 
             if(empty($this->request->request->get('category')))
             {
-                $errorPost += ['category' => 'Erreur : Veuillez selectionner une catégorie.'];
+                $errorPost += ['category' => 'Veuillez selectionner une catégorie.'];
             }
 
             if(empty($this->request->request->get('tags')))
             {
-                $errorPost += ['tags' => 'Erreur : Veuillez cocher des tags.'];
+                $errorPost += ['tags' => 'Veuillez cocher des tags.'];
             }
 
             if(empty($errorPost))

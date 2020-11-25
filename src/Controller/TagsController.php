@@ -37,18 +37,25 @@ class TagsController extends AbstractController
      */
     public function create() : JsonResponse
     {
-        if($this->request->request->get('name'))
+        if($this->request->getMethod() == 'POST')
         {
-            $tags = $this->request->request->get('name');
-
-            if($this->tagsManager->findOne($this->request->request->get('name')))
+            if(!empty($this->request->request->get('name')))
             {
-                dd('Le tag existe déjà.');
+                $tags = $this->request->request->get('name');
+
+                if($this->tagsManager->findOne($this->request->request->get('name')))
+                {
+                    return new JsonResponse(['error' => 'Le tag existe déjà.']);
+                }
+
+                $this->tagsManager->create($tags);
+
+                return new JsonResponse($this->tagsManager->findLast());
             }
-
-            $this->tagsManager->create($tags);
-
-            return new JsonResponse($this->tagsManager->findLast());
+            else
+            {
+                return new JsonResponse(['error' => 'Veuillez remplir le formulaire']);
+            }
         }
     }
 }

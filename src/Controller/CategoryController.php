@@ -37,18 +37,25 @@ class CategoryController extends AbstractController
      */
     public function create() : JsonResponse
     {
-        if($this->request->request->get('name'))
+        if($this->request->getMethod() == 'POST')
         {
-            $category = $this->request->request->get('name');
-
-            if($this->categoryManager->findOne($this->request->request->get('name')))
+            if(!empty($this->request->request->get('name')))
             {
-                dd('La catégorie existe déjà.');
+                $category = $this->request->request->get('name');
+
+                if($this->categoryManager->findOne($this->request->request->get('name')))
+                {
+                    return new JsonResponse(['error' => 'La catégorie existe déjà.']);
+                }
+
+                $this->categoryManager->create($category);
+
+                return new JsonResponse($this->categoryManager->findLast());
             }
-
-            $this->categoryManager->create($category);
-
-            return new JsonResponse($this->categoryManager->findLast());
+            else
+            {
+                return new JsonResponse(['error' => 'Veuillez remplir le formulaire']);
+            }
         }
     }
 }
