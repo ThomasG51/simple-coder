@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Entity\Post;
 use Lib\AbstractRepository;
 
 class PostRepository extends AbstractRepository
@@ -16,7 +17,7 @@ class PostRepository extends AbstractRepository
     public function findAll() : array
     {
         $query = $this->getPDO()->prepare('
-            SELECT post.*, category.name, user.firstname, user.lastname 
+            SELECT post.*, category.*, user.* 
             FROM post 
             LEFT JOIN category ON post.category_id = category.id 
             LEFT JOIN user ON post.user_id = user.id 
@@ -25,7 +26,16 @@ class PostRepository extends AbstractRepository
 
         $query->execute();
 
-        return $query->fetchAll();
+        $posts = [];
+
+        foreach($query->fetchAll() as $post)
+        {
+            $instance = new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $post['category_id']);
+
+            $posts[] = $instance;
+        }
+
+        return $posts;
     }
 
 
@@ -47,8 +57,9 @@ class PostRepository extends AbstractRepository
         ');
 
         $query->execute(['slug' => $slug]);
+        $post = $query->fetch();
 
-        return $query->fetch();
+        return new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $post['category_id']);
     }
 
 
