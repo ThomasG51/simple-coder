@@ -4,57 +4,23 @@
 namespace App\Entity;
 
 
-
-use DateTime;
-
 class Post
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
 
+    private string $title;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private string $cover;
 
+    private string $date;
 
-    /**
-     * @var string
-     */
-    private $cover;
+    private string $text;
 
+    private string $slug;
 
-    /**
-     * @var string
-     */
-    private $date;
+    private int $user_id;
 
-
-    /**
-     * @var string
-     */
-    private $text;
-
-
-    /**
-     * @var string
-     */
-    private $slug;
-
-
-    /**
-     * @var int
-     */
-    private $user_id;
-
-
-    /**
-     * @var int
-     */
-    private $category_id;
+    private Category $category;
 
 
     /**
@@ -67,10 +33,9 @@ class Post
      * @param string $text
      * @param string $slug
      * @param int $user_id
-     * @param int $category_id
+     * @param Category $category
      */
-    public function __construct(int $id, string $title, string $cover, string $date, string $text, string $slug, int $user_id, int
-    $category_id)
+    public function __construct(int $id, string $title, string $cover, string $date, string $text, string $slug, int $user_id, Category $category)
     {
         $this->setId($id);
         $this->setTitle($title);
@@ -79,7 +44,7 @@ class Post
         $this->setText($text);
         $this->setSlug($slug);
         $this->setUserId($user_id);
-        $this->setCategoryId($category_id);
+        $this->setCategory($category);
     }
 
 
@@ -208,21 +173,19 @@ class Post
         $this->user_id = $user_id;
     }
 
-
     /**
-     * @return int
+     * @return Category
      */
-    public function getCategoryId(): int
+    public function getCategory(): Category
     {
-        return $this->category_id;
+        return $this->category;
     }
 
-
     /**
-     * @param int $category_id
+     * @param Category $category
      */
-    public function setCategoryId(int $category_id): void
+    public function setCategory(Category $category): void
     {
-        $this->category_id = $category_id;
+        $this->category = $category;
     }
 }

@@ -10,12 +10,12 @@
     <main class="container mb-5">
         <div class="row">
             <div class="col-xl-12 mb-5 mt-5">
-                <h1 class="article-title">{{ post.title }}</h1>
+                <h1 class="title-font">{{ post.title }}</h1>
 
                 <h6 class="article-infos mb-1">
                     <i class="far fa-calendar-alt mr-1"></i>{{ post.date | date('d/m/Y') }}
-                    <i class="far fa-clock mr-1 ml-3"></i>{{ psot.date | date('H:i:s') }}
-                    <i class="fas fa-tags mr-1 ml-3"></i>{{ post.name }}
+                    <i class="far fa-clock mr-1 ml-3"></i>{{ post.date | date('H:i:s') }}
+                    <i class="fas fa-tags mr-1 ml-3"></i>{{ post.category.name }}
                     <i class="fas fa-user mr-1 ml-3"></i>{{ post.firstname }} {{ post.lastname }}
                 </h6>
 

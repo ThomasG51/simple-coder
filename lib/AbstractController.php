@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
+use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
@@ -36,12 +37,15 @@ abstract class AbstractController
     {
         $loader = new FilesystemLoader(__DIR__ . '/../templates');
         $twig = new Environment($loader, [
-            'cache' => false
+            'cache' => false,
+            'debug' => true
         ]);
 
         $twig->addFunction(new TwigFunction('asset', function ($asset) {
             return sprintf('../assets/%s', ltrim($asset, '/'));
         }));
+
+        $twig->addExtension(new DebugExtension());
 
         $render = $twig->render($view, $params);
 

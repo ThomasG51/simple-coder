@@ -41,29 +41,24 @@
         <div class="row">
             <div class="col-xl-8 mt-4">
                 {% for post in posts %}
-                <article class="mb-5">
+                <article class="mb-5 pb-4">
                     <div class="row">
                         <figure class="col-xl-4 mb-0">
                             <img src="{{ asset('../upload/' ~ post.cover) }}" alt="" class="cover">
                         </figure>
                         <div class="col-xl-8 pl-0">
-                            <a href="/post/{{ post.slug }}"><h1 class="article-title">{{ post.title }}</h1></a>
+                            <a href="/post/{{ post.slug }}"><h2 class="text-dark title-font">{{ post.title }}</h2></a>
 
                             <h6 class="article-infos mb-1">
                                 <i class="far fa-calendar-alt mr-1"></i>{{ post.date | date("d/m/Y") }} - <i class="far fa-clock
                                 mr-1"></i>{{ post.date | date("H:i:s") }}
                             </h6>
-                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>{{ post.name }}</h6>
+                            <h6 class="article-infos mb-1"><i class="fas fa-tags mr-1"></i>{{ post.category.name }}</h6>
                             <h6 class="article-infos"><i class="fas fa-user mr-1"></i>{{ post.firstname }} {{ post.lastname }}</h6>
                         </div>
                     </div>
 
                     <p class="mt-1 text-justify">{{ post.text | raw }}</p>
-
-                    <a href="/post/{{ post.slug }}"><button class="btn btn-dark
-                    d-block
-                    ml-auto my-4"><i class="fas fa-book-reader
-                    mr-1"></i> Lire l'article</button></a>
                 </article>
                 {% endfor %}
 
@@ -99,12 +94,12 @@
                     </div>
                 </form>
 
-                <div class="text-right mb-4">
-                    <i class="fab fa-github c-github social-links"></i>
-                    <i class="fab fa-linkedin c-linkedin social-links ml-1"></i>
-                    <i class="fab fa-twitter c-twitter social-links ml-1"></i>
-                    <i class="fab fa-instagram c-instagram social-links ml-1"></i>
-                    <i class="fab fa-discord c-discord social-links ml-1"></i>
+                <div class="text-center text-white mb-4 d-flex">
+                    <i class="flex-fill py-3 bg-github fab fa-github social-links"></i>
+                    <i class="flex-fill py-3 bg-linkedin fab fa-linkedin social-links"></i>
+                    <i class="flex-fill py-3 bg-twitter fab fa-twitter social-links"></i>
+                    <i class="flex-fill py-3 bg-instagram fab fa-instagram social-links"></i>
+                    <i class="flex-fill py-3 bg-discord fab fa-discord social-links"></i>
                 </div>
 
                 <div class="mb-4">

@@ -1,14 +1,13 @@
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
 a:hover {
     text-decoration: none;
 }
 
 article {
     border-bottom: 1px solid #E3E8EC;
-}
-
-.article-title {
-    font-size: 2em;
-    color: #000000;
 }
 
 .article-infos {
@@ -48,6 +47,10 @@ article {
 
 .tech-font {
     font-family: 'Share Tech', sans-serif;
+}
+
+.title-font {
+    font-family: 'Source Sans Pro', sans-serif;
 }
 
 .thumbs {

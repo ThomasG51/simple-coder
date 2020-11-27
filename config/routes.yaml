@@ -61,3 +61,8 @@ create_category:
 create_tags:
   path: /tags/create
   controller: App\Controller\TagsController::create
+
+
+save_attachments:
+  path: /post/attachments
+  controller: App\Controller\PostController::attachments

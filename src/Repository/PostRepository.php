@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Entity\Category;
 use App\Entity\Post;
 use Lib\AbstractRepository;
 
@@ -30,7 +31,9 @@ class PostRepository extends AbstractRepository
 
         foreach($query->fetchAll() as $post)
         {
-            $instance = new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $post['category_id']);
+            $category = new Category($post['category_id'], $post['name']);
+
+            $instance = new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $category);
 
             $posts[] = $instance;
         }
@@ -48,7 +51,7 @@ class PostRepository extends AbstractRepository
     public function findOne(string $slug)
     {
         $query = $this->getPDO()->prepare('
-            SELECT post.*, category.name, user.firstname, user.lastname 
+            SELECT post.*, category.*, user.* 
             FROM post 
             LEFT JOIN category ON post.category_id = category.id 
             LEFT JOIN user ON post.user_id = user.id
@@ -59,11 +62,13 @@ class PostRepository extends AbstractRepository
         $query->execute(['slug' => $slug]);
         $post = $query->fetch();
 
-        return new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $post['category_id']);
+        $category = new Category($post['category_id'], $post['name']);
+
+        return new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $category);
     }
 
 
-    /**
+    /**q
      * Create new post
      *
      * @param string $title

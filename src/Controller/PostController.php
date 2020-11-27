@@ -9,34 +9,24 @@ use App\Repository\PostRepository;
 use App\Repository\TagsLineRepository;
 use App\Repository\TagsRepository;
 use Lib\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends AbstractController
 {
-    /**
-     * @var PostRepository
-     */
-    private $postManager;
+    private PostRepository $postManager;
 
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryManager;
+    private CategoryRepository $categoryManager;
 
-    /**
-     * @var TagsRepository
-     */
-    private $tagsManager;
+    private TagsRepository $tagsManager;
 
-    /**
-     * @var TagsLineRepository
-     */
-    private $tagsLineManager;
+    private TagsLineRepository $tagsLineManager;
 
 
     /**
      * PostController constructor.
+     *
      * @param Request $request
      */
     public function __construct(Request $request)
