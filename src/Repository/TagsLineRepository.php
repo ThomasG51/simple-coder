@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Entity\Tags;
 use Lib\AbstractRepository;
 
 class TagsLineRepository extends AbstractRepository
@@ -37,7 +38,7 @@ class TagsLineRepository extends AbstractRepository
     public function findTagsByPost(string $slug) : array
     {
         $query = $this->getPDO()->prepare('
-            SELECT tags.name 
+            SELECT tags.* 
             FROM tags_lines 
             LEFT JOIN tags ON tags_lines.tags_id = tags.id 
             LEFT JOIN post ON tags_lines.post_id = post.id 
@@ -48,6 +49,14 @@ class TagsLineRepository extends AbstractRepository
             'slug' => $slug
         ]);
 
-        return $query->fetchAll();
+        $tags = [];
+
+        foreach($query->fetchAll() as $tag)
+        {
+            $instance = new Tags($tag['id'], $tag['name']);
+            $tags[] = $instance;
+        }
+
+        return $tags;
     }
 }

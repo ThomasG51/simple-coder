@@ -33,7 +33,10 @@ class PostRepository extends AbstractRepository
         {
             $category = new Category($post['category_id'], $post['name']);
 
-            $instance = new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $category);
+            $tagsLineManager = new TagsLineRepository();
+            $tags = $tagsLineManager->findTagsByPost($post['slug']);
+
+            $instance = new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $category, $tags);
 
             $posts[] = $instance;
         }
@@ -64,7 +67,10 @@ class PostRepository extends AbstractRepository
 
         $category = new Category($post['category_id'], $post['name']);
 
-        return new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $category);
+        $tagsLineManager = new TagsLineRepository();
+        $tags = $tagsLineManager->findTagsByPost($post['slug']);
+
+        return new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $category, $tags);
     }
 
 

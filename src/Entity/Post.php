@@ -22,6 +22,8 @@ class Post
 
     private Category $category;
 
+    private array $tags;
+
 
     /**
      * Post entity constructor.
@@ -34,8 +36,9 @@ class Post
      * @param string $slug
      * @param int $user_id
      * @param Category $category
+     * @param array $tags
      */
-    public function __construct(int $id, string $title, string $cover, string $date, string $text, string $slug, int $user_id, Category $category)
+    public function __construct(int $id, string $title, string $cover, string $date, string $text, string $slug, int $user_id, Category $category, array $tags)
     {
         $this->setId($id);
         $this->setTitle($title);
@@ -45,6 +48,7 @@ class Post
         $this->setSlug($slug);
         $this->setUserId($user_id);
         $this->setCategory($category);
+        $this->setTags($tags);
     }
 
 
@@ -187,5 +191,22 @@ class Post
     public function setCategory(Category $category): void
     {
         $this->category = $category;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+
+    /**
+     * @param array $tags
+     */
+    public function setTags(array $tags): void
+    {
+        $this->tags = $tags;
     }
 }
