@@ -77,8 +77,8 @@
                         </ul>
                     </div>
                 </nav>
-                <button class="btn btn-sm btn-dark"><i class="fas fa-user-plus mr-1"></i> Inscription</button>
-                <button class="btn btn-sm btn-outline-dark ml-2"><i class="fas fa-sign-in-alt ml-1 mr-1"></i> Connexion</button>
+                <button class="btn btn-sm btn-dark" data-toggle="modal" data-target="#registration_modal"><i class="fas fa-user-plus mr-1"></i> Inscription</button>
+                <button class="btn btn-sm btn-outline-dark ml-2" data-toggle="modal" data-target="#login_modal"><i class="fas fa-sign-in-alt ml-1 mr-1"></i> Connexion</button>
             </div>
         </div>
     </header>
@@ -110,13 +110,153 @@
         </div>
     </footer>
 
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registration_modal" tabindex="-1" aria-labelledby="registration_modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="row">
+                    <figure class="col-xl-5 mb-0 p-0">
+                        <img src="{{ asset('/images/bg-modal-login.jpg') }}" alt="" class="cover rounded-left">
+                    </figure>
+                    <div class="col-xl-7 pl-0">
+                        <div class="modal-body px-4 pb-1">
+                            <h3 class="title-font text-center mb-3">Je m'inscris</h3>
+                            <form action="/user/create" method="post">
+
+                                <small id="registration_firstname_error" class="text-danger"></small>
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend w-12">
+                                        <div class="input-group-text text-white bg-dark border border-dark w-100"><i class="fas fa-user-plus"></i></div>
+                                    </div>
+                                    <input type="text" class="form-control border border-dark" name="sign_up_firstname" placeholder="Prénom">
+                                </div>
+
+                                <small id="registration_lastname_error" class="text-danger"></small>
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend w-12">
+                                        <div class="input-group-text text-white bg-dark border border-dark w-100"><i class="fas fa-user-plus"></i></div>
+                                    </div>
+                                    <input type="text" class="form-control border border-dark" name="sign_up_lastname" placeholder="Nom">
+                                </div>
+
+                                <small id="registration_email_error" class="text-danger"></small>
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend w-12">
+                                        <div class="input-group-text text-white bg-dark border border-dark w-100"><i class="fas fa-envelope"></i></div>
+                                    </div>
+                                    <input type="email" class="form-control border border-dark" name="sign_up_email" placeholder="Adresse e-mail">
+                                </div>
+
+                                <small id="registration_password_error" class="text-danger"></small>
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend w-12">
+                                        <div class="input-group-text text-white bg-dark border border-dark w-100"><i class="fas fa-lock-open"></i></div>
+                                    </div>
+                                    <input type="password" class="form-control border border-dark" name="sign_up_password" placeholder="Choisissez un mot de passe">
+                                </div>
+
+                                <small id="registration_confirm_password_error" class="text-danger"></small>
+                                <div class="form-group input-group">
+                                    <div class="input-group-prepend w-12">
+                                        <div class="input-group-text text-white bg-dark border border-dark w-100"><i class="fas fa-lock"></i></div>
+                                    </div>
+                                    <input type="password" class="form-control border border-dark" name="sign_up_confirm_password" placeholder="Confirmez le mot de passe">
+                                </div>
+
+                                <div class="form-group">
+                                    <button id="registration-btn" type="submit" class="btn btn-dark form-control">Valider mes informations</button>
+                                </div>
+
+                                <div id="registration_done"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="login_modal" tabindex="-1" aria-labelledby="login_modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Login
+                </div>
+            </div>
+        </div>
+    </div>
+
 <!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <!-- Bootstrap -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
 {% block javascripts %}{% endblock %}
+
+    <script type="text/javascript">
+
+        $('#registration-btn').click(function(){
+            event.preventDefault();
+
+            $.ajax({
+                method: 'POST',
+                url: '/user/create',
+                data : {
+                    sign_up_firstname: $('input[name=\'sign_up_firstname\']').val(),
+                    sign_up_lastname: $('input[name=\'sign_up_lastname\']').val(),
+                    sign_up_email: $('input[name=\'sign_up_email\']').val(),
+                    sign_up_password: $('input[name=\'sign_up_password\']').val(),
+                    sign_up_confirm_password: $('input[name=\'sign_up_confirm_password\']').val()
+                }
+            })
+            .done(function(data){
+
+                // Reset Errors containers
+                $('#registration_firstname_error').html('');
+                $('#registration_lastname_error').html('');
+                $('#registration_email_error').html('');
+                $('#registration_password_error').html('');
+                $('#registration_confirm_error').html('');
+                $('#registration_email_error').html('');
+                $('#registration_password_error').html('');
+                $('#registration_password_error').html('');
+                $('#registration_password_error').html('');
+                $('#registration_password_error').html('');
+                $('#registration_confirm_password_error').html('');
+
+                if(data['registration_firstname_error']){   $('#registration_firstname_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_firstname_error']); }
+                if(data['registration_lastname_error']){    $('#registration_lastname_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_lastname_error']); }
+                if(data['registration_email_error']){       $('#registration_email_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_email_error']); }
+                if(data['registration_password_error']){    $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_password_error']); }
+                if(data['registration_confirm_error']){     $('#registration_confirm_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_confirm_error']); }
+                if(data['registration_exist_error']){       $('#registration_email_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_exist_error']); }
+                if(data['registration_numeric_error']){     $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_numeric_error']); }
+                if(data['registration_lower_error']){       $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_lower_error']); }
+                if(data['registration_upper_error']){       $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_upper_error']); }
+                if(data['registration_length_error']){      $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_length_error']); }
+                if(data['registration_match_error']){       $('#registration_confirm_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_match_error']); }
+
+                if(data['registration_done'])
+                {
+                    $('#registration-btn').hide();
+                    $('form :input').val('');
+
+                    $('#registration_done').html('' +
+                        '<div id="#registration_done" class="alert alert-success" role="alert">' +
+                        '<i class="fas fa-check mr-1"></i>' + data['registration_done'] +
+                        '</div>'
+                    );
+
+                    setTimeout(function(){
+                        window.location.replace("/");
+                    }, 1000);
+                }
+            });
+        });
+
+    </script>
+
 </body>
 </html>
