@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Entity\Category;
 use Lib\AbstractRepository;
 
 class CategoryRepository extends AbstractRepository
@@ -23,7 +24,16 @@ class CategoryRepository extends AbstractRepository
 
         $query->execute();
 
-        return $query->fetchAll();
+        $categories = [];
+
+        foreach ($query->fetchAll() as $category)
+        {
+            $instance = new Category($category['id'], $category['name']);
+
+            $categories[] = $instance;
+        }
+
+        return $categories;
     }
 
 
