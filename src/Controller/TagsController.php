@@ -11,10 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TagsController extends AbstractController
 {
-    /**
-     * @var TagsRepository
-     */
-    private $tagsManager;
+    private TagsRepository $tagsManager;
 
 
     /**

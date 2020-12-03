@@ -42,10 +42,9 @@
                                     <i class="fas fa-filter mr-1"></i>Catégories
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item tech-font" href="#">Développement</a>
-                                    <a class="dropdown-item tech-font" href="#">Design</a>
-                                    <a class="dropdown-item tech-font" href="#">Matériel</a>
-                                    <a class="dropdown-item tech-font" href="#">Logiciel</a>
+                                    {% for global_category in global_categories %}
+                                        <a class="dropdown-item tech-font" href="#">{{ global_category.name }}</a>
+                                    {% endfor %}
                                 </div>
                             </li>
                         </ul>
@@ -180,8 +179,31 @@
     <div class="modal fade" id="login_modal" tabindex="-1" aria-labelledby="login_modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-body">
-                    Login
+                <div class="modal-body px-5 pt-4">
+                    <div id="login_logo" class="mb-4"><i class="fas fa-sign-in-alt text-white bg-dark rounded-circle fs-4em p-4"></i></div>
+                    <form action="/user/login" method="POST" class="mt-5">
+                        <small id="login_email_error" class="text-danger"></small>
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text text-white bg-dark border border-dark w-100"><i class="fas fa-user"></i></div>
+                            </div>
+                            <input type="email" class="form-control border border-dark" name="login_email" placeholder="Adresse e-mail">
+                        </div>
+
+                        <small id="login_password_error" class="text-danger"></small>
+                        <div class="form-group input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text text-white bg-dark border border-dark w-100"><i class="fas fa-lock"></i></div>
+                            </div>
+                            <input type="password" class="form-control border border-dark" name="login_password" placeholder="Mot de passe">
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-dark form-control" id="login_btn">Se connecter</button>
+                        </div>
+
+                        <div id="login_succeeds"></div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -218,25 +240,19 @@
                 $('#registration_lastname_error').html('');
                 $('#registration_email_error').html('');
                 $('#registration_password_error').html('');
-                $('#registration_confirm_error').html('');
-                $('#registration_email_error').html('');
-                $('#registration_password_error').html('');
-                $('#registration_password_error').html('');
-                $('#registration_password_error').html('');
-                $('#registration_password_error').html('');
                 $('#registration_confirm_password_error').html('');
 
                 if(data['registration_firstname_error']){   $('#registration_firstname_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_firstname_error']); }
                 if(data['registration_lastname_error']){    $('#registration_lastname_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_lastname_error']); }
                 if(data['registration_email_error']){       $('#registration_email_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_email_error']); }
                 if(data['registration_password_error']){    $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_password_error']); }
-                if(data['registration_confirm_error']){     $('#registration_confirm_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_confirm_error']); }
                 if(data['registration_exist_error']){       $('#registration_email_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_exist_error']); }
                 if(data['registration_numeric_error']){     $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_numeric_error']); }
                 if(data['registration_lower_error']){       $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_lower_error']); }
                 if(data['registration_upper_error']){       $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_upper_error']); }
                 if(data['registration_length_error']){      $('#registration_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_length_error']); }
                 if(data['registration_match_error']){       $('#registration_confirm_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_match_error']); }
+                if(data['registration_confirm_error']){     $('#registration_confirm_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['registration_confirm_error']); }
 
                 if(data['registration_done'])
                 {
@@ -244,8 +260,47 @@
                     $('form :input').val('');
 
                     $('#registration_done').html('' +
-                        '<div id="#registration_done" class="alert alert-success" role="alert">' +
+                        '<div class="alert alert-success" role="alert">' +
                         '<i class="fas fa-check mr-1"></i>' + data['registration_done'] +
+                        '</div>'
+                    );
+
+                    setTimeout(function(){
+                        window.location.replace("/");
+                    }, 1000);
+                }
+            });
+        });
+
+
+        $('#login_btn').click(function(){
+            event.preventDefault();
+
+            $.ajax({
+                method: 'POST',
+                url: '/user/login',
+                data : {
+                    login_email: $('input[name=\'login_email\']').val(),
+                    login_password: $('input[name=\'login_password\']').val()
+                }
+            })
+            .done(function(data){
+
+                // Reset Errors containers
+                $('#login_email_error').html('');
+                $('#login_password_error').html('');
+
+                if(data['login_email_error']){   $('#login_email_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['login_email_error']); }
+                if(data['login_password_error']){    $('#login_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['login_password_error']); }
+
+                if(data['login_succeeds'])
+                {
+                    $('#login_btn').hide();
+                    $('form :input').val('');
+
+                    $('#login_succeeds').html('' +
+                        '<div class="alert alert-success" role="alert">' +
+                        '<i class="fas fa-check mr-1"></i>' + data['login_succeeds'] +
                         '</div>'
                     );
 

@@ -8,12 +8,18 @@ use App\Repository\UserRepository;
 use Lib\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class UserController extends AbstractController
 {
     private UserRepository $userManager;
 
 
+    /**
+     * UserController constructor.
+     *
+     * @param Request $request
+     */
     public function __construct(Request $request)
     {
         parent::__construct($request);
@@ -21,7 +27,13 @@ class UserController extends AbstractController
         $this->userManager = new UserRepository();
     }
 
-    public function create()
+
+    /**
+     * Create new user
+     *
+     * @return JsonResponse
+     */
+    public function create() : JsonResponse
     {
         if($this->request->getMethod() == 'POST')
         {
@@ -58,10 +70,10 @@ class UserController extends AbstractController
                 $registration_errors += ['registration_confirm_error' => 'Veuillez confirmer votre mot de passe'];
             }
 
-//            if($this->userManager->finByEmail($email))
-//            {
-//                $registration_errors += ['registration_exist_error' => 'L\'utilisateur existe déjà'];
-//            }
+            if($this->userManager->findOne($email))
+            {
+                $registration_errors += ['registration_exist_error' => 'L\'utilisateur existe déjà'];
+            }
 
             if(!empty($password) && !empty($confirm_password) && $password === $confirm_password)
             {
@@ -84,22 +96,70 @@ class UserController extends AbstractController
                 {
                     $registration_errors += ['registration_upper_error' => 'Le mot de passe doit contenir 1 majuscule minimum'];
                 }
-
-                $password = password_hash($this->request->request->get('password'), PASSWORD_DEFAULT);
             }
             else
             {
-                $registration_errors += ['registration_match_error' => 'Les mots de passe ne sont pas identiques'];
+                $registration_errors += ['registration_match_error' => 'Les mots de passes ne sont pas identiques'];
             }
 
             if(empty($registration_errors))
             {
+                $password = password_hash($this->request->request->get('password'), PASSWORD_DEFAULT);
+
                 $this->userManager->create($firstname, $lastname, $email, $password);
 
                 return new JsonResponse(['registration_done' => 'Enregistrement éffectué !']);
             }
 
             return new JsonResponse($registration_errors);
+        }
+    }
+
+
+    /**
+     * User Login
+     *
+     * @return JsonResponse
+     */
+    public function login() : JsonResponse
+    {
+        if($this->request->getMethod() == 'POST')
+        {
+            if(!empty($this->request->request->get('login_email')))
+            {
+                $user = $this->userManager->findOne($this->request->request->get('login_email'));
+
+                if($user)
+                {
+                    if(!empty($this->request->request->get('login_password')))
+                    {
+                        if(password_verify($this->request->request->get('login_password'), $user->getPassword()))
+                        {
+                            $session = new Session();
+                            $session->start();
+                            $session->set('user', $user);
+
+                            return new JsonResponse(['login_succeeds' => 'Connexion reussi.']);
+                        }
+                        else
+                        {
+                            return new JsonResponse(['login_password_error' => 'Le mot de passe est incorrect']);
+                        }
+                    }
+                    else
+                    {
+                        return new JsonResponse(['login_password_error' => 'Le mot de passe ne peut pas être vide']);
+                    }
+                }
+                else
+                {
+                    return new JsonResponse(['login_email_error' => 'Le compte n\'existe pas']);
+                }
+            }
+            else
+            {
+                return new JsonResponse(['login_email_error' => 'L\'email ne peut pas être vide']);
+            }
         }
     }
 }

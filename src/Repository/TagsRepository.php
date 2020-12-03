@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Entity\Tags;
 use Lib\AbstractRepository;
 
 class TagsRepository extends AbstractRepository
@@ -23,7 +24,16 @@ class TagsRepository extends AbstractRepository
 
         $query->execute();
 
-        return $query->fetchAll();
+        $tags = [];
+
+        foreach ($query->fetchAll() as $tag)
+        {
+            $instance = new Tags($tag['id'], $tag['name']);
+
+            $tags[] = $instance;
+        }
+
+        return $tags;
     }
 
 
@@ -43,7 +53,16 @@ class TagsRepository extends AbstractRepository
 
         $query->execute(['name' => $name]);
 
-        return $query->fetch();
+        $tag = $query->fetch();
+
+        if($tag)
+        {
+            return new Tags($tag['id'], $tag['name']);
+        }
+        else
+        {
+            return false;
+        }
     }
 
 

@@ -18,7 +18,7 @@ class Post
 
     private string $slug;
 
-    private int $user_id;
+    private User $user;
 
     private Category $category;
 
@@ -34,11 +34,11 @@ class Post
      * @param string $date
      * @param string $text
      * @param string $slug
-     * @param int $user_id
+     * @param User $user
      * @param Category $category
      * @param array $tags
      */
-    public function __construct(int $id, string $title, string $cover, string $date, string $text, string $slug, int $user_id, Category $category, array $tags)
+    public function __construct(int $id, string $title, string $cover, string $date, string $text, string $slug, User $user, Category $category, array $tags)
     {
         $this->setId($id);
         $this->setTitle($title);
@@ -46,7 +46,7 @@ class Post
         $this->setDate($date);
         $this->setText($text);
         $this->setSlug($slug);
-        $this->setUserId($user_id);
+        $this->setUser($user);
         $this->setCategory($category);
         $this->setTags($tags);
     }
@@ -161,20 +161,20 @@ class Post
 
 
     /**
-     * @return int
+     * @return User
      */
-    public function getUserId(): int
+    public function getUser(): User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
 
     /**
-     * @param int $user_id
+     * @param User $user
      */
-    public function setUserId(int $user_id): void
+    public function setUser(User $user): void
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
     }
 
     /**

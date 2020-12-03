@@ -53,7 +53,16 @@ class CategoryRepository extends AbstractRepository
 
         $query->execute(['name' => $name]);
 
-        return $query->fetch();
+        $category = $query->fetch();
+
+        if($category)
+        {
+            return new Category($category['id'], $category['name']);
+        }
+        else
+        {
+            return false;
+        }
     }
 
 

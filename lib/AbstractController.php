@@ -3,6 +3,7 @@
 namespace Lib;
 
 
+use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,6 +47,9 @@ abstract class AbstractController
         }));
 
         $twig->addExtension(new DebugExtension());
+
+        $categories = new CategoryRepository();
+        $twig->addGlobal('global_categories', $categories->findAll());
 
         $render = $twig->render($view, $params);
 

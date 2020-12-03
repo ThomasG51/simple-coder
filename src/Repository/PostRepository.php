@@ -10,6 +10,24 @@ use Lib\AbstractRepository;
 
 class PostRepository extends AbstractRepository
 {
+    private UserRepository $userManager;
+
+    private CategoryRepository $categoryManager;
+
+    private TagsLineRepository $tagsLineManager;
+
+
+    /**
+     * PostRepository constructor.
+     */
+    public function __construct()
+    {
+        $this->userManager = new UserRepository();
+        $this->categoryManager = new CategoryRepository();
+        $this->tagsLineManager = new TagsLineRepository();
+    }
+
+
     /**
      * Return all posts
      *
@@ -31,12 +49,11 @@ class PostRepository extends AbstractRepository
 
         foreach($query->fetchAll() as $post)
         {
-            $category = new Category($post['category_id'], $post['name']);
+            $user = $this->userManager->findOne($post['email']);
+            $category = $this->categoryManager->findOne($post['name']);
+            $tags = $this->tagsLineManager->findTagsByPost($post['slug']);
 
-            $tagsLineManager = new TagsLineRepository();
-            $tags = $tagsLineManager->findTagsByPost($post['slug']);
-
-            $instance = new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $category, $tags);
+            $instance = new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $user, $category, $tags);
 
             $posts[] = $instance;
         }
@@ -65,12 +82,18 @@ class PostRepository extends AbstractRepository
         $query->execute(['slug' => $slug]);
         $post = $query->fetch();
 
-        $category = new Category($post['category_id'], $post['name']);
+        $user = $this->userManager->findOne($post['email']);
+        $category = $this->categoryManager->findOne($post['name']);
+        $tags = $this->tagsLineManager->findTagsByPost($post['slug']);
 
-        $tagsLineManager = new TagsLineRepository();
-        $tags = $tagsLineManager->findTagsByPost($post['slug']);
-
-        return new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $post['user_id'], $category, $tags);
+        if($post)
+        {
+            return new Post($post['id'], $post['title'], $post['cover'], $post['date'], $post['text'], $post['slug'], $user, $category, $tags);
+        }
+        else
+        {
+            return false;
+        }
     }
 
 
