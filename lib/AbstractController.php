@@ -7,6 +7,7 @@ use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
@@ -15,15 +16,17 @@ use Twig\TwigFunction;
 
 abstract class AbstractController
 {
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
+
+    protected Session $session;
 
 
     public function __construct(Request $request)
     {
         $this->request = $request;
+
+        $this->session = new Session();
+        $this->session->start();
     }
 
 
@@ -47,6 +50,8 @@ abstract class AbstractController
         }));
 
         $twig->addExtension(new DebugExtension());
+
+        $twig->addGlobal('session', $this->session->all());
 
         $categories = new CategoryRepository();
         $twig->addGlobal('global_categories', $categories->findAll());

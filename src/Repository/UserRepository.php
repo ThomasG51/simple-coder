@@ -16,19 +16,21 @@ class UserRepository extends AbstractRepository
      * @param string $lastname
      * @param string $email
      * @param string $password
+     * @param string $role
      */
-    public function create(string $firstname, string $lastname, string $email, string $password)
+    public function create(string $firstname, string $lastname, string $email, string $password, string $role)
     {
         $query = $this->getPDO()->prepare('
-            INSERT INTO user(firstname, lastname, email, password)
-            VALUES(:firstname, :lastname, :email, :password)
+            INSERT INTO user(firstname, lastname, email, password, role)
+            VALUES(:firstname, :lastname, :email, :password, :role)
         ');
 
         $query->execute([
             'firstname' => $firstname,
             'lastname' => $lastname,
             'email' => $email,
-            'password' => $password
+            'password' => $password,
+            'role' => $role
         ]);
     }
 

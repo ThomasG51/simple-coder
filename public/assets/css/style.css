@@ -76,3 +76,11 @@ li {
     top: -3.6em;
     left: calc(50% - 3.6em);
 }
+
+.bg-custom-dark {
+    background-color: #1C1C1E;
+}
+
+.php-border {
+    border: 5px solid #505c90;
+}

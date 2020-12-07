@@ -14,6 +14,14 @@ login_user:
   path: /user/login
   controller: App\Controller\UserController::login
 
+logout_user:
+  path: /user/logout
+  controller: App\Controller\UserController::logout
+
+password_user:
+  path: /user/password
+  controller: App\Controller\UserController::resetPassword
+
 create_post:
   path: /post/create
   controller: App\Controller\PostController::create
@@ -32,7 +40,7 @@ pin_post:
 
 show_pined_posts:
   path: /post/favorites
-  controller: App\Controller\PostController::show_pined
+  controller: App\Controller\PostController::showPined
 
 like_post:
   path: /post/like/{slug}

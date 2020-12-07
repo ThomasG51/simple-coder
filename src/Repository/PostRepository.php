@@ -4,7 +4,6 @@
 namespace App\Repository;
 
 
-use App\Entity\Category;
 use App\Entity\Post;
 use Lib\AbstractRepository;
 

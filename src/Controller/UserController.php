@@ -8,7 +8,6 @@ use App\Repository\UserRepository;
 use Lib\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class UserController extends AbstractController
 {
@@ -37,11 +36,11 @@ class UserController extends AbstractController
     {
         if($this->request->getMethod() == 'POST')
         {
-            $firstname = htmlspecialchars($this->request->request->get('sign_up_firstname'));
-            $lastname = htmlspecialchars($this->request->request->get('sign_up_lastname'));
-            $email = htmlspecialchars($this->request->request->get('sign_up_email'));
-            $password = htmlspecialchars($this->request->request->get('sign_up_password'));
-            $confirm_password = htmlspecialchars($this->request->request->get('sign_up_confirm_password'));
+            $firstname = $this->request->request->get('sign_up_firstname');
+            $lastname = $this->request->request->get('sign_up_lastname');
+            $email = $this->request->request->get('sign_up_email');
+            $password = $this->request->request->get('sign_up_password');
+            $confirm_password = $this->request->request->get('sign_up_confirm_password');
 
             $registration_errors = [];
 
@@ -104,9 +103,10 @@ class UserController extends AbstractController
 
             if(empty($registration_errors))
             {
-                $password = password_hash($this->request->request->get('password'), PASSWORD_DEFAULT);
+                $password = password_hash($this->request->request->get('sign_up_password'), PASSWORD_DEFAULT);
+                $role = 'ROLE_USER';
 
-                $this->userManager->create($firstname, $lastname, $email, $password);
+                $this->userManager->create($firstname, $lastname, $email, $password, $role);
 
                 return new JsonResponse(['registration_done' => 'Enregistrement éffectué !']);
             }
@@ -135,9 +135,7 @@ class UserController extends AbstractController
                     {
                         if(password_verify($this->request->request->get('login_password'), $user->getPassword()))
                         {
-                            $session = new Session();
-                            $session->start();
-                            $session->set('user', $user);
+                            $this->session->set('user', $user);
 
                             return new JsonResponse(['login_succeeds' => 'Connexion reussi.']);
                         }
@@ -161,5 +159,22 @@ class UserController extends AbstractController
                 return new JsonResponse(['login_email_error' => 'L\'email ne peut pas être vide']);
             }
         }
+    }
+
+
+    /**
+     * User Logout
+     */
+    public function logout()
+    {
+        $this->session->remove('user');
+
+        return $this->redirectToRoute('/');
+    }
+
+
+
+    public function resetPassword()
+    {
     }
 }
