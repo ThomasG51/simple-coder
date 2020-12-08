@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Lib\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -103,10 +104,16 @@ class UserController extends AbstractController
 
             if(empty($registration_errors))
             {
-                $password = password_hash($this->request->request->get('sign_up_password'), PASSWORD_DEFAULT);
-                $role = 'ROLE_USER';
+                $user = new User();
+                $user->setFirstname($firstname);
+                $user->setLastname($lastname);
+                $user->setEmail($email);
+                $user->setPassword(password_hash($this->request->request->get('sign_up_password'), PASSWORD_DEFAULT));
+                $user->setRole('ROLE_USER');
 
-                $this->userManager->create($firstname, $lastname, $email, $password, $role);
+                $this->userManager->create($user);
+
+                $this->session->set('user', $this->userManager->findOne($email));
 
                 return new JsonResponse(['registration_done' => 'Enregistrement éffectué !']);
             }
@@ -248,5 +255,13 @@ class UserController extends AbstractController
 
             return new JsonResponse($errors);
         }
+    }
+
+
+    public function delete(int $id)
+    {
+        $this->userManager->delete($id);
+
+        return $this->redirectToRoute('/dashboard/user');
     }
 }

@@ -6,7 +6,32 @@
         <div class="col-xl-8 pl-0 pr-0">
             <div class="card bg-white border-white">
                 <div class="card-body">
-                    <h6 class="m-0 tech-font">Liste des utilisateurs</h6>
+                    <h5 class="mb-3 tech-font">Liste des utilisateurs</h5>
+
+                    <table class="table">
+                        <tr>
+                            <th class="w-40"><i class="fas fa-sort mr-1"></i> Email</th>
+                            <th class="w-25"><i class="fas fa-sort mr-1"></i> Prénom</th>
+                            <th class="w-25"><i class="fas fa-sort mr-1"></i> Nom</th>
+                            <th class="w-10 text-center">Action</th>
+                        </tr>
+                        {% for user in users %}
+                            <tr>
+                                <td>
+                                    {{ user.email }}
+                                </td>
+                                <td>
+                                    {{ user.firstname }}
+                                </td>
+                                <td>
+                                    {{ user.lastname }}
+                                </td>
+                                <td class="text-center">
+                                    <a href="/user/delete/{{ user.id }}" onclick="return confirm('Êtes-vous sur de vouloir supprimer {{ user.firstname }} {{ user.lastname }}')"><i class="fas fa-trash text-danger pointer"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 </div>
             </div>
         </div>

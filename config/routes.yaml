@@ -22,6 +22,10 @@ reset_password_user:
   path: /user/reset
   controller: App\Controller\UserController::resetPassword
 
+delete_user:
+  path: /user/delete/{slug}
+  controller: App\Controller\UserController::delete
+
 create_post:
   path: /post/create
   controller: App\Controller\PostController::create

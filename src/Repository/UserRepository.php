@@ -12,13 +12,9 @@ class UserRepository extends AbstractRepository
     /**
      * Create new user
      *
-     * @param string $firstname
-     * @param string $lastname
-     * @param string $email
-     * @param string $password
-     * @param string $role
+     * @param User $user
      */
-    public function create(string $firstname, string $lastname, string $email, string $password, string $role)
+    public function create(User $user)
     {
         $query = $this->getPDO()->prepare('
             INSERT INTO user(firstname, lastname, email, password, role)
@@ -26,12 +22,46 @@ class UserRepository extends AbstractRepository
         ');
 
         $query->execute([
-            'firstname' => $firstname,
-            'lastname' => $lastname,
-            'email' => $email,
-            'password' => $password,
-            'role' => $role
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+            'role' => $user->getRole()
         ]);
+    }
+
+
+    /**
+     * Find all users
+     *
+     * @return User|array
+     */
+    public function findAll()
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT *
+            FROM user
+            ORDER BY email
+        ');
+
+        $query->execute([]);
+
+        $users = [];
+
+        foreach($query->fetchAll() as $user)
+        {
+            $instance = new User();
+            $instance->setId($user['id']);
+            $instance->setFirstname($user['firstname']);
+            $instance->setLastname($user['lastname']);
+            $instance->setEmail($user['email']);
+            $instance->setPassword($user['password']);
+            $instance->setRole($user['role']);
+
+            $users[] = $instance;
+        }
+
+        return $users;
     }
 
 
@@ -51,11 +81,19 @@ class UserRepository extends AbstractRepository
 
         $query->execute(['email' => $email]);
 
-        $instance = $query->fetch();
+        $user = $query->fetch();
 
-        if($instance)
+        if($user)
         {
-            return new User($instance['id'], $instance['firstname'], $instance['lastname'], $instance['email'], $instance['password']);
+            $instance = new User();
+            $instance->setId($user['id']);
+            $instance->setFirstname($user['firstname']);
+            $instance->setLastname($user['lastname']);
+            $instance->setEmail($user['email']);
+            $instance->setPassword($user['password']);
+            $instance->setRole($user['role']);
+
+            return $instance;
         }
         else
         {
@@ -80,5 +118,16 @@ class UserRepository extends AbstractRepository
             'password' => $password,
             'email' => $email
         ]);
+    }
+
+
+    public function delete(int $id)
+    {
+        $query = $this->getPDO()->prepare('
+            DELETE FROM user
+            WHERE id = :id
+        ');
+
+        $query->execute(['id' => $id]);
     }
 }
