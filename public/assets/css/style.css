@@ -81,6 +81,35 @@ li {
     background-color: #1C1C1E;
 }
 
+.bg-light-grey {
+    background-color: #f0f5f5;
+}
+
 .php-border {
     border: 5px solid #505c90;
+}
+
+.manage li {
+    list-style: none;
+    line-height: 3em;
+    border-top: 2px solid rgba(255, 255, 255, .1);
+    border-bottom: 1px solid #000000;
+}
+
+.manage li a {
+    margin-left: 0px;
+    transition: margin-left 0.3s ease;
+    font-family: 'Share Tech', sans-serif;
+}
+
+.manage li:hover > a {
+    margin-left: 15px;
+}
+
+.manage-header {
+    height: 60px;
+}
+
+.justify-content-evenly {
+    justify-content: space-evenly;
 }

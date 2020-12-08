@@ -2,9 +2,9 @@ home:
   path: /
   controller: App\Controller\HomeController::index
 
-admin:
-  path: /dashboard
-  controller: App\Controller\AdminController::index
+dashboard_user:
+  path: /dashboard/user
+  controller: App\Controller\DashboardController::manageUser
 
 create_user:
   path: /user/create
@@ -18,8 +18,8 @@ logout_user:
   path: /user/logout
   controller: App\Controller\UserController::logout
 
-password_user:
-  path: /user/password
+reset_password_user:
+  path: /user/reset
   controller: App\Controller\UserController::resetPassword
 
 create_post:

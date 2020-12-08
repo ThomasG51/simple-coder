@@ -62,4 +62,23 @@ class UserRepository extends AbstractRepository
             return false;
         }
     }
+
+
+    /**
+     * @param string $email
+     * @param string $password
+     */
+    public function updatePassword(string $email, string $password)
+    {
+        $query = $this->getPDO()->prepare('
+            UPDATE user
+            SET password = :password
+            WHERE email = :email
+        ');
+
+        $query->execute([
+            'password' => $password,
+            'email' => $email
+        ]);
+    }
 }

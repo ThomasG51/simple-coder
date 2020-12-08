@@ -1,0 +1,93 @@
+{% extends 'dashboard.html.twig' %}
+
+{%  block body %}
+
+    <div class="row mx-3 my-4 rounded-lg">
+        <div class="col-xl-8 pl-0 pr-0">
+            <div class="card bg-white border-white">
+                <div class="card-body">
+                    <h6 class="m-0 tech-font">Liste des utilisateurs</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4 pr-0">
+            <div class="card bg-white border-white">
+                <div class="card-body">
+                    <h6 class="mb-3 tech-font">Reinitialiser mon mot de passe</h6>
+                    <form action="/user/reset" method="POST">
+                        <small id="old_password_error" class="text-danger"></small>
+                        <div class="form-group">
+                            <input class="form-control" type="password" name="old_password" placeholder="Ancien mot de passe">
+                        </div>
+
+                        <small id="new_password_error" class="text-danger"></small>
+                        <div class="form-group">
+                            <input class="form-control" type="password" name="new_password" placeholder="Nouveau mot de passe">
+                        </div>
+
+                        <small id="confirm_password_error" class="text-danger"></small>
+                        <div class="form-group">
+                            <input class="form-control" type="password" name="confirm_password" placeholder="Confirmez le nouveau mot de passe">
+                        </div>
+
+                        <div class="form-group">
+                            <button id="reset_password_btn" class="btn btn-php form-control">Valider</button>
+                        </div>
+
+                        <div id="reset_succeeds"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script type="text/javascript">
+
+        $('#reset_password_btn').click(function(){
+            event.preventDefault();
+
+            $.ajax({
+                method: 'post',
+                url: '/user/reset',
+                data: {
+                    old_password: $('input[name=\'old_password\']').val(),
+                    new_password: $('input[name=\'new_password\']').val(),
+                    confirm_password: $('input[name=\'confirm_password\']').val()
+                }
+            })
+            .done(function(data){
+                // Reset Errors containers
+                $('#old_password_error').html('');
+                $('#new_password_error').html('');
+                $('#confirm_password_error').html('');
+
+                if(data['old_password_error']){      $('#old_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['old_password_error']); }
+                if(data['new_password_error']){      $('#new_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['new_password_error']); }
+                if(data['confirm_password_error']){  $('#confirm_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['confirm_password_error']); }
+
+                if(data['reset_succeeds'])
+                {
+                    $('#reset_password_btn').hide();
+                    $('form :input').val('');
+
+                    $('#reset_succeeds').html('' +
+                        '<div class="alert alert-success" role="alert">' +
+                        '<i class="fas fa-check mr-1"></i>' + data['reset_succeeds'] +
+                        '</div>'
+                    );
+
+                    setTimeout(function(){
+                        window.location.replace("/dashboard/user");
+                    }, 1000);
+                }
+            });
+        });
+
+    </script>
+
+{% endblock %}

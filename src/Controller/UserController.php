@@ -173,8 +173,80 @@ class UserController extends AbstractController
     }
 
 
-
-    public function resetPassword()
+    /**
+     * Reset Password
+     *
+     * @return JsonResponse
+     */
+    public function resetPassword() : JsonResponse
     {
+        if($this->request->getMethod() == 'POST')
+        {
+            $errors = [];
+
+            if(empty($this->request->get('old_password')))
+            {
+                $errors += ['old_password_error' => 'Veuillez remplir votre ancien mot de passe !'];
+            }
+
+            if(empty($this->request->get('new_password')))
+            {
+                $errors += ['new_password_error' => 'Veuillez remplir votre nouveau mot de passe !'];
+            }
+
+            if(empty($this->request->get('confirm_password')))
+            {
+                $errors += ['confirm_password_error' => 'Veuillez confirmez votre nouveau mot de passe !'];
+            }
+
+            if(password_verify($this->request->get('old_password'), $this->session->get('user')->getPassword()) == false)
+            {
+                $errors += ['old_password_error' => 'Votre ancien mot de passe n\'est pas valide'];
+            }
+
+            if(password_verify($this->request->get('old_password'), $this->session->get('user')->getPassword()) && $this->request->get('old_password') == $this->request->get('new_password'))
+            {
+                $errors += ['new_password_error' => 'Votre mot de passe ne peut pas être identique à l\'ancien !'];
+            }
+
+            if(!empty($this->request->get('new_password')) && !empty($this->request->get('confirm_password')) && $this->request->get('new_password') === $this->request->get('confirm_password'))
+            {
+                if(strlen($this->request->get('new_password')) < 8)
+                {
+                    $errors += ['new_password_error' => 'Le mot de passe doit contenir 8 caractères minimum'];
+                }
+
+                if(!preg_match('([0-9]+)', $this->request->get('new_password')))
+                {
+                    $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 chiffre minimum'];
+                }
+
+                if(!preg_match('([a-z]+)', $this->request->get('new_password')))
+                {
+                    $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 minuscule minimum'];
+                }
+
+                if(!preg_match('([A-Z]+)', $this->request->get('new_password')))
+                {
+                    $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 majuscule minimum'];
+                }
+            }
+            else
+            {
+                $errors += ['confirm_password_error' => 'Les deux nouveaux mots de passe doivent être identiques !'];
+            }
+
+            if(empty($errors))
+            {
+                $email = $this->session->get('user')->getEmail();
+                $password = password_hash($this->request->get('new_password'), PASSWORD_DEFAULT);
+
+                $this->userManager->updatePassword($email, $password);
+
+                return new JsonResponse(['reset_succeeds' => 'Modification effectuée !']);
+            }
+
+            return new JsonResponse($errors);
+        }
     }
 }
