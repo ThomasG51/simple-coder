@@ -83,7 +83,7 @@ class PostController extends AbstractController
                 $post->setCover($this->uploadFile($this->request->files->get('cover')));
                 $post->setText($this->request->request->get('content'));
                 $post->setSlug($this->formatSlug($this->request->request->get('title')));
-                $post->setStatus('availaible');
+                $post->setStatus('available');
                 $post->setUser($this->session->get('user'));
                 $post->setCategory($this->categoryManager->findOne($this->request->request->get('category')));
 
@@ -120,6 +120,94 @@ class PostController extends AbstractController
         ]);
     }
 
+
     // TODO Make Update Method
-    // TODO Make Delete Method
+    public function update(string $slug)
+    {
+        $post = $this->postManager->findOne($slug);
+
+        if($post)
+        {
+            return $this->render('post/update.html.twig', [
+                'post' => $post
+            ]);
+        }
+
+        // TODO Display error alert
+        return $this->redirectToRoute('/');
+    }
+
+
+    /**
+     * Delete post
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function delete(string $slug) : Response
+    {
+        $post = $this->postManager->findOne($slug);
+
+        if($post)
+        {
+            unlink('upload/' . $post->getCover());
+            $this->postManager->delete($post->getSlug());
+
+            return $this->redirectToRoute('/dashboard/post');
+        }
+
+        // TODO display error alert
+
+        return $this->redirectToRoute('/');
+    }
+
+
+    /**
+     * Post archived
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function archived(string $slug) : Response
+    {
+        $post = $this->postManager->findOne($slug);
+
+        if($post)
+        {
+            $post->setStatus('archived');
+
+            $this->postManager->archiving($post);
+
+            return $this->redirectToRoute('/dashboard/post');
+        }
+
+        // TODO display error alert
+
+        return $this->redirectToRoute('/');
+    }
+
+
+    /**
+     * Post unarchived
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function unarchived(string $slug) : Response
+    {
+        $post = $this->postManager->findOne($slug);
+
+        if($post)
+        {
+            $post->setStatus('available');
+
+            $this->postManager->archiving($post);
+
+            return $this->redirectToRoute('/dashboard/post');
+        }
+
+        // TODO display error alert
+
+        return $this->redirectToRoute('/');
+    }
 }

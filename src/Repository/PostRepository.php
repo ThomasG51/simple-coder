@@ -36,7 +36,7 @@ class PostRepository extends AbstractRepository
     {
         $query = $this->getPDO()->prepare('
             SELECT post.*, category.*, user.* 
-            FROM post 
+            FROM post
             LEFT JOIN category ON post.category_id = category.id 
             LEFT JOIN user ON post.user_id = user.id 
             ORDER BY date DESC
@@ -134,5 +134,43 @@ class PostRepository extends AbstractRepository
             'user_id' => $post->getUser()->getId(),
             'category_id' => $post->getCategory()->getId()
         ]);
+    }
+
+
+    /**
+     * Post archiving
+     *
+     * @param Post $post
+     * @return void
+     */
+    public function archiving(Post $post) : void
+    {
+        $query = $this->getPDO()->prepare('
+            UPDATE post
+            SET status = :status
+            WHERE slug = :slug
+        ');
+
+        $query->execute([
+            'slug' => $post->getSlug(),
+            'status' => $post->getStatus()
+        ]);
+    }
+
+
+    /**
+     * Delete Post
+     *
+     * @param string $slug
+     * @return void
+     */
+    public function delete(string $slug) : void
+    {
+        $query = $this->getPDO()->prepare('
+            DELETE FROM post
+            WHERE slug = :slug
+        ');
+
+        $query->execute(['slug' => $slug]);
     }
 }

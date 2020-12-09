@@ -4,13 +4,18 @@
 namespace App\Controller;
 
 
+use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use Lib\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends AbstractController
 {
     private UserRepository $userManager;
+
+    private PostRepository $postManager;
+
 
     /**
      * DashboardController constructor.
@@ -22,13 +27,32 @@ class DashboardController extends AbstractController
         parent::__construct($request);
 
         $this->userManager = new UserRepository();
+        $this->postManager = new PostRepository();
     }
 
 
-    public function manageUser()
+    /**
+     * User Management
+     *
+     * @return Response
+     */
+    public function manageUser() : Response
     {
         return $this->render('dashboard/user.html.twig', [
             'users' => $this->userManager->findAll()
+        ]);
+    }
+
+
+    /**
+     * Post Management
+     *
+     * @return Response
+     */
+    public function managePost() : Response
+    {
+        return $this->render('dashboard/post.html.twig', [
+            'posts' => $this->postManager->findAll()
         ]);
     }
 }
