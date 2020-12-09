@@ -4,12 +4,12 @@
 namespace App\Controller;
 
 
+use App\Entity\Post;
 use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagsLineRepository;
 use App\Repository\TagsRepository;
 use Lib\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -78,16 +78,19 @@ class PostController extends AbstractController
 
             if(empty($errorPost))
             {
-                $title = $this->request->request->get('title');
-                $content = $this->request->request->get('content');
-                $category = $this->request->request->get('category');
-                $tags = $this->request->request->get('tags');
-                $slug = $this->formatSlug($title);
-                $coverName = $this->uploadFile($this->request->files->get('cover'));
+                $post = new Post();
+                $post->setTitle($this->request->request->get('title'));
+                $post->setCover($this->uploadFile($this->request->files->get('cover')));
+                $post->setText($this->request->request->get('content'));
+                $post->setSlug($this->formatSlug($this->request->request->get('title')));
+                $post->setStatus('availaible');
+                $post->setUser($this->session->get('user'));
+                $post->setCategory($this->categoryManager->findOne($this->request->request->get('category')));
 
-                $this->postManager->create($title, $coverName, $content, $slug, 1, $category);
+                $this->postManager->create($post);
 
-                foreach ($tags as $tag) {
+                // TODO utiliser les entity tags dans cette boucle ? interet ?
+                foreach ($this->request->request->get('tags') as $tag) {
                     $this->tagsLineManager->create($tag, $this->postManager->getLastId('post'));
                 }
 
@@ -116,4 +119,7 @@ class PostController extends AbstractController
             'tags' => $this->tagsLineManager->findTagsByPost($slug)
         ]);
     }
+
+    // TODO Make Update Method
+    // TODO Make Delete Method
 }

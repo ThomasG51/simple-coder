@@ -61,7 +61,7 @@
                             <select id="js_category_container" class="form-control mt-3" name="category" >
                                 <option value="">...</option>
                                 {% for category in categories %}
-                                <option id="category-{{ category.name }}" value="{{ category.id }}">{{ category.name }}</option>
+                                <option id="category-{{ category.name }}" value="{{ category.name }}">{{ category.name }}</option>
                                 {% endfor %}
                             </select>
                             <small class="text-light-grey pointer" data-toggle="modal" data-target="#categoryModal"><i class="fas fa-plus

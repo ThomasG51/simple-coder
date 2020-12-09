@@ -18,38 +18,13 @@ class Post
 
     private string $slug;
 
+    private string $status;
+
     private User $user;
 
     private Category $category;
 
     private array $tags;
-
-
-    /**
-     * Post entity constructor.
-     *
-     * @param int $id
-     * @param string $title
-     * @param string $cover
-     * @param string $date
-     * @param string $text
-     * @param string $slug
-     * @param User $user
-     * @param Category $category
-     * @param array $tags
-     */
-    public function __construct(int $id, string $title, string $cover, string $date, string $text, string $slug, User $user, Category $category, array $tags)
-    {
-        $this->setId($id);
-        $this->setTitle($title);
-        $this->setCover($cover);
-        $this->setDate($date);
-        $this->setText($text);
-        $this->setSlug($slug);
-        $this->setUser($user);
-        $this->setCategory($category);
-        $this->setTags($tags);
-    }
 
 
     /**
@@ -157,6 +132,24 @@ class Post
     public function setSlug(string $slug): void
     {
         $this->slug = $slug;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+
+    /**
+     * @param string $status
+     */
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
     }
 
 
