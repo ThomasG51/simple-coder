@@ -17,35 +17,132 @@
 
 {% block body %}
 
-    <section class="container-fluid mb-4">
+    <section class="container-fluid mb-5">
         <figure class="row vh-45">
             <img src="../../assets/images/bg-write.jpg" alt="" class="cover">
         </figure>
     </section>
 
     <main class="container">
-        <div class="row">
-            <div class="col-xl-8">
-                <div class="form-group">
-                    <h4 class="tech-font">Titre de l'article</h4>
-                    <input class="form-control" type="text" name="title" value="{{ post.title }}">
-                </div>
-                <div class="form-group mt-5">
-                    <h4 class="tech-font">Contenu de l'article</h4>
-                    <textarea id="wysiwyg" class="form-control wysiwyg" name="content" rows="30" >{{ post.text }}</textarea>
-                </div>
-            </div>
-            <div class="col-xl-4">
-                <div class="row">
-                    <div class="col-xl-12 text-right">
-                        <h4 class="tech-font">Couverture de l'article</h4>
-                        <img src="{{ asset('../../upload/' ~ post.cover) }}" alt="" class="w-80">
+        <form action="/post/update/{{ post.slug }}" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-xl-8">
+                    <div class="form-group">
+                        <h4 class="tech-font">Titre de l'article</h4>
+                        <input class="form-control" type="text" name="title" value="{{ post.title }}">
+                    </div>
+                    <div class="form-group mt-5">
+                        <h4 class="tech-font">Contenu de l'article</h4>
+                        <textarea id="wysiwyg" class="form-control wysiwyg" name="content" rows="30" >{{ post.text }}</textarea>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-php w-100 mt-5">Modifier l'article<i class="fas fa-pencil-alt ml-2"></i></button>
+
+                <div class="col-xl-4 text-right">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <h4 class="tech-font">Statut de l'article</h4>
+                            {% if post.status == 'available' %}
+                                <span class="badge badge-success">{{ post.status }}</span>
+                            {% else %}
+                                <span class="badge badge-primary">{{ post.status }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-xl-12">
+                            <h4 class="tech-font">Couverture de l'article</h4>
+                            <figure class="w-80 ml-auto position-relative file-update-cover">
+                                <img src="{{ asset('../../upload/' ~ post.cover) }}" alt="" class="w-100">
+                                <a href="" class="cover-delete-btn"><figcaption><i class="fas fa-trash text-danger"></i></figcaption></a>
+                            </figure>
+                            <div class="file-upload-container">
+                                <input type="hidden" name="MAX_FILE_SIZE" value="3000000">
+                                <input class="form-control" type="file" name="cover" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-xl-12">
+                            <h4 class="tech-font">Catégories</h4>
+                            <div id="category_error_container">
+                                {% if error_post.category %}
+                                    <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.category }}</small>
+                                {% endif %}
+                            </div>
+                            <select id="js_category_container" class="form-control mt-3" name="category" >
+                                <option value="">...</option>
+                                {% for category in categories %}
+                                    <option id="category-{{ category.name }}" value="{{ category.name }}" {% if category.name == post.category.name %}selected{% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="text-light-grey pointer" data-toggle="modal" data-target="#categoryModal"><i class="fas fa-plus mr-1"></i>Ajouter une nouvelle catégorie</small>
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-xl-12">
+                            <h4 class="tech-font">Tags</h4>
+                            <div id="tag_error_container">
+                                {% if error_post.tags %}
+                                    <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ error_post.tags }}</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="js_tags_container mt-2">
+                                {% for tag in tags %}
+                                    <div class="badge badge-spill badge-dark ml-1 mb-2 pointer">
+                                        <input class="pointer" type="checkbox" id="tag-{{ tag.name }}" name="tags[]" value="{{ tag.id }}" {%  for post_tag in post.tags %}{% if post_tag.name == tag.name %}checked{% endif %}{% endfor %}>
+                                        <label class="pointer mt-2 mb-1" for="tag-{{ tag.name }}">
+                                            {{ tag.name }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <small class="d-block text-light-grey pointer" data-toggle="modal" data-target="#tagsModal"><i class="fas fa-plus mr-1"></i>Ajouter un nouveau tag</small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-php w-100 my-5">Modifier l'article<i class="fas fa-pencil-alt ml-2"></i></button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <!-- Category Modal -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="tech-font mt-3 mb-4 text-center">Ajouter une nouvelle catégorie</h4>
+                    <form action="/category/create" method="post">
+                        <div class="form-group">
+                            <input id="categoryName" type="text" class="form-control" name="name">
+                        </div>
+                        <div class="form-group">
+                            <button id="categoryName-btn" type="submit" class="btn btn-php form-control" data-dismiss="modal">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- Tags Modal -->
+    <div class="modal fade" id="tagsModal" tabindex="-1" aria-labelledby="tagsModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="tech-font mt-3 mb-4 text-center">Ajouter un nouveau tag</h4>
+                    <form action="/tags/create" method="post">
+                        <div class="form-group">
+                            <input id="tagName" type="text" class="form-control" name="tagName">
+                        </div>
+                        <div class="form-group">
+                            <button id="tagName-btn" type="submit" class="btn btn-php form-control" data-dismiss="modal">Ajouter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
@@ -151,11 +248,19 @@
                     {
                         $('#category_error_container').html('');
                         $('#js_category_container').append(
-                            '<option id="#category-' + data['name'] + '" value="' + data['id'] + '" selected>' + data['name'] + '</option>'
+                            '<option id="#category-' + data['name'] + '" value="' + data['name'] + '" selected>' + data['name'] + '</option>'
                         );
                         $('#category-' + data['name']).prop('selected', true);
                     }
                 });
+        });
+
+
+        $('.cover-delete-btn').click(function(){
+            event.preventDefault();
+
+            $('.file-update-cover').hide();
+            $('.file-upload-container').fadeIn();
         });
 
     </script>

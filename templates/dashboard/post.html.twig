@@ -43,9 +43,9 @@
                     <td>
                         <a href="/post/update/{{ post.slug }}"><i class="fas fa-pen text-light-grey pointer"></i></a>
                         {% if post.status == 'available' %}
-                            <a href="/post/archived/{{ post.slug }}"><i class="fas fa-archive text-primary pointer ml-2"></i></a>
+                            <a href="/post/archiving/{{ post.slug }}"><i class="fas fa-archive text-primary pointer ml-2"></i></a>
                         {% else %}
-                            <a href="/post/unarchived/{{ post.slug }}"><i class="fas fa-check text-success pointer ml-2"></i></a>
+                            <a href="/post/archiving/{{ post.slug }}"><i class="fas fa-check text-success pointer ml-2"></i></a>
                             <a href="/post/delete/{{ post.slug }}" onclick="return confirm('Êtes-vous sur de vouloir supprimer le post : {{ post.title }}')"><i class="fas fa-trash text-danger pointer ml-2"></i></a>
                         {% endif %}
                     </td>

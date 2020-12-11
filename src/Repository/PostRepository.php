@@ -35,7 +35,7 @@ class PostRepository extends AbstractRepository
     public function findAll() : array
     {
         $query = $this->getPDO()->prepare('
-            SELECT post.*, category.*, user.* 
+            SELECT post.id AS id_post, post.*, category.*, user.* 
             FROM post
             LEFT JOIN category ON post.category_id = category.id 
             LEFT JOIN user ON post.user_id = user.id 
@@ -49,7 +49,7 @@ class PostRepository extends AbstractRepository
         foreach($query->fetchAll() as $post)
         {
             $instance = new Post();
-            $instance->setId($post['id']);
+            $instance->setId($post['id_post']);
             $instance->setTitle($post['title']);
             $instance->setCover($post['cover']);
             $instance->setDate($post['date']);
@@ -76,10 +76,10 @@ class PostRepository extends AbstractRepository
     public function findOne(string $slug)
     {
         $query = $this->getPDO()->prepare('
-            SELECT post.*, category.*, user.* 
+            SELECT post.id AS id_post, post.*, category.*, user.*
             FROM post 
-            LEFT JOIN category ON post.category_id = category.id 
-            LEFT JOIN user ON post.user_id = user.id
+            INNER JOIN category ON post.category_id = category.id 
+            INNER JOIN user ON post.user_id = user.id
             WHERE slug = :slug
             ORDER BY date DESC
         ');
@@ -90,7 +90,7 @@ class PostRepository extends AbstractRepository
         if($post)
         {
             $instance = new Post();
-            $instance->setId($post['id']);
+            $instance->setId($post['id_post']);
             $instance->setTitle($post['title']);
             $instance->setCover($post['cover']);
             $instance->setDate($post['date']);
@@ -154,6 +154,30 @@ class PostRepository extends AbstractRepository
         $query->execute([
             'slug' => $post->getSlug(),
             'status' => $post->getStatus()
+        ]);
+    }
+
+
+    /**
+     * Update Post
+     *
+     * @param Post $post
+     * @return void
+     */
+    public function update(Post $post) : void
+    {
+        $query = $this->getPDO()->prepare('
+            UPDATE post
+            SET title = :title, text = :text, cover = :cover, category_id = :category
+            WHERE slug = :slug
+        ');
+
+        $query->execute([
+            'slug' => $post->getSlug(),
+            'title' => $post->getTitle(),
+            'text' => $post->getText(),
+            'cover' => $post->getCover(),
+            'category' => $post->getCategory()->getId()
         ]);
     }
 

@@ -14,7 +14,7 @@
 
 {% block body %}
 
-    <section class="container-fluid mb-4">
+    <section class="container-fluid mb-5">
         <figure class="row vh-45">
             <img src="{{ asset('images/bg-write.jpg') }}" alt="" class="cover">
         </figure>
@@ -240,7 +240,7 @@
                 {
                     $('#category_error_container').html('');
                     $('#js_category_container').append(
-                        '<option id="#category-' + data['name'] + '" value="' + data['id'] + '" selected>' + data['name'] + '</option>'
+                        '<option id="#category-' + data['name'] + '" value="' + data['name'] + '" selected>' + data['name'] + '</option>'
                     );
                     $('#category-' + data['name']).prop('selected', true);
                 }

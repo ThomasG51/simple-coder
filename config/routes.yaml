@@ -38,13 +38,9 @@ update_post:
   path: /post/update/{slug}
   controller: App\Controller\PostController::update
 
-archived_post:
-  path: /post/archived/{slug}
-  controller: App\Controller\PostController::archived
-
-unarchived_post:
-  path: /post/unarchived/{slug}
-  controller: App\Controller\PostController::unarchived
+archiving_post:
+  path: /post/archiving/{slug}
+  controller: App\Controller\PostController::archiving
 
 delete_post:
   path: /post/delete/{slug}

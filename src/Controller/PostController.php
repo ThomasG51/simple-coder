@@ -86,11 +86,11 @@ class PostController extends AbstractController
                 $post->setStatus('available');
                 $post->setUser($this->session->get('user'));
                 $post->setCategory($this->categoryManager->findOne($this->request->request->get('category')));
+                $post->setTags($this->request->request->get('tags'));
 
                 $this->postManager->create($post);
 
-                // TODO utiliser les entity tags dans cette boucle ? interet ?
-                foreach ($this->request->request->get('tags') as $tag) {
+                foreach ($post->getTags() as $tag) {
                     $this->tagsLineManager->create($tag, $this->postManager->getLastId('post'));
                 }
 
@@ -121,20 +121,62 @@ class PostController extends AbstractController
     }
 
 
-    // TODO Make Update Method
-    public function update(string $slug)
+    /**
+     * Update Post
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function update(string $slug) : Response
     {
         $post = $this->postManager->findOne($slug);
 
         if($post)
         {
+            if($this->request->getMethod() == 'POST')
+            {
+                $post->setTitle($this->request->request->get('title'));
+                $post->setText($this->request->request->get('content'));
+                $post->setCategory($this->categoryManager->findOne($this->request->request->get('category')));
+                $post->setTags($this->tagsLineManager->findTagsByPost($post->getSlug()));
+
+                if($this->request->files->get('cover') != null)
+                {
+                    unlink('upload/' . $post->getCover());
+                    $post->setCover($this->uploadFile($this->request->files->get('cover')));
+                }
+                else
+                {
+                    $post->setCover($post->getCover());
+                }
+
+                $this->postManager->update($post);
+
+                // Remove tags_line
+                foreach($post->getTags() as $tag)
+                {
+                    $this->tagsLineManager->delete($tag->getId());
+                }
+
+                // Create new tags_line
+                foreach($this->request->request->get('tags') as $tag)
+                {
+                    $this->tagsLineManager->create($tag, $post->getId());
+                }
+
+                return $this->redirectToRoute('/post/'. $post->getSlug());
+            }
+
             return $this->render('post/update.html.twig', [
-                'post' => $post
+                'post' => $post,
+                'categories' => $this->categoryManager->findAll(),
+                'tags' => $this->tagsManager->findAll()
             ]);
         }
 
-        // TODO Display error alert
-        return $this->redirectToRoute('/');
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, modification impossible']);
+
+        return $this->redirectToRoute('/dashboard/post');
     }
 
 
@@ -153,61 +195,50 @@ class PostController extends AbstractController
             unlink('upload/' . $post->getCover());
             $this->postManager->delete($post->getSlug());
 
+            $this->session->getFlashBag()->add('alert', ['success' => 'Post supprimé !']);
+
             return $this->redirectToRoute('/dashboard/post');
         }
 
-        // TODO display error alert
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, suppression impossible !']);
 
-        return $this->redirectToRoute('/');
+        return $this->redirectToRoute('/dashboard/post');
     }
 
 
     /**
-     * Post archived
+     * Post archiving
      *
      * @param string $slug
      * @return Response
      */
-    public function archived(string $slug) : Response
+    public function archiving(string $slug) : Response
     {
         $post = $this->postManager->findOne($slug);
 
         if($post)
         {
-            $post->setStatus('archived');
+            if($post->getStatus() == 'archived')
+            {
+                $post->setStatus('available');
+
+                $this->session->getFlashBag()->add('alert', ['success' => 'Remise en ligne éffectuée.']);
+
+            }
+            else
+            {
+                $post->setStatus('archived');
+
+                $this->session->getFlashBag()->add('alert', ['success' => 'Archivage éffectué.']);
+            }
 
             $this->postManager->archiving($post);
 
             return $this->redirectToRoute('/dashboard/post');
         }
 
-        // TODO display error alert
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, archivage impossible !']);
 
-        return $this->redirectToRoute('/');
-    }
-
-
-    /**
-     * Post unarchived
-     *
-     * @param string $slug
-     * @return Response
-     */
-    public function unarchived(string $slug) : Response
-    {
-        $post = $this->postManager->findOne($slug);
-
-        if($post)
-        {
-            $post->setStatus('available');
-
-            $this->postManager->archiving($post);
-
-            return $this->redirectToRoute('/dashboard/post');
-        }
-
-        // TODO display error alert
-
-        return $this->redirectToRoute('/');
+        return $this->redirectToRoute('/dashboard/post');
     }
 }

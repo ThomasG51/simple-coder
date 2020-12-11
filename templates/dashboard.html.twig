@@ -25,6 +25,18 @@
 </head>
 <body>
 
+{% for alert in flash.alert %}
+    {% if alert.danger %}
+        <div class="alert alert-danger" role="alert">
+            <i class="fas fa-times mr-1"></i> {{ alert.danger}}
+        </div>
+    {% elseif alert.success %}
+        <div class="alert alert-success" role="alert">
+            <i class="fas fa-check mr-1"></i> {{ alert.success}}
+        </div>
+    {% endif %}
+{% endfor %}
+
 <main class="container-fluid">
     <div class="row vh-100">
         <div class="col-xl-2 bg-custom-dark p-0 position-fixed vh-100">
@@ -86,6 +98,20 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
 {% block javascripts %}{% endblock %}
+
+<script type="text/javascript">
+
+    // Auto hide alert
+    if($('.alert').html())
+    {
+        $('.alert').slideDown();
+
+        setTimeout(function(){
+            $('.alert').slideUp();
+        }, 3000);
+    }
+
+</script>
 
 </body>
 </html>
