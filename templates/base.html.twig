@@ -29,11 +29,11 @@
 
     {% for alert in flash.alert %}
         {% if alert.danger %}
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-top alert-danger" role="alert">
                 <i class="fas fa-times mr-1"></i> {{ alert.danger}}
             </div>
         {% elseif alert.success %}
-            <div class="alert alert-success" role="alert">
+            <div class="alert alert-top alert-success" role="alert">
                 <i class="fas fa-check mr-1"></i> {{ alert.success}}
             </div>
         {% endif %}
@@ -349,9 +349,9 @@
 
 
         // Auto hide alert
-        if($('.alert').html())
+        if($('.alert-top').html())
         {
-            $('.alert').slideDown();
+            $('.alert-top').slideDown();
 
             setTimeout(function(){
                 $('.alert').slideUp();

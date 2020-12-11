@@ -114,10 +114,17 @@ class PostController extends AbstractController
      */
     public function show(string $slug): Response
     {
-        return $this->render('post/show.html.twig', [
-            'post' => $this->postManager->findOne($slug),
-            'tags' => $this->tagsLineManager->findTagsByPost($slug)
-        ]);
+        if($this->postManager->findOne($slug))
+        {
+            return $this->render('post/show.html.twig', [
+                'post' => $this->postManager->findOne($slug),
+                'tags' => $this->tagsLineManager->findTagsByPost($slug)
+            ]);
+        }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable']);
+
+        return $this->redirectToRoute('/');
     }
 
 
@@ -223,7 +230,6 @@ class PostController extends AbstractController
                 $post->setStatus('available');
 
                 $this->session->getFlashBag()->add('alert', ['success' => 'Remise en ligne éffectuée.']);
-
             }
             else
             {

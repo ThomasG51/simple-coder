@@ -128,7 +128,7 @@ li {
     display: none;
 }
 
-.alert {
+.alert-top {
     position: fixed;
     width: 100%;
     top: 0;
