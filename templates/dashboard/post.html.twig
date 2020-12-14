@@ -21,7 +21,7 @@
                         </figure>
                     </td>
                     <td>
-                        <h5 class="title-font mb-3">{{ post.title }}</h5>
+                        <a href="/post/{{ post.slug }}"><h5 class="title-font mb-3">{{ post.title }}</h5></a>
                         <p class="text-justify">
                             {{ post.text | slice(0, 150) | raw }}...
                         </p>

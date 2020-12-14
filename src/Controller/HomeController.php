@@ -16,6 +16,8 @@ class HomeController extends AbstractController
 
         $posts = $postManager->findAll();
 
+        // TODO Paginate feature
+
         return $this->render('home/index.html.twig', [
             'posts' => $posts
         ]);

@@ -11,10 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CategoryController extends AbstractController
 {
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryManager;
+    private CategoryRepository $categoryManager;
 
 
     /**
@@ -39,23 +36,25 @@ class CategoryController extends AbstractController
     {
         if($this->request->getMethod() == 'POST')
         {
-            if(!empty($this->request->request->get('name')))
-            {
-                $category = $this->request->request->get('name');
+            $category = $this->request->request->get('name');
 
-                if($this->categoryManager->findOne($this->request->request->get('name')))
-                {
-                    return new JsonResponse(['error' => 'La catégorie existe déjà.']);
-                }
-
-                $this->categoryManager->create($category);
-
-                return new JsonResponse($this->categoryManager->findLast());
-            }
-            else
+            if(empty($category))
             {
                 return new JsonResponse(['error' => 'Veuillez remplir le formulaire']);
             }
+
+            if($this->categoryManager->findOne($category))
+            {
+                return new JsonResponse(['error' => 'La catégorie existe déjà.']);
+            }
+
+            $this->categoryManager->create($category);
+
+            return new JsonResponse($this->categoryManager->findLast());
         }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur lors de la création de la catégorie, la formulaire n\'a pas été soumis']);
+
+        return $this->redirectToRoute('/');
     }
 }

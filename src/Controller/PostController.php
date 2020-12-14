@@ -114,17 +114,17 @@ class PostController extends AbstractController
      */
     public function show(string $slug): Response
     {
-        if($this->postManager->findOne($slug))
+        if($this->postManager->findOne($slug) === null)
         {
-            return $this->render('post/show.html.twig', [
-                'post' => $this->postManager->findOne($slug),
-                'tags' => $this->tagsLineManager->findTagsByPost($slug)
-            ]);
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable']);
+
+            return $this->redirectToRoute('/');
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable']);
-
-        return $this->redirectToRoute('/');
+        return $this->render('post/show.html.twig', [
+            'post' => $this->postManager->findOne($slug),
+            'tags' => $this->tagsLineManager->findTagsByPost($slug)
+        ]);
     }
 
 
@@ -197,17 +197,17 @@ class PostController extends AbstractController
     {
         $post = $this->postManager->findOne($slug);
 
-        if($post)
+        if($post === null)
         {
-            unlink('upload/' . $post->getCover());
-            $this->postManager->delete($post->getSlug());
-
-            $this->session->getFlashBag()->add('alert', ['success' => 'Post supprimé !']);
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, suppression impossible !']);
 
             return $this->redirectToRoute('/dashboard/post');
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, suppression impossible !']);
+        unlink('upload/' . $post->getCover());
+        $this->postManager->delete($post->getSlug());
+
+        $this->session->getFlashBag()->add('alert', ['success' => 'Post supprimé !']);
 
         return $this->redirectToRoute('/dashboard/post');
     }
@@ -223,28 +223,34 @@ class PostController extends AbstractController
     {
         $post = $this->postManager->findOne($slug);
 
-        if($post)
+        if($post === null)
         {
-            if($post->getStatus() == 'archived')
-            {
-                $post->setStatus('available');
-
-                $this->session->getFlashBag()->add('alert', ['success' => 'Remise en ligne éffectuée.']);
-            }
-            else
-            {
-                $post->setStatus('archived');
-
-                $this->session->getFlashBag()->add('alert', ['success' => 'Archivage éffectué.']);
-            }
-
-            $this->postManager->archiving($post);
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, archivage impossible !']);
 
             return $this->redirectToRoute('/dashboard/post');
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, archivage impossible !']);
+        if($post->getStatus() == 'archived')
+        {
+            $post->setStatus('available');
+
+            $this->session->getFlashBag()->add('alert', ['success' => 'Remise en ligne éffectuée.']);
+        }
+        else
+        {
+            $post->setStatus('archived');
+
+            $this->session->getFlashBag()->add('alert', ['success' => 'Archivage éffectué.']);
+        }
+
+        $this->postManager->archiving($post);
 
         return $this->redirectToRoute('/dashboard/post');
     }
+
+
+    // TODO Like/Dislike Method
+
+    // TODO Pin/Unpin Method
+
 }

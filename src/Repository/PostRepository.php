@@ -87,26 +87,24 @@ class PostRepository extends AbstractRepository
         $query->execute(['slug' => $slug]);
         $post = $query->fetch();
 
-        if($post)
+        if(!$post)
         {
-            $instance = new Post();
-            $instance->setId($post['id_post']);
-            $instance->setTitle($post['title']);
-            $instance->setCover($post['cover']);
-            $instance->setDate($post['date']);
-            $instance->setText($post['text']);
-            $instance->setSlug($post['slug']);
-            $instance->setStatus($post['status']);
-            $instance->setUser($this->userManager->findOne($post['email']));
-            $instance->setCategory($this->categoryManager->findOne($post['name']));
-            $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
+            return null;
+        }
 
-            return $instance;
-        }
-        else
-        {
-            return false;
-        }
+        $instance = new Post();
+        $instance->setId($post['id_post']);
+        $instance->setTitle($post['title']);
+        $instance->setCover($post['cover']);
+        $instance->setDate($post['date']);
+        $instance->setText($post['text']);
+        $instance->setSlug($post['slug']);
+        $instance->setStatus($post['status']);
+        $instance->setUser($this->userManager->findOne($post['email']));
+        $instance->setCategory($this->categoryManager->findOne($post['name']));
+        $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
+
+        return $instance;
     }
 
 
