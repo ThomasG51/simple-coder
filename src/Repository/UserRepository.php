@@ -83,22 +83,20 @@ class UserRepository extends AbstractRepository
 
         $user = $query->fetch();
 
-        if($user)
+        if(!$user)
         {
-            $instance = new User();
-            $instance->setId($user['id']);
-            $instance->setFirstname($user['firstname']);
-            $instance->setLastname($user['lastname']);
-            $instance->setEmail($user['email']);
-            $instance->setPassword($user['password']);
-            $instance->setRole($user['role']);
+            return null;
+        }
 
-            return $instance;
-        }
-        else
-        {
-            return false;
-        }
+        $instance = new User();
+        $instance->setId($user['id']);
+        $instance->setFirstname($user['firstname']);
+        $instance->setLastname($user['lastname']);
+        $instance->setEmail($user['email']);
+        $instance->setPassword($user['password']);
+        $instance->setRole($user['role']);
+
+        return $instance;
     }
 
 

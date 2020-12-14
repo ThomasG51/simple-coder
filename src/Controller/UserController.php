@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use Lib\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends AbstractController
 {
@@ -75,31 +76,29 @@ class UserController extends AbstractController
                 $registration_errors += ['registration_exist_error' => 'L\'utilisateur existe déjà'];
             }
 
-            if(!empty($password) && !empty($confirm_password) && $password === $confirm_password)
-            {
-                if(strlen($password) < 8)
-                {
-                    $registration_errors += ['registration_length_error' => 'Le mot de passe doit contenir 8 caractères minimum'];
-                }
-
-                if(!preg_match('([0-9]+)', $password))
-                {
-                    $registration_errors += ['registration_numeric_error' => 'Le mot de passe doit contenir 1 chiffre minimum'];
-                }
-
-                if(!preg_match('([a-z]+)', $password))
-                {
-                    $registration_errors += ['registration_lower_error' => 'Le mot de passe doit contenir 1 minuscule minimum'];
-                }
-
-                if(!preg_match('([A-Z]+)', $password))
-                {
-                    $registration_errors += ['registration_upper_error' => 'Le mot de passe doit contenir 1 majuscule minimum'];
-                }
-            }
-            else
+            if(!empty($password) && !empty($confirm_password) && $password != $confirm_password)
             {
                 $registration_errors += ['registration_match_error' => 'Les mots de passes ne sont pas identiques'];
+            }
+
+            if(strlen($password) < 8)
+            {
+                $registration_errors += ['registration_length_error' => 'Le mot de passe doit contenir 8 caractères minimum'];
+            }
+
+            if(!preg_match('([0-9]+)', $password))
+            {
+                $registration_errors += ['registration_numeric_error' => 'Le mot de passe doit contenir 1 chiffre minimum'];
+            }
+
+            if(!preg_match('([a-z]+)', $password))
+            {
+                $registration_errors += ['registration_lower_error' => 'Le mot de passe doit contenir 1 minuscule minimum'];
+            }
+
+            if(!preg_match('([A-Z]+)', $password))
+            {
+                $registration_errors += ['registration_upper_error' => 'Le mot de passe doit contenir 1 majuscule minimum'];
             }
 
             if(empty($registration_errors))
@@ -120,6 +119,10 @@ class UserController extends AbstractController
 
             return new JsonResponse($registration_errors);
         }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur d\'enreistrement, le formulaire n\'a pas été soumis']);
+
+        return $this->redirectToRoute('/');
     }
 
 
@@ -132,47 +135,45 @@ class UserController extends AbstractController
     {
         if($this->request->getMethod() == 'POST')
         {
-            if(!empty($this->request->request->get('login_email')))
-            {
-                $user = $this->userManager->findOne($this->request->request->get('login_email'));
-
-                if($user)
-                {
-                    if(!empty($this->request->request->get('login_password')))
-                    {
-                        if(password_verify($this->request->request->get('login_password'), $user->getPassword()))
-                        {
-                            $this->session->set('user', $user);
-
-                            return new JsonResponse(['login_succeeds' => 'Connexion reussi.']);
-                        }
-                        else
-                        {
-                            return new JsonResponse(['login_password_error' => 'Le mot de passe est incorrect']);
-                        }
-                    }
-                    else
-                    {
-                        return new JsonResponse(['login_password_error' => 'Le mot de passe ne peut pas être vide']);
-                    }
-                }
-                else
-                {
-                    return new JsonResponse(['login_email_error' => 'Le compte n\'existe pas']);
-                }
-            }
-            else
+            if(empty($this->request->request->get('login_email')))
             {
                 return new JsonResponse(['login_email_error' => 'L\'email ne peut pas être vide']);
             }
+
+            if(empty($this->request->request->get('login_password')))
+            {
+                return new JsonResponse(['login_password_error' => 'Le mot de passe ne peut pas être vide']);
+            }
+
+            $user = $this->userManager->findOne($this->request->request->get('login_email'));
+
+            if($user === null)
+            {
+                return new JsonResponse(['login_email_error' => 'Le compte n\'existe pas']);
+            }
+
+            if(!password_verify($this->request->request->get('login_password'), $user->getPassword()))
+            {
+                return new JsonResponse(['login_password_error' => 'Le mot de passe est incorrect']);
+            }
+
+            $this->session->set('user', $user);
+
+            return new JsonResponse(['login_succeeds' => 'Connexion reussi.']);
         }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur de connexion, le formulaire n\'a pas été soumis']);
+
+        return $this->redirectToRoute('/');
     }
 
 
     /**
      * User Logout
+     *
+     * @return Response
      */
-    public function logout()
+    public function logout() : Response
     {
         $this->session->remove('user');
 
@@ -216,31 +217,29 @@ class UserController extends AbstractController
                 $errors += ['new_password_error' => 'Votre mot de passe ne peut pas être identique à l\'ancien !'];
             }
 
-            if(!empty($this->request->get('new_password')) && !empty($this->request->get('confirm_password')) && $this->request->get('new_password') === $this->request->get('confirm_password'))
+            if(!empty($this->request->get('new_password')) && !empty($this->request->get('confirm_password')) && $this->request->get('new_password') != $this->request->get('confirm_password'))
             {
-                if(strlen($this->request->get('new_password')) < 8)
-                {
-                    $errors += ['new_password_error' => 'Le mot de passe doit contenir 8 caractères minimum'];
-                }
-
-                if(!preg_match('([0-9]+)', $this->request->get('new_password')))
-                {
-                    $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 chiffre minimum'];
-                }
-
-                if(!preg_match('([a-z]+)', $this->request->get('new_password')))
-                {
-                    $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 minuscule minimum'];
-                }
-
-                if(!preg_match('([A-Z]+)', $this->request->get('new_password')))
-                {
-                    $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 majuscule minimum'];
-                }
+               $errors += ['confirm_password_error' => 'Les deux nouveaux mots de passe doivent être identiques !'];
             }
-            else
+
+            if(strlen($this->request->get('new_password')) < 8)
             {
-                $errors += ['confirm_password_error' => 'Les deux nouveaux mots de passe doivent être identiques !'];
+                $errors += ['new_password_error' => 'Le mot de passe doit contenir 8 caractères minimum'];
+            }
+
+            if(!preg_match('([0-9]+)', $this->request->get('new_password')))
+            {
+                $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 chiffre minimum'];
+            }
+
+            if(!preg_match('([a-z]+)', $this->request->get('new_password')))
+            {
+                $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 minuscule minimum'];
+            }
+
+            if(!preg_match('([A-Z]+)', $this->request->get('new_password')))
+            {
+                $errors += ['new_password_error' => 'Le mot de passe doit contenir 1 majuscule minimum'];
             }
 
             if(empty($errors))
@@ -255,10 +254,20 @@ class UserController extends AbstractController
 
             return new JsonResponse($errors);
         }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur de reinitialisation du mot de passe, le formulaire n\'a pas été soumis']);
+
+        return $this->redirectToRoute('/dashboard/user');
     }
 
 
-    public function delete(int $id)
+    /**
+     * Delete User
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function delete(int $id) : Response
     {
         $this->userManager->delete($id);
 
