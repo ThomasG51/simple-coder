@@ -157,7 +157,17 @@ class UserController extends AbstractController
                 return new JsonResponse(['login_password_error' => 'Le mot de passe est incorrect']);
             }
 
+            // Create User Session
             $this->session->set('user', $user);
+
+            // Reset CSRF Token
+            if($this->session->get('csrf_token'))
+            {
+                $this->session->remove('csrf_token');
+            }
+
+            // Create new CSRF Token
+            $this->session->set('csrf_token', md5(bin2hex(openssl_random_pseudo_bytes(8))));
 
             return new JsonResponse(['login_succeeds' => 'Connexion reussi.']);
         }
@@ -176,6 +186,8 @@ class UserController extends AbstractController
     public function logout() : Response
     {
         $this->session->remove('user');
+
+        $this->session->remove('csrf_token');
 
         return $this->redirectToRoute('/');
     }
@@ -269,7 +281,23 @@ class UserController extends AbstractController
      */
     public function delete(int $id) : Response
     {
-        $this->userManager->delete($id);
+        if($this->request->getMethod() === 'POST')
+        {
+            if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
+            {
+                $this->userManager->delete($id);
+
+                $this->session->getFlashBag()->add('alert', ['success' => 'Utilisateur supprimé']);
+
+                return $this->redirectToRoute('/dashboard/user');
+            }
+
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Token expiré !']);
+
+            return $this->redirectToRoute('/dashboard/user');
+        }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression de l\'utilisateur impossible, le formulaire n\'a pas été soumis !']);
 
         return $this->redirectToRoute('/dashboard/user');
     }

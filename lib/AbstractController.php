@@ -111,26 +111,26 @@ abstract class AbstractController
         // Check mime type
         if(!in_array($fileMime, $mime))
         {
-            dd('The file is not an image !');
-            // Throw exception
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Le fichier n\'est pas une image']);
+
+            return $this->redirectToRoute('/post/create');
         }
 
         // Check file size
         if($fileSize > $maxSize)
         {
-            dd('The file size is too big !');
-            // Throw exception
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Le fichier est trop volumineux']);
+
+            return $this->redirectToRoute('/post/create');
         }
 
         // Upload
-        if($file->move($directory, $fileName))
+        // TODO check condition on post_crud branch
+        if(!$file->move($directory, $fileName))
         {
-            // Return alert : Upload Succeed
-        }
-        else
-        {
-            dd('Upload Failed');
-            // Throw exception
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Le fichier n\'a pas été téléchargé']);
+
+            return $this->redirectToRoute('/post/create');
         }
 
         return $fileName;

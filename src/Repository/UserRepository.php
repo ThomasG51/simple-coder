@@ -119,6 +119,11 @@ class UserRepository extends AbstractRepository
     }
 
 
+    /**
+     * Delete User
+     *
+     * @param int $id
+     */
     public function delete(int $id)
     {
         $query = $this->getPDO()->prepare('
