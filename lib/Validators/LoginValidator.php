@@ -5,6 +5,9 @@ namespace Lib\Validators;
 
 
 use App\Repository\UserRepository;
+use Assert\Assert;
+use Assert\AssertionFailedException;
+use Assert\LazyAssertionException;
 use Lib\Interfaces\Validators;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,29 +34,38 @@ class LoginValidator implements Validators
      */
     public function validate(Request $request) : void
     {
-        if(empty($request->get('login_email')))
-        {
-            $this->errors += ['login_email_error' => 'L\'email ne peut pas être vide'];
-        }
-
-        if(empty($request->get('login_password')))
-        {
-            $this->errors += ['login_password_error' => 'Le mot de passe ne peut pas être vide'];
-        }
-
-        $user = $this->userManager->findOne($request->get('login_email'));
-
-        if($user === null)
-        {
-            $this->errors += ['login_email_error' => 'Le compte n\'existe pas'];
-        }
-        else
-        {
-            if(!password_verify($request->get('login_password'), $user->getPassword()))
+            try
             {
-                $this->errors += ['login_password_error' => 'Le mot de passe est incorrect'];
+                Assert::lazy()->tryAll()
+                    ->that($request->get('login_email'), 'login_email_error')
+                        ->notEmpty('Veuillez remplir votre e-mail')
+                        ->email('Vous devez renseigner un e-mail valide')
+                    ->that($request->get('login_password'), 'login_password_error')
+                        ->notEmpty('Veuillez remplir votre mot de passe')
+                    ->verifyNow();
             }
-        }
+            catch(LazyAssertionException $exceptions)
+            {
+                foreach($exceptions->getErrorExceptions() as $exception)
+                {
+                    $this->errors += [$exception->getPropertyPath() => $exception->getMessage()];
+                }
+            }
+
+            $user = $this->userManager->findOne($request->get('login_email'));
+
+            if($user === null)
+            {
+                $this->errors += ['login_email_error' => 'Le compte n\'existe pas'];
+            }
+            else
+            {
+                if(!password_verify($request->get('login_password'), $user->getPassword()))
+                {
+                    $this->errors += ['login_password_error' => 'Le mot de passe est incorrect'];
+                }
+            }
+
     }
 
 

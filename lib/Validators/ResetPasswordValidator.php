@@ -5,6 +5,8 @@ namespace Lib\Validators;
 
 
 use App\Repository\UserRepository;
+use Assert\Assert;
+use Assert\LazyAssertionException;
 use Lib\Interfaces\Validators;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -35,19 +37,28 @@ class ResetPasswordValidator implements Validators
      */
     public function validate(Request $request) : void
     {
-        if(empty($request->get('old_password')))
+        try
         {
-            $this->errors += ['old_password_error' => 'Veuillez remplir votre ancien mot de passe !'];
+            Assert::lazy()
+                ->that($request->get('old_password'), 'old_password_error')
+                    ->notEmpty('Veuillez remplir votre ancien mot de passe !')
+                ->that($request->get('new_password'), 'new_password_error')
+                    ->notEmpty('Veuillez remplir votre nouveau mot de passe !')
+                    ->minLength(8, 'Le mot de passe doit contenir 8 caractères minimum')
+                    ->regex('([0-9]+)', 'Le mot de passe doit contenir au moins 1 chiffre')
+                    ->regex('([a-z]+)', 'Le mot de passe doit contenir au moins 1 minuscule')
+                    ->regex('([A-Z]+)', 'Le mot de passe doit contenir au moins 1 majuscule')
+                ->that($request->get('confirm_password'), 'confirm_password_error')
+                    ->notEmpty('Veuillez confirmez votre nouveau mot de passe !')
+                    ->same($request->get('new_password'),'Les deux nouveaux mots de passe doivent être identiques !')
+                ->verifyNow();
         }
-
-        if(empty($request->get('new_password')))
+        catch(LazyAssertionException $exceptions)
         {
-            $this->errors += ['new_password_error' => 'Veuillez remplir votre nouveau mot de passe !'];
-        }
-
-        if(empty($request->get('confirm_password')))
-        {
-            $this->errors += ['confirm_password_error' => 'Veuillez confirmez votre nouveau mot de passe !'];
+            foreach($exceptions->getErrorExceptions() as $exception)
+            {
+                $this->errors += [$exception->getPropertyPath() => $exception->getMessage()];
+            }
         }
 
         if(password_verify($request->get('old_password'), $this->session->get('user')->getPassword()) == false)
@@ -58,31 +69,6 @@ class ResetPasswordValidator implements Validators
         if(password_verify($request->get('old_password'), $this->session->get('user')->getPassword()) && $request->get('old_password') == $request->get('new_password'))
         {
             $this->errors += ['new_password_error' => 'Votre mot de passe ne peut pas être identique à l\'ancien !'];
-        }
-
-        if(!empty($request->get('new_password')) && !empty($request->get('confirm_password')) && $request->get('new_password') != $request->get('confirm_password'))
-        {
-            $this->errors += ['confirm_password_error' => 'Les deux nouveaux mots de passe doivent être identiques !'];
-        }
-
-        if(strlen($request->get('new_password')) < 8)
-        {
-            $this->errors += ['new_password_error' => 'Le mot de passe doit contenir 8 caractères minimum'];
-        }
-
-        if(!preg_match('([0-9]+)', $request->get('new_password')))
-        {
-            $this->errors += ['new_password_error' => 'Le mot de passe doit contenir 1 chiffre minimum'];
-        }
-
-        if(!preg_match('([a-z]+)', $request->get('new_password')))
-        {
-            $this->errors += ['new_password_error' => 'Le mot de passe doit contenir 1 minuscule minimum'];
-        }
-
-        if(!preg_match('([A-Z]+)', $request->get('new_password')))
-        {
-            $this->errors += ['new_password_error' => 'Le mot de passe doit contenir 1 majuscule minimum'];
         }
     }
 

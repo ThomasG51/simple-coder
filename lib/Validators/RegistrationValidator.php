@@ -5,6 +5,8 @@ namespace Lib\Validators;
 
 
 use App\Repository\UserRepository;
+use Assert\Assert;
+use Assert\LazyAssertionException;
 use Lib\Interfaces\Validators;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,65 +33,38 @@ class RegistrationValidator implements Validators
      */
     public function validate(Request $request) : void
     {
-        $firstname = $request->request->get('sign_up_firstname');
-        $lastname = $request->request->get('sign_up_lastname');
-        $email = $request->request->get('sign_up_email');
-        $password = $request->request->get('sign_up_password');
-        $confirm_password = $request->request->get('sign_up_confirm_password');
-
-        if(empty($firstname))
+        try
         {
-            $this->errors += ['registration_firstname_error' => 'Veuillez remplir votre prénom'];
+            Assert::lazy()->tryAll()
+                ->that($request->request->get('sign_up_firstname'), 'registration_firstname_error')
+                    ->notEmpty('Veuillez remplir votre prénom')
+                ->that($request->request->get('sign_up_lastname'), 'registration_lastname_error')
+                    ->notEmpty('Veuillez remplir votre nom')
+                ->that($request->request->get('sign_up_email'), 'registration_email_error')
+                    ->notEmpty('Veuillez remplir votre e-mail')
+                    ->email('Vous devez renseigner un e-mail valide')
+                ->that($request->request->get('sign_up_password'), 'registration_password_error')
+                    ->notEmpty('Veuillez remplir votre mot de passe')
+                    ->minLength(8, 'Le mot de passe doit contenir 8 caractères minimum')
+                    ->regex('([0-9]+)', 'Le mot de passe doit contenir au moins 1 chiffre')
+                    ->regex('([a-z]+)', 'Le mot de passe doit contenir au moins 1 minuscule')
+                    ->regex('([A-Z]+)', 'Le mot de passe doit contenir au moins 1 majuscule')
+                ->that($request->request->get('sign_up_confirm_password'), 'registration_confirm_error')
+                    ->notEmpty('Veuillez confirmer votre mot de passe')
+                    ->same($request->request->get('sign_up_password'), 'Les mots de passes ne sont pas identiques')
+                ->verifyNow();
+        }
+        catch(LazyAssertionException $exceptions)
+        {
+            foreach($exceptions->getErrorExceptions() as $exception)
+            {
+                $this->errors += [$exception->getPropertyPath() => $exception->getMessage()];
+            }
         }
 
-        if(empty($lastname))
-        {
-            $this->errors += ['registration_lastname_error' => 'Veuillez remplir votre nom'];
-        }
-
-        if(empty($email))
-        {
-            $this->errors += ['registration_email_error' => 'Veuillez remplir votre e-mail'];
-        }
-
-        if(empty($password))
-        {
-            $this->errors += ['registration_password_error' => 'Veuillez remplir votre mot de passe'];
-        }
-
-        if(empty($confirm_password))
-        {
-            $this->errors += ['registration_confirm_error' => 'Veuillez confirmer votre mot de passe'];
-        }
-
-        if($this->userManager->findOne($email))
+        if($this->userManager->findOne($request->request->get('sign_up_email')))
         {
             $this->errors += ['registration_exist_error' => 'L\'utilisateur existe déjà'];
-        }
-
-        if(!empty($password) && !empty($confirm_password) && $password != $confirm_password)
-        {
-            $this->errors += ['registration_match_error' => 'Les mots de passes ne sont pas identiques'];
-        }
-
-        if(strlen($password) < 8)
-        {
-            $this->errors += ['registration_length_error' => 'Le mot de passe doit contenir 8 caractères minimum'];
-        }
-
-        if(!preg_match('([0-9]+)', $password))
-        {
-            $this->errors += ['registration_numeric_error' => 'Le mot de passe doit contenir 1 chiffre minimum'];
-        }
-
-        if(!preg_match('([a-z]+)', $password))
-        {
-            $this->errors += ['registration_lower_error' => 'Le mot de passe doit contenir 1 minuscule minimum'];
-        }
-
-        if(!preg_match('([A-Z]+)', $password))
-        {
-            $this->errors += ['registration_upper_error' => 'Le mot de passe doit contenir 1 majuscule minimum'];
         }
     }
 
