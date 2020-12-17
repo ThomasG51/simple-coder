@@ -4,12 +4,12 @@
 namespace App\Controller;
 
 
+use App\Entity\Post;
 use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagsLineRepository;
 use App\Repository\TagsRepository;
 use Lib\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -78,16 +78,19 @@ class PostController extends AbstractController
 
             if(empty($errorPost))
             {
-                $title = $this->request->request->get('title');
-                $content = $this->request->request->get('content');
-                $category = $this->request->request->get('category');
-                $tags = $this->request->request->get('tags');
-                $slug = $this->formatSlug($title);
-                $coverName = $this->uploadFile($this->request->files->get('cover'));
+                $post = new Post();
+                $post->setTitle($this->request->request->get('title'));
+                $post->setCover($this->uploadFile($this->request->files->get('cover')));
+                $post->setText($this->request->request->get('content'));
+                $post->setSlug($this->formatSlug($this->request->request->get('title')));
+                $post->setStatus('available');
+                $post->setUser($this->session->get('user'));
+                $post->setCategory($this->categoryManager->findOne($this->request->request->get('category')));
+                $post->setTags($this->request->request->get('tags'));
 
-                $this->postManager->create($title, $coverName, $content, $slug, 1, $category);
+                $this->postManager->create($post);
 
-                foreach ($tags as $tag) {
+                foreach ($post->getTags() as $tag) {
                     $this->tagsLineManager->create($tag, $this->postManager->getLastId('post'));
                 }
 
@@ -111,9 +114,143 @@ class PostController extends AbstractController
      */
     public function show(string $slug): Response
     {
+        if($this->postManager->findOne($slug) === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable']);
+
+            return $this->redirectToRoute('/');
+        }
+
         return $this->render('post/show.html.twig', [
             'post' => $this->postManager->findOne($slug),
             'tags' => $this->tagsLineManager->findTagsByPost($slug)
         ]);
     }
+
+
+    /**
+     * Update Post
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function update(string $slug) : Response
+    {
+        $post = $this->postManager->findOne($slug);
+
+        if($post)
+        {
+            if($this->request->getMethod() == 'POST')
+            {
+                $post->setTitle($this->request->request->get('title'));
+                $post->setText($this->request->request->get('content'));
+                $post->setCategory($this->categoryManager->findOne($this->request->request->get('category')));
+                $post->setTags($this->tagsLineManager->findTagsByPost($post->getSlug()));
+
+                if($this->request->files->get('cover') != null)
+                {
+                    unlink('upload/' . $post->getCover());
+                    $post->setCover($this->uploadFile($this->request->files->get('cover')));
+                }
+                else
+                {
+                    $post->setCover($post->getCover());
+                }
+
+                $this->postManager->update($post);
+
+                // Remove tags_line
+                foreach($post->getTags() as $tag)
+                {
+                    $this->tagsLineManager->delete($tag->getId());
+                }
+
+                // Create new tags_line
+                foreach($this->request->request->get('tags') as $tag)
+                {
+                    $this->tagsLineManager->create($tag, $post->getId());
+                }
+
+                return $this->redirectToRoute('/post/'. $post->getSlug());
+            }
+
+            return $this->render('post/update.html.twig', [
+                'post' => $post,
+                'categories' => $this->categoryManager->findAll(),
+                'tags' => $this->tagsManager->findAll()
+            ]);
+        }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, modification impossible']);
+
+        return $this->redirectToRoute('/dashboard/post');
+    }
+
+
+    /**
+     * Delete post
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function delete(string $slug) : Response
+    {
+        $post = $this->postManager->findOne($slug);
+
+        if($post === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, suppression impossible !']);
+
+            return $this->redirectToRoute('/dashboard/post');
+        }
+
+        unlink('upload/' . $post->getCover());
+        $this->postManager->delete($post->getSlug());
+
+        $this->session->getFlashBag()->add('alert', ['success' => 'Post supprimé !']);
+
+        return $this->redirectToRoute('/dashboard/post');
+    }
+
+
+    /**
+     * Post archiving
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function archiving(string $slug) : Response
+    {
+        $post = $this->postManager->findOne($slug);
+
+        if($post === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, archivage impossible !']);
+
+            return $this->redirectToRoute('/dashboard/post');
+        }
+
+        if($post->getStatus() == 'archived')
+        {
+            $post->setStatus('available');
+
+            $this->session->getFlashBag()->add('alert', ['success' => 'Remise en ligne éffectuée.']);
+        }
+        else
+        {
+            $post->setStatus('archived');
+
+            $this->session->getFlashBag()->add('alert', ['success' => 'Archivage éffectué.']);
+        }
+
+        $this->postManager->archiving($post);
+
+        return $this->redirectToRoute('/dashboard/post');
+    }
+
+
+    // TODO Like/Dislike Method
+
+    // TODO Pin/Unpin Method
+
 }

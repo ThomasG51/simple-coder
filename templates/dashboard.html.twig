@@ -25,6 +25,18 @@
 </head>
 <body>
 
+{% for alert in flash.alert %}
+    {% if alert.danger %}
+        <div class="alert alert-top alert-danger" role="alert">
+            <i class="fas fa-times mr-1"></i> {{ alert.danger}}
+        </div>
+    {% elseif alert.success %}
+        <div class="alert alert-top alert-success" role="alert">
+            <i class="fas fa-check mr-1"></i> {{ alert.success}}
+        </div>
+    {% endif %}
+{% endfor %}
+
 <main class="container-fluid">
     <div class="row vh-100">
         <div class="col-xl-2 bg-custom-dark p-0 position-fixed vh-100">
@@ -34,11 +46,11 @@
             </div></a>
 
             <ul class="p-0 manage">
-                <li class="pl-4"><a href="" class="text-light"><i class="fas fa-pen-nib mr-2"></i> Posts <span class="badge badge-light ml-2">6</span></a></li>
-                <li class="pl-4"><a href="" class="text-light"><i class="fas fa-comments mr-2"></i> Comments <span class="badge badge-light ml-2">4</span></a></li>
-                <li class="pl-4"><a href="" class="text-light"><i class="fas fa-filter mr-2"></i> Categories <span class="badge badge-light ml-2">3</span></a></li>
-                <li class="pl-4"><a href="" class="text-light"><i class="fas fa-tags mr-2"></i> Tags <span class="badge badge-light ml-2">5</span></a></li>
-                <li class="pl-4"><a href="" class="text-light"><i class="fas fa-user mr-2"></i> Users <span class="badge badge-light ml-2">1</span></a></li>
+                <li class="pl-4"><a href="/dashboard/post" class="text-light"><i class="fas fa-pen-nib mr-2"></i> Posts <span class="badge badge-light ml-2">6</span></a></li>
+                <li class="pl-4"><a href="/dashboard/comment" class="text-light"><i class="fas fa-comments mr-2"></i> Comments <span class="badge badge-light ml-2">4</span></a></li>
+                <li class="pl-4"><a href="/dashboard/category" class="text-light"><i class="fas fa-filter mr-2"></i> Categories <span class="badge badge-light ml-2">3</span></a></li>
+                <li class="pl-4"><a href="/dashboard/tags" class="text-light"><i class="fas fa-tags mr-2"></i> Tags <span class="badge badge-light ml-2">5</span></a></li>
+                <li class="pl-4"><a href="/dashboard/user" class="text-light"><i class="fas fa-user mr-2"></i> Users <span class="badge badge-light ml-2">1</span></a></li>
             </ul>
         </div>
         <div class="col-xl-10 offset-xl-2 bg-light-grey">
@@ -55,7 +67,7 @@
                 <div class="col-xl-4 pl-0 pr-0">
                     <div class="card bg-white border-white manage-header">
                         <div class="card-body h-100 d-flex justify-content-evenly align-items-center">
-                            <a href="write.html"><button class="btn btn-outline-secondary tech-font"><i class="fas fa-pen mr-1"></i> Write a new post</button></a>
+                            <a href="/post/create"><button class="btn btn-outline-secondary tech-font"><i class="fas fa-pen mr-1"></i> Write a new post</button></a>
                         </div>
                     </div>
                 </div>
@@ -86,6 +98,20 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
 {% block javascripts %}{% endblock %}
+
+<script type="text/javascript">
+
+    // Auto hide alert
+    if($('.alert-top').html())
+    {
+        $('.alert-top').slideDown();
+
+        setTimeout(function(){
+            $('.alert').slideUp();
+        }, 3000);
+    }
+
+</script>
 
 </body>
 </html>

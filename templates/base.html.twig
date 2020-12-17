@@ -27,6 +27,18 @@
 </head>
 <body>
 
+    {% for alert in flash.alert %}
+        {% if alert.danger %}
+            <div class="alert alert-top alert-danger" role="alert">
+                <i class="fas fa-times mr-1"></i> {{ alert.danger}}
+            </div>
+        {% elseif alert.success %}
+            <div class="alert alert-top alert-success" role="alert">
+                <i class="fas fa-check mr-1"></i> {{ alert.success}}
+            </div>
+        {% endif %}
+    {% endfor %}
+
     <header class="container">
         <div class="row vh-25">
             <div class="col-xl-5 h-100 d-flex justify-content-start align-items-center tech-font">
@@ -51,10 +63,6 @@
                 </nav>
             </div>
             <div class="col-xl-2 h-100 d-flex flex-column justify-content-center align-items-center">
-{#                <figure class="w-80 mb-3">#}
-{#                    <a href="/"><img src="{{ asset('/images/profil.png') }}" alt="profil_avatar" class="w-100"></a>#}
-{#                </figure>#}
-{#                <h5 class="tech-font">Thomas George</h5>#}
                 <a href="/"><div class="bg-custom-dark rounded-circle php-border text-center px-4 py-3">
                     <i class="fas fa-laptop-code text-white fs-4em mt-2 mb-2"></i>
                     <h5 class="tech-font text-white">Simple Coder</h5>
@@ -72,7 +80,7 @@
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item tech-font" href="/post/create">Rédiger</a>
                                         <a class="dropdown-item tech-font" href="#">Favoris</a>
-                                        <a class="dropdown-item tech-font" href="/dashboard/user">Administration</a>
+                                        <a class="dropdown-item tech-font" href="/dashboard/post">Administration</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item tech-font text-danger" href="/user/logout"><i class="fas fa-sign-out-alt mr-1"></i>Deconnexion</a>
                                     </div>
@@ -228,6 +236,7 @@
 
     <script type="text/javascript">
 
+        // Registration AJAX
         $('#registration-btn').click(function(){
             event.preventDefault();
 
@@ -282,6 +291,7 @@
         });
 
 
+        // Login AJAX
         $('#login_btn').click(function(){
             event.preventDefault();
 
@@ -321,6 +331,7 @@
         });
 
 
+        // Reset password by email modal
         $('#reset_password_btn').click(function(){
             $('#login_container').html('' +
                 '<h3 class="title-font mb-3">Reinitialiser le mot de passe</h3>' +
@@ -335,6 +346,17 @@
                 '</form>' +
             '');
         });
+
+
+        // Auto hide alert
+        if($('.alert-top').html())
+        {
+            $('.alert-top').slideDown();
+
+            setTimeout(function(){
+                $('.alert').slideUp();
+            }, 3000);
+        }
 
     </script>
 

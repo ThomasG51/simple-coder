@@ -59,4 +59,43 @@ class TagsLineRepository extends AbstractRepository
 
         return $tags;
     }
+
+
+    /**
+     * Update Tags
+     *
+     * @param int $tags_id
+     * @param int $post_id
+     */
+    public function update(int $tags_id, int $post_id) : void
+    {
+        $query = $this->getPDO()->prepare('
+            UPDATE tags_lines
+            SET tags_id = :tags_id
+            WHERE post_id = :post_id
+        ');
+
+        $query->execute([
+            'tags_id' => $tags_id,
+            'post_id' => $post_id
+        ]);
+    }
+
+
+    /**
+     * Delete tags_line
+     *
+     * @param int $tags_id
+     */
+    public function delete(int $tags_id) : void
+    {
+        $query = $this->getPDO()->prepare('
+            DELETE FROM tags_lines
+            WHERE tags_id = :tags_id
+        ');
+
+        $query->execute([
+            'tags_id' => $tags_id
+        ]);
+    }
 }

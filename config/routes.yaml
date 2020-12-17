@@ -6,6 +6,10 @@ dashboard_user:
   path: /dashboard/user
   controller: App\Controller\DashboardController::manageUser
 
+dashboard_post:
+  path: /dashboard/post
+  controller: App\Controller\DashboardController::managePost
+
 create_user:
   path: /user/create
   controller: App\Controller\UserController::create
@@ -33,6 +37,10 @@ create_post:
 update_post:
   path: /post/update/{slug}
   controller: App\Controller\PostController::update
+
+archiving_post:
+  path: /post/archiving/{slug}
+  controller: App\Controller\PostController::archiving
 
 delete_post:
   path: /post/delete/{slug}

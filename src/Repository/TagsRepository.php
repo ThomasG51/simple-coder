@@ -55,14 +55,12 @@ class TagsRepository extends AbstractRepository
 
         $tag = $query->fetch();
 
-        if($tag)
+        if(!$tag)
         {
-            return new Tags($tag['id'], $tag['name']);
+            return null;
         }
-        else
-        {
-            return false;
-        }
+
+        return new Tags($tag['id'], $tag['name']);
     }
 
 

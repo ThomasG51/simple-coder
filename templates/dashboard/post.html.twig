@@ -1,0 +1,57 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block body %}
+
+    <div class="row bg-white mx-3 my-4 p-4 rounded-lg">
+        <table class="table">
+            <tr>
+                <th class="w-15">Thumbnail</th>
+                <th class="w-35"><i class="fas fa-sort mr-1"></i> Content</th>
+                <th class="w-15"><i class="fas fa-sort mr-1"></i> Author</th>
+                <th class="w-15"><i class="fas fa-sort-numeric-down mr-1 text-danger"></i> <i class="fas fa-sort mr-1"></i> Date
+                </th>
+                <th class="w-10"><i class="fas fa-sort mr-1"></i> Status</th>
+                <th class="w-10">Action</th>
+            </tr>
+            {% for post in posts %}
+                <tr>
+                    <td>
+                        <figure class="w-100 m-0">
+                            <img src="{{ asset('../upload/' ~ post.cover) }}" alt="{{ post.cover }}" class="w-100">
+                        </figure>
+                    </td>
+                    <td>
+                        <a href="/post/{{ post.slug }}"><h5 class="title-font mb-3">{{ post.title }}</h5></a>
+                        <p class="text-justify">
+                            {{ post.text | slice(0, 150) | raw }}...
+                        </p>
+                    </td>
+                    <td>
+                        <small>{{ post.user.firstname }} {{ post.user.lastname }}</small>
+                    </td>
+                    <td>
+                        <small><i class="far fa-calendar-alt mr-1"></i> {{ post.date | date('d/m/Y') }}</small><br/>
+                        <small><i class="far fa-clock mr-1"></i> {{ post.date | date('H:i:s') }}</small>
+                    </td>
+                    <td>
+                        {% if post.status == 'available' %}
+                            <span class="badge badge-success">{{ post.status }}</span>
+                        {% else %}
+                            <span class="badge badge-primary">{{ post.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/post/update/{{ post.slug }}"><i class="fas fa-pen text-light-grey pointer"></i></a>
+                        {% if post.status == 'available' %}
+                            <a href="/post/archiving/{{ post.slug }}"><i class="fas fa-archive text-primary pointer ml-2"></i></a>
+                        {% else %}
+                            <a href="/post/archiving/{{ post.slug }}"><i class="fas fa-check text-success pointer ml-2"></i></a>
+                            <a href="/post/delete/{{ post.slug }}" onclick="return confirm('Êtes-vous sur de vouloir supprimer le post : {{ post.title }}')"><i class="fas fa-trash text-danger pointer ml-2"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

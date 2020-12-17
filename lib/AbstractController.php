@@ -52,6 +52,7 @@ abstract class AbstractController
         $twig->addExtension(new DebugExtension());
 
         $twig->addGlobal('session', $this->session->all());
+        $twig->addGlobal('flash', $this->session->getFlashBag()->all());
 
         $categories = new CategoryRepository();
         $twig->addGlobal('global_categories', $categories->findAll());
