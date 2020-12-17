@@ -2,7 +2,7 @@
 
 {% block body %}
     <section class="container-fluid mb-4">
-        <figure class="row vh-65">
+        <figure class="row vh-55">
             <img src="{{ asset('../upload/' ~ post.cover) }}" alt="" class="cover">
         </figure>
     </section>
@@ -10,7 +10,14 @@
     <main class="container mb-5">
         <div class="row">
             <div class="col-xl-12 mb-5 mt-5">
-                <h1 class="title-font">{{ post.title }}</h1>
+                <h1 class="title-font">
+                    {% if pin == null %}
+                        <a href="/post/pin/{{ post.slug }}"><i class="far fa-bookmark c-php mr-1 pointer"></i></a>
+                    {% else %}
+                        <a href="/post/pin/{{ post.slug }}"><i class="fas fa-bookmark c-php mr-1 pointer"></i></a>
+                    {% endif %}
+                    {{ post.title }}
+                </h1>
 
                 <h6 class="article-infos mb-1">
                     <i class="far fa-calendar-alt mr-1"></i>{{ post.date | date('d/m/Y') }}
@@ -35,30 +42,25 @@
                     </p>
                 </article>
 
-                <div class="mt-3 mb-5">
-                    <span class="badge badge-dark thumbs"><i class="far fa-thumbs-up mr-1"></i>9</span>
-                    <span class="badge badge-dark ml-3 thumbs"><i class="far fa-thumbs-down mr-1"></i>9</span>
-                </div>
+                <h2 class="text-right mt-5 mb-0"><i class="far fa-comments mr-2"></i>Commentaires</h2>
 
-                <h2 class="text-right"><i class="far fa-comments mr-2"></i>Commentaires</h2>
-
-                <div class="comment pt-4 mb-3">
+                <div class="comment py-3">
                     <h5 class="mb-1">Prénom Nom</h5>
                     <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>30-10-2020<i class="far fa-clock mr-1 ml-3"></i>14:04</h6>
 
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
+                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
                 </div>
-                <div class="comment pt-4 mb-3">
+                <div class="comment py-3">
                     <h5 class="mb-1">Prénom Nom</h5>
                     <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>30-10-2020<i class="far fa-clock mr-1 ml-3"></i>14:04</h6>
 
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
+                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
                 </div>
-                <div class="comment pt-4 mb-3">
+                <div class="comment py-3">
                     <h5 class="mb-1">Prénom Nom</h5>
                     <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>30-10-2020<i class="far fa-clock mr-1 ml-3"></i>14:04</h6>
 
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
+                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
                 </div>
             </div>
 

@@ -54,14 +54,6 @@ show_pined_posts:
   path: /post/favorites
   controller: App\Controller\PostController::showPined
 
-like_post:
-  path: /post/like/{slug}
-  controller: App\Controller\PostController::like
-
-dislike_post:
-  path: /post/dislike/{slug}
-  controller: App\Controller\PostController::dislike
-
 show_post:
   path: /post/{slug}
   controller: App\Controller\PostController::show

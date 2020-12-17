@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Repository\CategoryRepository;
+use App\Repository\PinRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagsLineRepository;
 use App\Repository\TagsRepository;
@@ -23,6 +24,8 @@ class PostController extends AbstractController
 
     private TagsLineRepository $tagsLineManager;
 
+    private PinRepository $pinManager;
+
 
     /**
      * PostController constructor.
@@ -37,6 +40,7 @@ class PostController extends AbstractController
         $this->categoryManager = new CategoryRepository();
         $this->tagsManager = new TagsRepository();
         $this->tagsLineManager = new TagsLineRepository();
+        $this->pinManager = new PinRepository();
     }
 
 
@@ -123,7 +127,8 @@ class PostController extends AbstractController
 
         return $this->render('post/show.html.twig', [
             'post' => $this->postManager->findOne($slug),
-            'tags' => $this->tagsLineManager->findTagsByPost($slug)
+            'tags' => $this->tagsLineManager->findTagsByPost($slug),
+            'pin' => $this->pinManager->findOne($this->session->get('user'), $this->postManager->findOne($slug))
         ]);
     }
 
@@ -249,8 +254,35 @@ class PostController extends AbstractController
     }
 
 
-    // TODO Like/Dislike Method
+    /**
+     * Pin post
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function pin(string $slug) : Response
+    {
+        $post = $this->postManager->findOne($slug);
+        $user = $this->session->get('user');
 
-    // TODO Pin/Unpin Method
+        if($post === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, impossible d\'épingler le post']);
 
+            return $this->redirectToRoute('/');
+        }
+
+        if(!empty($this->pinManager->findOne($user, $post)))
+        {
+            $this->pinManager->delete($user, $post);
+            $this->session->getFlashBag()->add('alert', ['success' => 'L\'épingle a bien été supprimée']);
+
+            return $this->redirectToRoute('/post/' . $slug);
+        }
+
+        $this->pinManager->create($user, $post);
+        $this->session->getFlashBag()->add('alert', ['success' => 'Le billet a bien été épingler']);
+
+        return $this->redirectToRoute('/post/' . $slug);
+    }
 }
