@@ -1,0 +1,53 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block body %}
+
+    <div class="row bg-white mx-3 my-4 p-4 rounded-lg">
+        <table class="table">
+            <tr>
+                <th class="w-10"><i class="fas fa-sort mr-1"></i> Author</th>
+                <th class="w-10"><i class="fas fa-sort-numeric-down mr-1 text-danger"></i> <i class="fas fa-sort mr-1"></i> Date</th>
+                <th class="w-35"><i class="fas fa-sort mr-1"></i> Content</th>
+                <th class="w-10"><i class="fas fa-sort mr-1"></i> Status</th>
+                <th class="w-20"><i class="fas fa-sort mr-1"></i> Post</th>
+                <th class="w-15 text-center">Action</th>
+            </tr>
+            {% for comment in comments %}
+                <tr>
+                    <td>
+                        <small>{{ comment.user.firstname }} {{ comment.user.lastname }}</small>
+                    </td>
+                    <td>
+                        <small><i class="far fa-calendar-alt mr-1"></i> {{ comment.date | date('d/m/Y') }}</small><br/>
+                        <small><i class="far fa-clock mr-1"></i> {{ comment.date | date('H:i:s') }}</small>
+                    </td>
+                    <td>
+                        <p class="text-justify">
+                            {{ comment.text }}
+                        </p>
+                    </td>
+                    <td>
+                        {% if comment.status == 'reported' %}
+                            <span class="badge badge-warning">reported</span>
+                        {% else %}
+                            <span class="badge badge-success">available</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ comment.post.title }}
+                    </td>
+                    <td class="text-center">
+                        {% if comment.status == 'reported' %}
+                            <a href="/comment/valide/"><i class="fas fa-check text-success pointer ml-2"></i></a>
+                        {% endif %}
+                        <form action="/comment/delete/{{ comment.id }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                            <button type="submit" class="btn btn-link p-0" onclick="return confirm('Êtes-vous sur de vouloir supprimer le commentaire ?')"><i class="fas fa-trash text-danger"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

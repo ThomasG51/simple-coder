@@ -126,7 +126,6 @@ abstract class AbstractController
         }
 
         // Upload
-        // TODO check condition on post_crud branch
         if(!$file->move($directory, $fileName))
         {
             $this->session->getFlashBag()->add('alert', ['danger' => 'Le fichier n\'a pas été téléchargé']);

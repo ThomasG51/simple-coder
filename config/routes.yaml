@@ -10,6 +10,10 @@ dashboard_post:
   path: /dashboard/post
   controller: App\Controller\DashboardController::managePost
 
+dashboard_comment:
+  path: /dashboard/comment
+  controller: App\Controller\DashboardController::manageComment
+
 create_user:
   path: /user/create
   controller: App\Controller\UserController::create

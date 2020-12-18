@@ -42,26 +42,30 @@
                     </p>
                 </article>
 
-                <h2 class="text-right mt-5 mb-0"><i class="far fa-comments mr-2"></i>Commentaires</h2>
+                <h2 class="text-right mt-5 mb-3"><i class="far fa-comments mr-2"></i>Commentaires</h2>
 
-                <div class="comment py-3">
-                    <h5 class="mb-1">Prénom Nom</h5>
-                    <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>30-10-2020<i class="far fa-clock mr-1 ml-3"></i>14:04</h6>
+                <form action="/comment/create" method="POST" class="mb-5">
+                    <input type="hidden" name="post" value="{{ post.slug }}">
+                    <div class="form-group">
+                        <textarea class="form-control" name="text" rows="8"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="form-control btn btn-php"> Enregistrer</button>
+                    </div>
+                </form>
 
-                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
-                </div>
-                <div class="comment py-3">
-                    <h5 class="mb-1">Prénom Nom</h5>
-                    <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>30-10-2020<i class="far fa-clock mr-1 ml-3"></i>14:04</h6>
+                {% if comments is empty %}
+                    <h6>Aucun commentaire.</h6>
+                {% else %}
+                    {% for comment in comments %}
+                        <div class="comment py-3">
+                            <h6 class="mb-1">{{ comment.user.firstname }} {{ comment.user.lastname }}</h6>
+                            <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>{{ comment.date | date('d:m:Y') }} <i class="far fa-clock mr-1 ml-3"></i>{{ comment.date | date('H:i:s') }}</h6>
 
-                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
-                </div>
-                <div class="comment py-3">
-                    <h5 class="mb-1">Prénom Nom</h5>
-                    <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>30-10-2020<i class="far fa-clock mr-1 ml-3"></i>14:04</h6>
-
-                    <p class="mb-0">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias dicta doloremque, aliquid voluptate delectus impedit sequi molestiae ab praesentium? Nobis velit ullam molestiae ipsa quae.</p>
-                </div>
+                            <p class="mb-0">{{ comment.text }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
 
             <aside class="col-xl-4 vh-100 mt-2">

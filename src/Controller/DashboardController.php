@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Repository\UserRepository;
 use Lib\AbstractController;
@@ -15,6 +16,8 @@ class DashboardController extends AbstractController
     private UserRepository $userManager;
 
     private PostRepository $postManager;
+
+    private CommentRepository $commentManager;
 
 
     /**
@@ -28,6 +31,7 @@ class DashboardController extends AbstractController
 
         $this->userManager = new UserRepository();
         $this->postManager = new PostRepository();
+        $this->commentManager = new CommentRepository();
     }
 
 
@@ -53,6 +57,14 @@ class DashboardController extends AbstractController
     {
         return $this->render('dashboard/post.html.twig', [
             'posts' => $this->postManager->findAll()
+        ]);
+    }
+
+
+    public function manageComment() : Response
+    {
+        return $this->render('/dashboard/comment.html.twig', [
+            'comments' => $this->commentManager->findAll()
         ]);
     }
 }

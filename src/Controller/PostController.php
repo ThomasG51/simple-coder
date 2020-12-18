@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\PinRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagsLineRepository;
@@ -26,6 +27,8 @@ class PostController extends AbstractController
 
     private PinRepository $pinManager;
 
+    private CommentRepository $commentManager;
+
 
     /**
      * PostController constructor.
@@ -41,6 +44,7 @@ class PostController extends AbstractController
         $this->tagsManager = new TagsRepository();
         $this->tagsLineManager = new TagsLineRepository();
         $this->pinManager = new PinRepository();
+        $this->commentManager = new CommentRepository();
     }
 
 
@@ -55,6 +59,8 @@ class PostController extends AbstractController
 
         if($this->request->getMethod() == 'POST')
         {
+            // TODO refactor with validator
+
             if(empty($this->request->request->get('title')))
             {
                 $errorPost += ['title' => 'Veuillez remplir le titre.'];
@@ -128,7 +134,8 @@ class PostController extends AbstractController
         return $this->render('post/show.html.twig', [
             'post' => $this->postManager->findOne($slug),
             'tags' => $this->tagsLineManager->findTagsByPost($slug),
-            'pin' => $this->pinManager->findOne($this->session->get('user'), $this->postManager->findOne($slug))
+            'pin' => $this->pinManager->findOne($this->session->get('user'), $this->postManager->findOne($slug)),
+            'comments' => $this->commentManager->findByPost($this->postManager->findOne($slug))
         ]);
     }
 
@@ -285,4 +292,7 @@ class PostController extends AbstractController
 
         return $this->redirectToRoute('/post/' . $slug);
     }
+
+
+    // TODO show post by category
 }
