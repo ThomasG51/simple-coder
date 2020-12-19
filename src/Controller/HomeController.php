@@ -22,4 +22,6 @@ class HomeController extends AbstractController
             'posts' => $posts
         ]);
     }
+
+    // TODO Search post
 }

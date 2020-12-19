@@ -1,5 +1,4 @@
 * {
-    /*font-family: 'Montserrat', sans-serif;*/
     font-family: 'Roboto', sans-serif;
 }
 
@@ -140,4 +139,17 @@ li {
     z-index: 50;
     text-align: center;
     display: none;
+}
+
+.reported {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #1C1C1E;
+    color: #ffffff;
+}
+
+.reported:hover {
+    background-color: #ffbf00;
+    color: #1C1C1E;
 }

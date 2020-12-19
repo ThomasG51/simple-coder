@@ -67,4 +67,7 @@ class DashboardController extends AbstractController
             'comments' => $this->commentManager->findAll()
         ]);
     }
+
+    // TODO manage tags
+    // TODO manage categories
 }

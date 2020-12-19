@@ -78,6 +78,10 @@ delete_comment:
   path: /comment/delete/{slug}
   controller: App\Controller\CommentController::delete
 
+report_comment:
+  path: /comment/report/{slug}
+  controller: App\Controller\CommentController::report
+
 create_category:
   path: /category/create
   controller: App\Controller\CategoryController::create
@@ -85,8 +89,3 @@ create_category:
 create_tags:
   path: /tags/create
   controller: App\Controller\TagsController::create
-
-
-save_attachments:
-  path: /post/attachments
-  controller: App\Controller\PostController::attachments

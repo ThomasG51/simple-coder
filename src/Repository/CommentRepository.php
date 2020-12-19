@@ -174,5 +174,23 @@ class CommentRepository extends AbstractRepository
         ]);
     }
 
-    // TODO report
+
+    /**
+     * Report Comment
+     *
+     * @param Comment $comment
+     */
+    public function report(Comment $comment) : void
+    {
+        $query = $this->getPDO()->prepare('
+            UPDATE comment
+            SET status = :status
+            WHERE id = :id
+        ');
+
+        $query->execute([
+            'status' => $comment->getStatus(),
+            'id' => $comment->getId()
+        ]);
+    }
 }

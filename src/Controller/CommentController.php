@@ -99,4 +99,40 @@ class CommentController extends AbstractController
 
         return $this->redirectToRoute('/');
     }
+
+
+    /**
+     * Report comment
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function report(int $id) : Response
+    {
+        $comment = $this->commentManager->findOne($id);
+
+        if ($comment === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Commentaire introuvable, signalemenet impossible']);
+
+            return $this->redirectToRoute('/');
+        }
+
+        if($comment->getStatus() === 'available')
+        {
+            $comment->setStatus('reported');
+            $this->session->getFlashBag()->add('alert', ['success' => 'Commentaire signalé']);
+        }
+        else
+        {
+            // TODO only admin can make comment available
+            $comment->setStatus('available');
+            $this->session->getFlashBag()->add('alert', ['success' => 'Commentaire remis en ligne']);
+            // else return error
+        }
+
+        $this->commentManager->report($comment);
+
+        return $this->redirectToRoute('/post/' . $comment->getPost()->getSlug());
+    }
 }

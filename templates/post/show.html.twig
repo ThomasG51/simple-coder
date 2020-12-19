@@ -58,12 +58,16 @@
                     <h6>Aucun commentaire.</h6>
                 {% else %}
                     {% for comment in comments %}
-                        <div class="comment py-3">
-                            <h6 class="mb-1">{{ comment.user.firstname }} {{ comment.user.lastname }}</h6>
-                            <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>{{ comment.date | date('d:m:Y') }} <i class="far fa-clock mr-1 ml-3"></i>{{ comment.date | date('H:i:s') }}</h6>
+                        {%  if comment.status == 'available' %}
+                            <div class="comment py-3 position-relative">
+                                <h6 class="mb-1">{{ comment.user.firstname }} {{ comment.user.lastname }}</h6>
+                                <h6 class="article-infos mb-3"><i class="far fa-calendar-alt mr-1"></i>{{ comment.date | date('d:m:Y') }} <i class="far fa-clock mr-1 ml-3"></i>{{ comment.date | date('H:i:s') }}</h6>
 
-                            <p class="mb-0">{{ comment.text }}</p>
-                        </div>
+                                <p class="mb-0">{{ comment.text }}</p>
+
+                                <a href="/comment/report/{{ comment.id }}" class="badge p-2 mt-3 mr-1 fs-1em reported"><i class="far fa-thumbs-down"></i></a>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
             </div>
