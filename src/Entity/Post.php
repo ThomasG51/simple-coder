@@ -12,7 +12,7 @@ class Post
 
     private string $cover;
 
-    private string $date;
+    private string $createdAt;
 
     private string $text;
 
@@ -84,18 +84,18 @@ class Post
     /**
      * @return string
      */
-    public function getDate(): string
+    public function getCreatedAt(): string
     {
-        return $this->date;
+        return $this->createdAt;
     }
 
 
     /**
-     * @param string $date
+     * @param string $createdAt
      */
-    public function setDate(string $date): void
+    public function setCreatedAt(string $createdAt): void
     {
-        $this->date = $date;
+        $this->createdAt = $createdAt;
     }
 
 

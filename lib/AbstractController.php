@@ -135,4 +135,21 @@ abstract class AbstractController
 
         return $fileName;
     }
+
+
+    /**
+     * Check roles
+     *
+     * @param string $role
+     * @throws \Exception
+     */
+    public function checkRole(string $role)
+    {
+        if($this->session->get('user')->getRole() != $role)
+        {
+            throw new \Exception('Vous n\'avez pas les droits pour effectuer cette opération');
+        }
+
+        // TODO if user not connected, role null
+    }
 }

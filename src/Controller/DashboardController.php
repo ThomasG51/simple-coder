@@ -61,6 +61,11 @@ class DashboardController extends AbstractController
     }
 
 
+    /**
+     * Comment Management
+     *
+     * @return Response
+     */
     public function manageComment() : Response
     {
         return $this->render('/dashboard/comment.html.twig', [

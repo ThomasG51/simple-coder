@@ -92,6 +92,10 @@ li {
     border: 5px solid #505c90;
 }
 
+.php-bg {
+    background-color: #505c90;
+}
+
 .manage li {
     list-style: none;
     line-height: 3em;

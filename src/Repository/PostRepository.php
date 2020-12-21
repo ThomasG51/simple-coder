@@ -52,7 +52,7 @@ class PostRepository extends AbstractRepository
             $instance->setId($post['id_post']);
             $instance->setTitle($post['title']);
             $instance->setCover($post['cover']);
-            $instance->setDate($post['date']);
+            $instance->setCreatedAt($post['date']);
             $instance->setText($post['text']);
             $instance->setSlug($post['slug']);
             $instance->setStatus($post['status']);
@@ -96,7 +96,7 @@ class PostRepository extends AbstractRepository
         $instance->setId($post['id_post']);
         $instance->setTitle($post['title']);
         $instance->setCover($post['cover']);
-        $instance->setDate($post['date']);
+        $instance->setCreatedAt($post['date']);
         $instance->setText($post['text']);
         $instance->setSlug($post['slug']);
         $instance->setStatus($post['status']);

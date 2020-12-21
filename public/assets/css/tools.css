@@ -455,6 +455,11 @@
     color: #ffffff;
 }
 
+.btn-outline-php {
+    border: 2px solid #505c90;
+    color: #505c90;
+}
+
 .btn-php:hover {
     background-color: #2f3758;
     color: #ffffff;

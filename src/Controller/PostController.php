@@ -7,11 +7,13 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
+use App\Repository\LikesRepository;
 use App\Repository\PinRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagsLineRepository;
 use App\Repository\TagsRepository;
 use Lib\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,6 +31,8 @@ class PostController extends AbstractController
 
     private CommentRepository $commentManager;
 
+    private LikesRepository $likesManager;
+
 
     /**
      * PostController constructor.
@@ -45,6 +49,7 @@ class PostController extends AbstractController
         $this->tagsLineManager = new TagsLineRepository();
         $this->pinManager = new PinRepository();
         $this->commentManager = new CommentRepository();
+        $this->likesManager = new LikesRepository();
     }
 
 
@@ -135,7 +140,9 @@ class PostController extends AbstractController
             'post' => $this->postManager->findOne($slug),
             'tags' => $this->tagsLineManager->findTagsByPost($slug),
             'pin' => $this->pinManager->findOne($this->session->get('user'), $this->postManager->findOne($slug)),
-            'comments' => $this->commentManager->findByPost($this->postManager->findOne($slug))
+            'comments' => $this->commentManager->findByPost($this->postManager->findOne($slug)),
+            'like' => $this->likesManager->findOne($this->session->get('user'), $this->postManager->findOne($slug)),
+            'count_like' => $this->likesManager->countByPost($this->postManager->findOne($slug))
         ]);
     }
 
@@ -291,6 +298,29 @@ class PostController extends AbstractController
         $this->session->getFlashBag()->add('alert', ['success' => 'Le billet a bien été épingler']);
 
         return $this->redirectToRoute('/post/' . $slug);
+    }
+
+
+    public function liked(string $slug)
+    {
+        $user = $this->session->get('user');
+        $post = $this->postManager->findOne($slug);
+
+        if($this->likesManager->findOne($user, $post) != null)
+        {
+            $this->likesManager->delete($user, $post);
+
+            return new JsonResponse('unlike');
+        }
+
+        if($post === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, like impossible']);
+        }
+
+        $this->likesManager->create($user, $post);
+
+        return new JsonResponse('like');
     }
 
 

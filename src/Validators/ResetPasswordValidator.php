@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Lib\Validators;
+namespace App\Validators;
 
 
 use App\Repository\UserRepository;

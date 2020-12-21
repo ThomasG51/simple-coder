@@ -7,9 +7,9 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Lib\AbstractController;
-use Lib\Validators\LoginValidator;
-use Lib\Validators\RegistrationValidator;
-use Lib\Validators\ResetPasswordValidator;
+use App\Validators\LoginValidator;
+use App\Validators\RegistrationValidator;
+use App\Validators\ResetPasswordValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +51,7 @@ class UserController extends AbstractController
                 $user->setLastname($this->request->request->get('sign_up_lastname'));
                 $user->setEmail($this->request->request->get('sign_up_email'));
                 $user->setPassword(password_hash($this->request->request->get('sign_up_password'), PASSWORD_DEFAULT));
-                $user->setRole('ROLE_USER');
+                $user->setRole('USER');
 
                 $this->userManager->create($user);
 

@@ -69,7 +69,7 @@ class CommentRepository extends AbstractRepository
         {
             $instance = new Comment();
             $instance->setId($comment['id']);
-            $instance->setDate($comment['date']);
+            $instance->setCreatedAt($comment['date']);
             $instance->setText($comment['text']);
             $instance->setStatus($comment['status']);
             $instance->setUser($this->userManager->findOne($comment['email']));
@@ -93,8 +93,8 @@ class CommentRepository extends AbstractRepository
         $query = $this->getPDO()->prepare('
             SELECT comment.*, post.slug, user.email
             FROM comment
-            LEFT JOIN post ON comment.post_id = post.id
-            LEFT JOIN user ON comment.user_id = user.id
+            INNER JOIN post ON comment.post_id = post.id
+            INNER JOIN user ON comment.user_id = user.id
             WHERE post_id = :post
             ORDER BY date DESC
         ');
@@ -107,7 +107,7 @@ class CommentRepository extends AbstractRepository
         {
             $instance = new Comment();
             $instance->setId($comment['id']);
-            $instance->setDate($comment['date']);
+            $instance->setCreatedAt($comment['date']);
             $instance->setText($comment['text']);
             $instance->setStatus(($comment['status']));
             $instance->setUser($this->userManager->findOne($comment['email']));
@@ -147,7 +147,7 @@ class CommentRepository extends AbstractRepository
 
         $instance = new Comment();
         $instance->setId($comment['id']);
-        $instance->setDate($comment['date']);
+        $instance->setCreatedAt($comment['date']);
         $instance->setText($comment['text']);
         $instance->setStatus($comment['status']);
         $instance->setUser($this->userManager->findOne($comment['email']));

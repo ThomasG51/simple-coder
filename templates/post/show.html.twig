@@ -42,6 +42,14 @@
                     </p>
                 </article>
 
+                <div class="like-container">
+                    {% if like == null %}
+                        <button class="like-btn btn btn-outline-php"><i class="far fa-thumbs-up mr-2"></i>Like <span class="count_like ml-2">{{ count_like }}</span></button>
+                    {% else %}
+                        <button class="like-btn btn btn-php" ><i class="fas fa-thumbs-up mr-2"></i>Liked <span class="count_like badge badge-light ml-2">{{ count_like }}</span></button>
+                    {% endif %}
+                </div>
+
                 <h2 class="text-right mt-5 mb-3"><i class="far fa-comments mr-2"></i>Commentaires</h2>
 
                 <form action="/comment/create" method="POST" class="mb-5">
@@ -65,7 +73,7 @@
 
                                 <p class="mb-0">{{ comment.text }}</p>
 
-                                <a href="/comment/report/{{ comment.id }}" class="badge p-2 mt-3 mr-1 fs-1em reported"><i class="far fa-thumbs-down"></i></a>
+                                <a href="/comment/report/{{ comment.id }}" class="badge p-2 mt-3 mr-1 fs-1em reported"><i class="fas fa-ban"></i></a>
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -101,4 +109,39 @@
 
         </div>
     </main>
+{% endblock %}
+
+
+{% block javascripts %}
+
+    <script type="text/javascript">
+
+        $('.like-btn').click(function(){
+            $.ajax({
+                url: '/post/like/{{ post.slug }}',
+                method: 'GET',
+                data: {
+                    slug: '{{ post.slug }}'
+                }
+            })
+            .done(function(data){
+               if(data === 'like')
+               {
+                   let count = parseInt($('.count_like').html()) + 1;
+                   $('.like-btn').addClass( "btn-php" );
+                   $('.like-btn').removeClass( "btn-outline-php" );
+                   $('.like-btn').html('<i class="fas fa-thumbs-up mr-2"></i>Liked <span class="count_like badge badge-light ml-2">' + count + '</span>');
+               }
+               else if(data === 'unlike')
+               {
+                   let count = parseInt($('.count_like').html()) - 1;
+                   $('.like-btn').addClass( "btn-outline-php" );
+                   $('.like-btn').removeClass( "btn-php" );
+                   $('.like-btn').html('<i class="far fa-thumbs-up mr-2"></i>Like <span class="count_like ml-2">' + count + '</span>');
+               }
+            });
+        });
+
+    </script>
+
 {% endblock %}

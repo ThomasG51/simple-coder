@@ -8,7 +8,7 @@ use App\Entity\Comment;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use Lib\AbstractController;
-use Lib\Validators\CreateCommentValidator;
+use App\Validators\CreateCommentValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,6 +37,8 @@ class CommentController extends AbstractController
     {
         if($this->request->getMethod() === 'POST')
         {
+            $this->checkRole('USER');
+
             $commentValidator = new CreateCommentValidator();
             $commentValidator->validate($this->request);
             // TODO limit max lenght
@@ -70,6 +72,8 @@ class CommentController extends AbstractController
      */
     public function delete(int $id) : Response
     {
+        // TODO delete only own comments
+
         if($this->request->getMethod() != 'POST')
         {
             $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression du commentaire impossible, le formulaire n\'a pas été soumis']);
@@ -125,10 +129,10 @@ class CommentController extends AbstractController
         }
         else
         {
-            // TODO only admin can make comment available
+            $this->checkRole('ADMIN');
+
             $comment->setStatus('available');
             $this->session->getFlashBag()->add('alert', ['success' => 'Commentaire remis en ligne']);
-            // else return error
         }
 
         $this->commentManager->report($comment);

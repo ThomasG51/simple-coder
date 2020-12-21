@@ -1,12 +1,11 @@
 <?php
 
 
-namespace Lib\Validators;
+namespace App\Validators;
 
 
 use App\Repository\UserRepository;
 use Assert\Assert;
-use Assert\AssertionFailedException;
 use Assert\LazyAssertionException;
 use Lib\Interfaces\Validators;
 use Symfony\Component\HttpFoundation\Request;

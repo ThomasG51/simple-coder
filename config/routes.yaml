@@ -42,21 +42,25 @@ update_post:
   path: /post/update/{slug}
   controller: App\Controller\PostController::update
 
+delete_post:
+  path: /post/delete/{slug}
+  controller: App\Controller\PostController::delete
+
 archiving_post:
   path: /post/archiving/{slug}
   controller: App\Controller\PostController::archiving
 
-delete_post:
-  path: /post/delete/{slug}
-  controller: App\Controller\PostController::delete
+like_post:
+  path: /post/like/{slug}
+  controller: App\Controller\PostController::liked
 
 pin_post:
   path: /post/pin/{slug}
   controller: App\Controller\PostController::pin
 
 show_pined_posts:
-  path: /post/favorites
-  controller: App\Controller\PostController::showPined
+  path: /post/pinned
+  controller: App\Controller\PostController::showByPin
 
 show_post:
   path: /post/{slug}
