@@ -83,17 +83,7 @@ class UserController extends AbstractController
 
             if(empty($loginValidator->getErrors()))
             {
-                // Create User Session
                 $this->session->set('user', $this->userManager->findOne($this->request->request->get('login_email')));
-
-                // Reset CSRF Token
-                if($this->session->get('csrf_token'))
-                {
-                    $this->session->remove('csrf_token');
-                }
-
-                // Create new CSRF Token
-                $this->session->set('csrf_token', md5(bin2hex(openssl_random_pseudo_bytes(8))));
 
                 return new JsonResponse(['login_succeeds' => 'Connexion reussi.']);
             }

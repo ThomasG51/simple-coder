@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <main>
+        {%  for post in posts %}
+            <h6>{{ post.title }}</h6>
+        {% endfor %}
+    </main>
+{% endblock %}

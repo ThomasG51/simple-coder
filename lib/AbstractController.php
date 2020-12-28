@@ -152,4 +152,13 @@ abstract class AbstractController
 
         // TODO if user not connected, role null
     }
+
+
+    /**
+     * Set token csrf
+     */
+    public function setTokenCsrf() : void
+    {
+        $this->session->set('csrf_token', md5(bin2hex(openssl_random_pseudo_bytes(8))));
+    }
 }

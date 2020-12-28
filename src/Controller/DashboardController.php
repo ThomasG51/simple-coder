@@ -29,6 +29,8 @@ class DashboardController extends AbstractController
     {
         parent::__construct($request);
 
+        $this->setTokenCsrf();
+
         $this->userManager = new UserRepository();
         $this->postManager = new PostRepository();
         $this->commentManager = new CommentRepository();

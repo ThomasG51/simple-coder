@@ -37,8 +37,6 @@ class CommentController extends AbstractController
     {
         if($this->request->getMethod() === 'POST')
         {
-            $this->checkRole('USER');
-
             $commentValidator = new CreateCommentValidator();
             $commentValidator->validate($this->request);
             // TODO limit max lenght

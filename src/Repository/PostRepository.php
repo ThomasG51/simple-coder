@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Entity\Category;
 use App\Entity\Post;
 use Lib\AbstractRepository;
 
@@ -35,7 +36,7 @@ class PostRepository extends AbstractRepository
     public function findAll() : array
     {
         $query = $this->getPDO()->prepare('
-            SELECT post.id AS id_post, post.*, category.*, user.* 
+            SELECT post.*, category.name as category, user.email as user
             FROM post
             LEFT JOIN category ON post.category_id = category.id 
             LEFT JOIN user ON post.user_id = user.id 
@@ -49,15 +50,15 @@ class PostRepository extends AbstractRepository
         foreach($query->fetchAll() as $post)
         {
             $instance = new Post();
-            $instance->setId($post['id_post']);
+            $instance->setId($post['id']);
             $instance->setTitle($post['title']);
             $instance->setCover($post['cover']);
             $instance->setCreatedAt($post['date']);
             $instance->setText($post['text']);
             $instance->setSlug($post['slug']);
             $instance->setStatus($post['status']);
-            $instance->setUser($this->userManager->findOne($post['email']));
-            $instance->setCategory($this->categoryManager->findOne($post['name']));
+            $instance->setUser($this->userManager->findOne($post['user']));
+            $instance->setCategory($this->categoryManager->findOne($post['category']));
             $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
 
             $posts[] = $instance;
@@ -76,7 +77,7 @@ class PostRepository extends AbstractRepository
     public function findOne(string $slug)
     {
         $query = $this->getPDO()->prepare('
-            SELECT post.id AS id_post, post.*, category.*, user.*
+            SELECT post.*, category.name as category, user.email as user
             FROM post 
             INNER JOIN category ON post.category_id = category.id 
             INNER JOIN user ON post.user_id = user.id
@@ -93,18 +94,60 @@ class PostRepository extends AbstractRepository
         }
 
         $instance = new Post();
-        $instance->setId($post['id_post']);
+        $instance->setId($post['id']);
         $instance->setTitle($post['title']);
         $instance->setCover($post['cover']);
         $instance->setCreatedAt($post['date']);
         $instance->setText($post['text']);
         $instance->setSlug($post['slug']);
         $instance->setStatus($post['status']);
-        $instance->setUser($this->userManager->findOne($post['email']));
-        $instance->setCategory($this->categoryManager->findOne($post['name']));
+        $instance->setUser($this->userManager->findOne($post['user']));
+        $instance->setCategory($this->categoryManager->findOne($post['category']));
         $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
 
         return $instance;
+    }
+
+
+    /**
+     * Find post by category
+     *
+     * @param Category $category
+     * @return array
+     */
+    public function findByCategory(Category $category) : array
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT post.*, category.name as category, user.email as user
+            FROM post
+            LEFT JOIN category ON post.category_id = category.id 
+            LEFT JOIN user ON post.user_id = user.id
+            WHERE category.name = :category
+            ORDER BY date DESC
+        ');
+
+        $query->execute(['category' => $category->getName()]);
+
+        $posts = [];
+
+        foreach($query->fetchAll() as $post)
+        {
+            $instance = new Post();
+            $instance->setId($post['id']);
+            $instance->setTitle($post['title']);
+            $instance->setCover($post['cover']);
+            $instance->setCreatedAt($post['date']);
+            $instance->setText($post['text']);
+            $instance->setSlug($post['slug']);
+            $instance->setStatus($post['status']);
+            $instance->setUser($this->userManager->findOne($post['user']));
+            $instance->setCategory($this->categoryManager->findOne($post['category']));
+            $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
+
+            $posts[] = $instance;
+        }
+
+        return $posts;
     }
 
 

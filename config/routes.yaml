@@ -66,6 +66,10 @@ show_post:
   path: /post/{slug}
   controller: App\Controller\PostController::show
 
+show_post_by_category:
+  path: /post/category/{slug}
+  controller: App\Controller\PostController::showByCategory
+
 show_comments:
   path: /comments
   controller: App\Controller\CommentController::show

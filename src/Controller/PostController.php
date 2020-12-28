@@ -12,6 +12,7 @@ use App\Repository\PinRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagsLineRepository;
 use App\Repository\TagsRepository;
+use App\Validators\CreatePostValidator;
 use Lib\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,38 +61,13 @@ class PostController extends AbstractController
      */
     public function create(): Response
     {
-        $errorPost = [];
+        $postValidator = new CreatePostValidator();
 
         if($this->request->getMethod() == 'POST')
         {
-            // TODO refactor with validator
+            $postValidator->validate($this->request);
 
-            if(empty($this->request->request->get('title')))
-            {
-                $errorPost += ['title' => 'Veuillez remplir le titre.'];
-            }
-
-            if(empty($this->request->request->get('content')))
-            {
-                $errorPost += ['content' => 'Veuillez remplir le contenu.'];
-            }
-
-            if(empty($this->request->files->get('cover')))
-            {
-                $errorPost += ['cover' => 'Veuillez selectionner une couverture.'];
-            }
-
-            if(empty($this->request->request->get('category')))
-            {
-                $errorPost += ['category' => 'Veuillez selectionner une catégorie.'];
-            }
-
-            if(empty($this->request->request->get('tags')))
-            {
-                $errorPost += ['tags' => 'Veuillez cocher des tags.'];
-            }
-
-            if(empty($errorPost))
+            if(empty($postValidator->getErrors()))
             {
                 $post = new Post();
                 $post->setTitle($this->request->request->get('title'));
@@ -116,7 +92,7 @@ class PostController extends AbstractController
         return $this->render('post/create.html.twig', [
             'categories' => $this->categoryManager->findAll(),
             'tags' => $this->tagsManager->findAll(),
-            'error_post' => $errorPost
+            'error_post' => $postValidator->getErrors()
         ]);
     }
 
@@ -129,6 +105,8 @@ class PostController extends AbstractController
      */
     public function show(string $slug): Response
     {
+        // TODO gerer les erreur lorsque aucun user n'est connecté
+
         if($this->postManager->findOne($slug) === null)
         {
             $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable']);
@@ -301,10 +279,23 @@ class PostController extends AbstractController
     }
 
 
+    /**
+     * Like post
+     *
+     * @param string $slug
+     * @return JsonResponse
+     */
     public function liked(string $slug)
     {
         $user = $this->session->get('user');
         $post = $this->postManager->findOne($slug);
+
+        if($post === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, like impossible']);
+
+            return $this->redirectToRoute('/');
+        }
 
         if($this->likesManager->findOne($user, $post) != null)
         {
@@ -313,16 +304,24 @@ class PostController extends AbstractController
             return new JsonResponse('unlike');
         }
 
-        if($post === null)
-        {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, like impossible']);
-        }
-
         $this->likesManager->create($user, $post);
 
         return new JsonResponse('like');
     }
 
 
-    // TODO show post by category
+    /**
+     * Show post by category
+     *
+     * @param string $slug
+     * @return Response
+     */
+    public function showByCategory(string $slug) : Response
+    {
+        // TODO gerer les categorie avec accents
+
+        return $this->render('/post/showByCategory.html.twig', [
+            'posts' => $this->postManager->findByCategory($this->categoryManager->findOne($slug))
+        ]);
+    }
 }
