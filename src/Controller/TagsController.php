@@ -34,6 +34,9 @@ class TagsController extends AbstractController
      */
     public function create() : JsonResponse
     {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
         if($this->request->getMethod() == 'POST')
         {
             $tags = $this->request->request->get('name');

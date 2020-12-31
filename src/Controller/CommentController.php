@@ -35,6 +35,8 @@ class CommentController extends AbstractController
      */
     public function create() : Response
     {
+        $this->checkIfConnected();
+
         if($this->request->getMethod() === 'POST')
         {
             $commentValidator = new CreateCommentValidator();
@@ -51,7 +53,6 @@ class CommentController extends AbstractController
 
                 $this->commentManager->create($comment);
 
-                // TODO pass errors through redirect method
                 return $this->redirectToRoute('/post/' . $this->request->request->get('post'));
             }
         }
@@ -71,6 +72,7 @@ class CommentController extends AbstractController
     public function delete(int $id) : Response
     {
         // TODO delete only own comments
+
 
         if($this->request->getMethod() != 'POST')
         {

@@ -104,6 +104,8 @@ class UserController extends AbstractController
      */
     public function logout() : Response
     {
+        $this->checkIfConnected();
+
         $this->session->remove('user');
 
         $this->session->remove('csrf_token');
@@ -119,6 +121,8 @@ class UserController extends AbstractController
      */
     public function resetPassword() : JsonResponse
     {
+        $this->checkIfConnected();
+
         if($this->request->getMethod() == 'POST')
         {
             $resetPasswordValidator = new ResetPasswordValidator();
@@ -153,6 +157,9 @@ class UserController extends AbstractController
      */
     public function delete(int $id) : Response
     {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
         if($this->request->getMethod() === 'POST')
         {
             if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))

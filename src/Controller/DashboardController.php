@@ -34,6 +34,9 @@ class DashboardController extends AbstractController
         $this->userManager = new UserRepository();
         $this->postManager = new PostRepository();
         $this->commentManager = new CommentRepository();
+
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
     }
 
 

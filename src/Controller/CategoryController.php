@@ -34,6 +34,9 @@ class CategoryController extends AbstractController
      */
     public function create() : JsonResponse
     {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
         if($this->request->getMethod() == 'POST')
         {
             $category = $this->request->request->get('name');

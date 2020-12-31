@@ -61,6 +61,9 @@ class PostController extends AbstractController
      */
     public function create(): Response
     {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
         $postValidator = new CreatePostValidator();
 
         if($this->request->getMethod() == 'POST')
@@ -105,8 +108,6 @@ class PostController extends AbstractController
      */
     public function show(string $slug): Response
     {
-        // TODO gerer les erreur lorsque aucun user n'est connecté
-
         if($this->postManager->findOne($slug) === null)
         {
             $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable']);
@@ -114,12 +115,23 @@ class PostController extends AbstractController
             return $this->redirectToRoute('/');
         }
 
+        if($this->session->get('user') != null)
+        {
+            $pin = $this->pinManager->findOne($this->session->get('user'), $this->postManager->findOne($slug));
+            $like = $this->likesManager->findOne($this->session->get('user'), $this->postManager->findOne($slug));
+        }
+        else
+        {
+            $pin = null;
+            $like = null;
+        }
+
         return $this->render('post/show.html.twig', [
             'post' => $this->postManager->findOne($slug),
-            'tags' => $this->tagsLineManager->findTagsByPost($slug),
-            'pin' => $this->pinManager->findOne($this->session->get('user'), $this->postManager->findOne($slug)),
             'comments' => $this->commentManager->findByPost($this->postManager->findOne($slug)),
-            'like' => $this->likesManager->findOne($this->session->get('user'), $this->postManager->findOne($slug)),
+            'tags' => $this->tagsLineManager->findTagsByPost($slug),
+            'pin' => $pin,
+            'like' => $like,
             'count_like' => $this->likesManager->countByPost($this->postManager->findOne($slug))
         ]);
     }
@@ -133,6 +145,9 @@ class PostController extends AbstractController
      */
     public function update(string $slug) : Response
     {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
         $post = $this->postManager->findOne($slug);
 
         if($post)
@@ -192,6 +207,9 @@ class PostController extends AbstractController
      */
     public function delete(string $slug) : Response
     {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
         $post = $this->postManager->findOne($slug);
 
         if($post === null)
@@ -218,6 +236,9 @@ class PostController extends AbstractController
      */
     public function archiving(string $slug) : Response
     {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
         $post = $this->postManager->findOne($slug);
 
         if($post === null)
@@ -254,6 +275,8 @@ class PostController extends AbstractController
      */
     public function pin(string $slug) : Response
     {
+        $this->checkIfConnected();
+
         $post = $this->postManager->findOne($slug);
         $user = $this->session->get('user');
 
@@ -287,6 +310,8 @@ class PostController extends AbstractController
      */
     public function liked(string $slug)
     {
+        $this->checkIfConnected();
+
         $user = $this->session->get('user');
         $post = $this->postManager->findOne($slug);
 

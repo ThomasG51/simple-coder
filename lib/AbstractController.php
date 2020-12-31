@@ -140,17 +140,28 @@ abstract class AbstractController
     /**
      * Check roles
      *
-     * @param string $role
      * @throws \Exception
      */
-    public function checkRole(string $role)
+    public function checkIfAdmin()
     {
-        if($this->session->get('user')->getRole() != $role)
+        if($this->session->get('user')->getRole() === 'ADMIN')
         {
             throw new \Exception('Vous n\'avez pas les droits pour effectuer cette opération');
         }
+    }
 
-        // TODO if user not connected, role null
+
+    /**
+     * Check if user is connected
+     *
+     * @throws \Exception
+     */
+    public function checkIfConnected()
+    {
+        if($this->session->get('user') === null)
+        {
+            throw new \Exception('Vous n\'êtes pas connecté !');
+        }
     }
 
 
