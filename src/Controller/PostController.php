@@ -134,6 +134,9 @@ class PostController extends AbstractController
             'like' => $like,
             'count_like' => $this->likesManager->countByPost($this->postManager->findOne($slug))
         ]);
+
+        // TODO show next post
+        // TODO show previous post
     }
 
 

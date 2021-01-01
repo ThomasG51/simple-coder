@@ -53,6 +53,7 @@ abstract class AbstractController
 
         $twig->addGlobal('session', $this->session->all());
         $twig->addGlobal('flash', $this->session->getFlashBag()->all());
+        $twig->addGlobal('get', $this->request->query->all());
 
         $categories = new CategoryRepository();
         $twig->addGlobal('global_categories', $categories->findAll());
@@ -144,7 +145,7 @@ abstract class AbstractController
      */
     public function checkIfAdmin()
     {
-        if($this->session->get('user')->getRole() === 'ADMIN')
+        if($this->session->get('user')->getRole() === 'ROLE_ADMIN')
         {
             throw new \Exception('Vous n\'avez pas les droits pour effectuer cette opération');
         }

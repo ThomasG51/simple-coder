@@ -41,7 +41,6 @@ class CommentController extends AbstractController
         {
             $commentValidator = new CreateCommentValidator();
             $commentValidator->validate($this->request);
-            // TODO limit max lenght
 
             if(empty($commentValidator->getErrors()))
             {
@@ -72,7 +71,6 @@ class CommentController extends AbstractController
     public function delete(int $id) : Response
     {
         // TODO delete only own comments
-
 
         if($this->request->getMethod() != 'POST')
         {
@@ -129,7 +127,7 @@ class CommentController extends AbstractController
         }
         else
         {
-            $this->checkRole('ADMIN');
+            $this->checkIfAdmin();
 
             $comment->setStatus('available');
             $this->session->getFlashBag()->add('alert', ['success' => 'Commentaire remis en ligne']);

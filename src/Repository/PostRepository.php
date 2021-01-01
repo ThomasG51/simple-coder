@@ -31,9 +31,11 @@ class PostRepository extends AbstractRepository
     /**
      * Return all posts
      *
+     * @param int $currentPage
+     * @param int $perPage
      * @return array[POST]
      */
-    public function findAll() : array
+    public function findAll(int $currentPage, int $perPage) : array
     {
         $query = $this->getPDO()->prepare('
             SELECT post.*, category.name as category, user.email as user
@@ -41,6 +43,7 @@ class PostRepository extends AbstractRepository
             LEFT JOIN category ON post.category_id = category.id 
             LEFT JOIN user ON post.user_id = user.id 
             ORDER BY date DESC
+            LIMIT '. $currentPage .', '. $perPage .'
         ');
 
         $query->execute();
@@ -65,6 +68,25 @@ class PostRepository extends AbstractRepository
         }
 
         return $posts;
+    }
+
+
+    /**
+     * Return count of posts
+     *
+     * @return int
+     */
+    public function countPost() : int
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT COUNT(id) AS posts FROM post
+        ');
+
+        $query->execute([]);
+
+        $count = $query->fetch();
+
+        return $count['posts'];
     }
 
 
