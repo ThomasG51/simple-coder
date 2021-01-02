@@ -97,4 +97,22 @@ class TagsRepository extends AbstractRepository
 
         $query->execute(['name' => $name]);
     }
+
+
+    /**
+     * Delete tags
+     *
+     * @param Tags $tags
+     */
+    public function delete(Tags $tags) : void
+    {
+        $query = $this->getPDO()->prepare('
+            DELETE FROM tags
+            WHERE name = :name
+        ');
+
+        $query->execute([
+            'name' => $tags->getname()
+        ]);
+    }
 }

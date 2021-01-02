@@ -72,25 +72,6 @@ class PostRepository extends AbstractRepository
 
 
     /**
-     * Return count of posts
-     *
-     * @return int
-     */
-    public function countPost() : int
-    {
-        $query = $this->getPDO()->prepare('
-            SELECT COUNT(id) AS posts FROM post
-        ');
-
-        $query->execute([]);
-
-        $count = $query->fetch();
-
-        return $count['posts'];
-    }
-
-
-    /**
      * Return one post
      *
      * @param string $slug

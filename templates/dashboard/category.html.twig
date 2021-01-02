@@ -1,0 +1,29 @@
+{% extends 'dashboard.html.twig' %}
+
+{% block body %}
+
+    <div class="row bg-white mx-3 my-4 p-4 rounded-lg">
+        <table class="table">
+            <tr>
+                <th class="w-80"><i class="fas fa-sort mr-1"></i> Name</th>
+                <th class="w-205 text-center">Action</th>
+            </tr>
+            {% for category in categories %}
+                <tr>
+                    <td>
+                        <p class="text-justify mb-0">
+                            {{ category.name }}
+                        </p>
+                    </td>
+                    <td class="text-center d-flex justify-content-center">
+                        <form action="/category/delete/{{ category.name }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                            <button type="submit" class="btn btn-link p-0" onclick="return confirm('Êtes-vous sur de vouloir supprimer la categorie {{ category.name }}?')"><i class="fas fa-trash text-danger"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

@@ -8,6 +8,7 @@ use App\Repository\TagsRepository;
 use Lib\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class TagsController extends AbstractController
 {
@@ -57,6 +58,48 @@ class TagsController extends AbstractController
         }
 
         $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur lors de la création du tag, la formulaire n\'a pas été soumis']);
+
+        return $this->redirectToRoute('/');
+    }
+
+
+    /**
+     * Delete tags
+     *
+     * @param string $name
+     * @return Response
+     */
+    public function delete(string $name) : Response
+    {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
+        if($this->request->getMethod() != 'POST')
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression du tag impossible, le formulaire n\'a pas été soumis']);
+
+            return $this->redirectToRoute('/');
+        }
+
+        $tags = $this->tagsManager->findOne($name);
+
+        if($tags === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Le tag est introuvable, suppression impossible']);
+
+            return $this->redirectToRoute('/');
+        }
+
+        if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
+        {
+            $this->tagsManager->delete($tags);
+
+            $this->session->getFlashBag()->add('alert', ['success' => 'Suppression du tag éffectué']);
+
+            return $this->redirectToRoute('/dashboard/tags');
+        }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Token expiré']);
 
         return $this->redirectToRoute('/');
     }

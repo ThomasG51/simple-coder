@@ -52,6 +52,28 @@
                 </tr>
             {% endfor %}
         </table>
+
+        <div aria-label="Page navigation" class="mb-5">
+            <ul class="pagination">
+                {% if get.page and get.page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ get.page - 1 }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% for page in 1..pagination %}
+                    <li class="page-item {% if get.page == page %}active{% endif %}"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                {% endfor %}
+                {% if get.page < pagination %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ get.page + 1 }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {%  endif %}
+            </ul>
+        </div>
     </div>
 
 {% endblock %}

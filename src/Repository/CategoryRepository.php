@@ -97,4 +97,22 @@ class CategoryRepository extends AbstractRepository
 
         $query->execute(['name' => $name]);
     }
+
+
+    /**
+     * Delete category
+     *
+     * @param Category $category
+     */
+    public function delete(Category $category) : void
+    {
+        $query = $this->getPDO()->prepare('
+            DELETE FROM category
+            WHERE name = :name
+        ');
+
+        $query->execute([
+            'name' => $category->getname()
+        ]);
+    }
 }

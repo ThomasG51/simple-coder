@@ -72,4 +72,24 @@ abstract class AbstractRepository
 
         return $id['MAX(id)'];
     }
+
+
+    /**
+     * Return count of specific item
+     *
+     * @param string $table
+     * @return int
+     */
+    public function countItems(string $table) : int
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT COUNT(id) AS items FROM '.$table.'
+        ');
+
+        $query->execute();
+
+        $count = $query->fetch();
+
+        return $count['items'];
+    }
 }

@@ -14,7 +14,7 @@ class HomeController extends AbstractController
     {
         $postManager = new PostRepository();
 
-        $countPosts = $postManager->countPost();
+        $countPosts = $postManager->countItems('post');
         $perPage = 2;
         $countPages = ceil($countPosts / $perPage);
 
@@ -26,7 +26,7 @@ class HomeController extends AbstractController
         {
             throw new \Exception('La page demandée n\'existe pas', 404);
         }
-        else    
+        else
         {
             $currentPage = 1;
         }
