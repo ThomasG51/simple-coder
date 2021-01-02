@@ -346,10 +346,9 @@ class PostController extends AbstractController
      */
     public function showByCategory(string $slug) : Response
     {
-        // TODO gerer les categorie avec accents
-
         return $this->render('/post/showByCategory.html.twig', [
-            'posts' => $this->postManager->findByCategory($this->categoryManager->findOne($slug))
+            'posts' => $this->postManager->findByCategory($this->categoryManager->findOne($slug)),
+            'category' => $this->categoryManager->findOne($slug)
         ]);
     }
 }

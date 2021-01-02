@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 
@@ -47,6 +48,12 @@ abstract class AbstractController
 
         $twig->addFunction(new TwigFunction('asset', function ($asset) {
             return sprintf('../assets/%s', ltrim($asset, '/'));
+        }));
+
+        $twig->addFilter(new TwigFilter('remove_accent', function ($string) {
+            $slug = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+            $slug = preg_replace("/([^a-z0-9]+)/", "", $slug);
+            return $slug;
         }));
 
         $twig->addExtension(new DebugExtension());

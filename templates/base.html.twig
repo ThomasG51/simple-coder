@@ -54,7 +54,7 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                     {% for global_category in global_categories %}
-                                        <a class="dropdown-item tech-font" href="/post/category/{{ global_category.name | lower }}">{{ global_category.name }}</a>
+                                        <a class="dropdown-item tech-font" href="/post/category/{{ global_category.name | lower | remove_accent }}">{{ global_category.name }}</a>
                                     {% endfor %}
                                 </div>
                             </li>
