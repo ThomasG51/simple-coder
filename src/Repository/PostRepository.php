@@ -286,4 +286,48 @@ class PostRepository extends AbstractRepository
 
         $query->execute(['slug' => $slug]);
     }
+
+
+    /**
+     * Search post
+     *
+     * @param string $input
+     * @return array
+     */
+    public function search(string $input) : array
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT post.*, category.name as category, user.email as user
+            FROM post
+            LEFT JOIN category ON post.category_id = category.id 
+            LEFT JOIN user ON post.user_id = user.id 
+            WHERE title LIKE :input
+            ORDER BY date DESC
+        ');
+
+        $query->execute([
+            'input' => '%'.$input.'%'
+        ]);
+
+        $posts = [];
+
+        foreach($query->fetchAll() as $post)
+        {
+            $instance = new Post();
+            $instance->setId($post['id']);
+            $instance->setTitle($post['title']);
+            $instance->setCover($post['cover']);
+            $instance->setCreatedAt($post['date']);
+            $instance->setText($post['text']);
+            $instance->setSlug($post['slug']);
+            $instance->setStatus($post['status']);
+            $instance->setUser($this->userManager->findOne($post['user']));
+            $instance->setCategory($this->categoryManager->findOne($post['category']));
+            $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
+
+            $posts[] = $instance;
+        }
+
+        return $posts;
+    }
 }

@@ -9,7 +9,15 @@
 
     <main class="container">
         <div class="row pt-3 my-5">
-            <h1 class="mx-auto"><i class="fas fa-filter c-php mr-1"></i> Catégorie : {{ category.name }}</h1>
+            <h1 class="mx-auto">
+            {% if type == 'search' %}
+                <i class="fas fa-search c-php mr-1"></i> Votre recherche
+            {% elseif type == 'category' %}
+                <i class="fas fa-filter c-php mr-1"></i> Catégorie : {{ category.name }}
+            {% elseif type == 'pin' %}
+                <i class="fas fa-bookmark c-php mr-1"></i> Mes favoris
+            {% endif %}
+            </h1>
         </div>
         <div class="row mb-5">
             <div class="col-xl-12 mt-4 d-flex justify-content-evenly flex-wrap">
@@ -43,7 +51,13 @@
                         {% endif %}
                     {% endfor %}
                 {% else %}
-                    <h5 class="c-php">Aucun article trouvé pour cette catégorie.</h5>
+                    {% if type == 'search' %}
+                        <h5 class="c-php">Aucun article trouvé pour cette recherche.</h5>
+                    {% elseif type == 'category' %}
+                        <h5 class="c-php">Aucun article trouvé pour cette catégorie.</h5>
+                    {% elseif type == 'pin' %}
+                        <h5 class="c-php">Aucun favoris trouvé.</h5>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

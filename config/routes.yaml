@@ -2,6 +2,10 @@ home:
   path: /
   controller: App\Controller\HomeController::index
 
+search_post:
+  path: /search
+  controller: App\Controller\HomeController::search
+
 dashboard_user:
   path: /dashboard/user
   controller: App\Controller\DashboardController::manageUser

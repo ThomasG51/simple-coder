@@ -346,9 +346,10 @@ class PostController extends AbstractController
      */
     public function showByCategory(string $slug) : Response
     {
-        return $this->render('/post/showByCategory.html.twig', [
+        return $this->render('/post/sort.html.twig', [
             'posts' => $this->postManager->findByCategory($this->categoryManager->findOne($slug)),
-            'category' => $this->categoryManager->findOne($slug)
+            'category' => $this->categoryManager->findOne($slug),
+            'type' => 'category'
         ]);
     }
 
@@ -363,8 +364,9 @@ class PostController extends AbstractController
     {
         $this->checkIfConnected();
 
-        return $this->render('post/showPinByUser.html.twig', [
-            'posts' => $this->postManager->findPinByUser($this->session->get('user'))
+        return $this->render('post/sort.html.twig', [
+            'posts' => $this->postManager->findPinByUser($this->session->get('user')),
+            'type' => 'pin'
         ]);
     }
 }
