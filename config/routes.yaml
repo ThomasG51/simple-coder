@@ -46,6 +46,10 @@ delete_user:
   path: /user/delete/{slug}
   controller: App\Controller\UserController::delete
 
+admin_user:
+  path: /user/admin
+  controller: App\Controller\UserController::admin
+
 create_post:
   path: /post/create
   controller: App\Controller\PostController::create

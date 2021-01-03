@@ -39,33 +39,33 @@ class UserController extends AbstractController
      */
     public function create() : JsonResponse
     {
-        if($this->request->getMethod() == 'POST')
+        if($this->request->getMethod() != 'POST')
         {
-            $registrationValidator = new RegistrationValidator();
-            $registrationValidator->validate($this->request);
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur d\'enreistrement, le formulaire n\'a pas été soumis']);
 
-            if(empty($registrationValidator->getErrors()))
-            {
-                $user = new User();
-                $user->setFirstname($this->request->request->get('sign_up_firstname'));
-                $user->setLastname($this->request->request->get('sign_up_lastname'));
-                $user->setEmail($this->request->request->get('sign_up_email'));
-                $user->setPassword(password_hash($this->request->request->get('sign_up_password'), PASSWORD_DEFAULT));
-                $user->setRole('USER');
-
-                $this->userManager->create($user);
-
-                $this->session->set('user', $this->userManager->findOne($this->request->request->get('sign_up_email')));
-
-                return new JsonResponse(['registration_done' => 'Enregistrement éffectué !']);
-            }
-
-            return new JsonResponse($registrationValidator->getErrors());
+            return $this->redirectToRoute('/');
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur d\'enreistrement, le formulaire n\'a pas été soumis']);
+        $registrationValidator = new RegistrationValidator();
+        $registrationValidator->validate($this->request);
 
-        return $this->redirectToRoute('/');
+        if(empty($registrationValidator->getErrors()))
+        {
+            $user = new User();
+            $user->setFirstname($this->request->request->get('sign_up_firstname'));
+            $user->setLastname($this->request->request->get('sign_up_lastname'));
+            $user->setEmail($this->request->request->get('sign_up_email'));
+            $user->setPassword(password_hash($this->request->request->get('sign_up_password'), PASSWORD_DEFAULT));
+            $user->setRole('USER');
+
+            $this->userManager->create($user);
+
+            $this->session->set('user', $this->userManager->findOne($this->request->request->get('sign_up_email')));
+
+            return new JsonResponse(['registration_done' => 'Enregistrement éffectué !']);
+        }
+
+        return new JsonResponse($registrationValidator->getErrors());
     }
 
 
@@ -76,24 +76,24 @@ class UserController extends AbstractController
      */
     public function login() : JsonResponse
     {
-        if($this->request->getMethod() == 'POST')
+        if($this->request->getMethod() != 'POST')
         {
-            $loginValidator = new LoginValidator();
-            $loginValidator->validate($this->request);
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur de connexion, le formulaire n\'a pas été soumis']);
 
-            if(empty($loginValidator->getErrors()))
-            {
-                $this->session->set('user', $this->userManager->findOne($this->request->request->get('login_email')));
-
-                return new JsonResponse(['login_succeeds' => 'Connexion reussi.']);
-            }
-
-            return new JsonResponse($loginValidator->getErrors());
+            return $this->redirectToRoute('/');
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur de connexion, le formulaire n\'a pas été soumis']);
+        $loginValidator = new LoginValidator();
+        $loginValidator->validate($this->request);
 
-        return $this->redirectToRoute('/');
+        if(empty($loginValidator->getErrors()))
+        {
+            $this->session->set('user', $this->userManager->findOne($this->request->request->get('login_email')));
+
+            return new JsonResponse(['login_succeeds' => 'Connexion reussi.']);
+        }
+
+        return new JsonResponse($loginValidator->getErrors());
     }
 
 
@@ -125,27 +125,27 @@ class UserController extends AbstractController
 
         if($this->request->getMethod() == 'POST')
         {
-            $resetPasswordValidator = new ResetPasswordValidator();
-            $resetPasswordValidator->validate($this->request);
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur de reinitialisation du mot de passe, le formulaire n\'a pas été soumis']);
 
-            if(empty($resetPasswordValidator->getErrors()))
-            {
-                $email = $this->session->get('user')->getEmail();
-                $password = password_hash($this->request->get('new_password'), PASSWORD_DEFAULT);
-
-                $this->userManager->updatePassword($email, $password);
-
-                $this->session->set('user', $this->userManager->findOne($this->session->get('user')->getEmail()));
-
-                return new JsonResponse(['reset_succeeds' => 'Modification effectuée !']);
-            }
-
-            return new JsonResponse($resetPasswordValidator->getErrors());
+            return $this->redirectToRoute('/dashboard/user');
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur de reinitialisation du mot de passe, le formulaire n\'a pas été soumis']);
+        $resetPasswordValidator = new ResetPasswordValidator();
+        $resetPasswordValidator->validate($this->request);
 
-        return $this->redirectToRoute('/dashboard/user');
+        if(empty($resetPasswordValidator->getErrors()))
+        {
+            $email = $this->session->get('user')->getEmail();
+            $password = password_hash($this->request->get('new_password'), PASSWORD_DEFAULT);
+
+            $this->userManager->updatePassword($email, $password);
+
+            $this->session->set('user', $this->userManager->findOne($this->session->get('user')->getEmail()));
+
+            return new JsonResponse(['reset_succeeds' => 'Modification effectuée !']);
+        }
+
+        return new JsonResponse($resetPasswordValidator->getErrors());
     }
 
 
@@ -160,24 +160,72 @@ class UserController extends AbstractController
         $this->checkIfConnected();
         $this->checkIfAdmin();
 
-        if($this->request->getMethod() === 'POST')
+        if($this->request->getMethod() != 'POST')
         {
-            if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
-            {
-                $this->userManager->delete($id);
-
-                $this->session->getFlashBag()->add('alert', ['success' => 'Utilisateur supprimé']);
-
-                return $this->redirectToRoute('/dashboard/user');
-            }
-
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Token expiré !']);
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression de l\'utilisateur impossible, le formulaire n\'a pas été soumis !']);
 
             return $this->redirectToRoute('/dashboard/user');
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression de l\'utilisateur impossible, le formulaire n\'a pas été soumis !']);
+        if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
+        {
+            $this->userManager->delete($id);
+
+            $this->session->getFlashBag()->add('alert', ['success' => 'Utilisateur supprimé']);
+
+            return $this->redirectToRoute('/dashboard/user');
+        }
+
+        $this->session->getFlashBag()->add('alert', ['danger' => 'Token expiré !']);
 
         return $this->redirectToRoute('/dashboard/user');
+    }
+
+
+    /**
+     * Manage admin status
+     *
+     * @param string $email
+     * @return Response
+     * @throws \Exception
+     */
+    public function admin() : Response
+    {
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
+
+        if($this->request->getMethod() != 'POST')
+        {
+            throw new \Exception('Le formulaire n\'a pas été soumis');
+        }
+
+        $user = $this->userManager->findOne($this->request->request->get('email'));
+
+        if($user === null)
+        {
+            throw new \Exception('User not found');
+        }
+
+        if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
+        {
+            if($user->getRole() === 'USER')
+            {
+                $user->setRole('ADMIN');
+
+                $this->session->getFlashBag()->add('alert', ['success' => $user->getFirstname() . ' ' . $user->getLastname() . ' a maintenant le role ADMIN']);
+            }
+            else
+            {
+                $user->setRole('USER');
+
+                $this->session->getFlashBag()->add('alert', ['success' => $user->getFirstname() . ' ' . $user->getLastname() . ' a maintenant le role USER']);
+            }
+
+            $this->userManager->adminStatus($user);
+
+            return $this->redirectToRoute('/dashboard/user');
+        }
+
+        throw new \Exception('Token expiré');
     }
 }

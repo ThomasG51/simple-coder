@@ -59,7 +59,12 @@ class HomeController extends AbstractController
         ]);
     }
 
-    // TODO Search post
+
+    /**
+     * Search post
+     *
+     * @return Response
+     */
     public function search() : Response
     {
         return $this->render('post/sort.html.twig', [

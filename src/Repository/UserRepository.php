@@ -133,4 +133,24 @@ class UserRepository extends AbstractRepository
 
         $query->execute(['id' => $id]);
     }
+
+
+    /**
+     * Manage admin status
+     *
+     * @param User $user
+     */
+    public function adminStatus(User $user)
+    {
+        $query = $this->getPDO()->prepare('
+            UPDATE user
+            SET role = :role
+            WHERE email = :email
+        ');
+
+        $query->execute([
+            'role' => $user->getRole(),
+            'email' => $user->getEmail()
+        ]);
+    }
 }
