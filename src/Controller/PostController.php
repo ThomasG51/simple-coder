@@ -346,8 +346,6 @@ class PostController extends AbstractController
      */
     public function showByCategory(string $slug) : Response
     {
-        // TODO review mock-up asset
-
         return $this->render('/post/showByCategory.html.twig', [
             'posts' => $this->postManager->findByCategory($this->categoryManager->findOne($slug)),
             'category' => $this->categoryManager->findOne($slug)
