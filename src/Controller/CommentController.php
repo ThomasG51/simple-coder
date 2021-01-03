@@ -70,7 +70,8 @@ class CommentController extends AbstractController
      */
     public function delete(int $id) : Response
     {
-        // TODO delete only own comments
+        $this->checkIfConnected();
+        $this->checkIfAdmin();
 
         if($this->request->getMethod() != 'POST')
         {

@@ -78,9 +78,13 @@
                                         <i class="fas fa-user mr-1"></i>{{ session.user.firstname }} {{ session.user.lastname }}
                                     </a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item tech-font" href="/post/create">Rédiger</a>
-                                        <a class="dropdown-item tech-font" href="#">Favoris</a>
-                                        <a class="dropdown-item tech-font" href="/dashboard/post">Administration</a>
+                                        {%  if session.user.role == 'ADMIN' %}
+                                            <a class="dropdown-item tech-font" href="/post/create">Rédiger</a>
+                                        {% endif %}
+                                        <a class="dropdown-item tech-font" href="/post/pinned">Favoris</a>
+                                        {%  if session.user.role == 'ADMIN' %}
+                                            <a class="dropdown-item tech-font" href="/dashboard/post">Administration</a>
+                                        {% endif %}
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item tech-font text-danger" href="/user/logout"><i class="fas fa-sign-out-alt mr-1"></i>Deconnexion</a>
                                     </div>

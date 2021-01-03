@@ -346,9 +346,27 @@ class PostController extends AbstractController
      */
     public function showByCategory(string $slug) : Response
     {
+        // TODO review mock-up asset
+
         return $this->render('/post/showByCategory.html.twig', [
             'posts' => $this->postManager->findByCategory($this->categoryManager->findOne($slug)),
             'category' => $this->categoryManager->findOne($slug)
+        ]);
+    }
+
+
+    /**
+     * Show post pinned
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function showByPin() : Response
+    {
+        $this->checkIfConnected();
+
+        return $this->render('post/showPinByUser.html.twig', [
+            'posts' => $this->postManager->findPinByUser($this->session->get('user'))
         ]);
     }
 }

@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use App\Entity\Post;
+use App\Entity\User;
 use Lib\AbstractRepository;
 
 class PostRepository extends AbstractRepository
@@ -130,6 +131,50 @@ class PostRepository extends AbstractRepository
         ');
 
         $query->execute(['category' => $category->getName()]);
+
+        $posts = [];
+
+        foreach($query->fetchAll() as $post)
+        {
+            $instance = new Post();
+            $instance->setId($post['id']);
+            $instance->setTitle($post['title']);
+            $instance->setCover($post['cover']);
+            $instance->setCreatedAt($post['date']);
+            $instance->setText($post['text']);
+            $instance->setSlug($post['slug']);
+            $instance->setStatus($post['status']);
+            $instance->setUser($this->userManager->findOne($post['user']));
+            $instance->setCategory($this->categoryManager->findOne($post['category']));
+            $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
+
+            $posts[] = $instance;
+        }
+
+        return $posts;
+    }
+
+
+    /**
+     * Find pinned post by user
+     *
+     * @param User $user
+     * @return array
+     */
+    public function findPinByUser(User $user) : array
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT post.*, user.email AS user, category.name AS category
+            FROM pin
+            INNER JOIN post ON pin.post_id = post.id
+            INNER JOIN user ON post.user_id = user.id
+            INNER JOIN category ON post.category_id = category.id
+            WHERE pin.user_id = :user
+        ');
+
+        $query->execute([
+            'user' => $user->getId()
+        ]);
 
         $posts = [];
 

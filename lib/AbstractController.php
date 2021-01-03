@@ -47,7 +47,7 @@ abstract class AbstractController
         ]);
 
         $twig->addFunction(new TwigFunction('asset', function ($asset) {
-            return sprintf('../assets/%s', ltrim($asset, '/'));
+            return sprintf('/assets/%s', ltrim($asset, '/'));
         }));
 
         $twig->addFilter(new TwigFilter('remove_accent', function ($string) {
@@ -152,7 +152,7 @@ abstract class AbstractController
      */
     public function checkIfAdmin()
     {
-        if($this->session->get('user')->getRole() === 'ROLE_ADMIN')
+        if($this->session->get('user')->getRole() != 'ADMIN')
         {
             throw new \Exception('Vous n\'avez pas les droits pour effectuer cette opération');
         }
