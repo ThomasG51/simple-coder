@@ -45,8 +45,6 @@ class DashboardController extends AbstractController
         $this->commentManager = new CommentRepository();
         $this->tagsManager = new TagsRepository();
         $this->categoryManager = new CategoryRepository();
-
-        // TODO count items sidebar
     }
 
 

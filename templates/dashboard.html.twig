@@ -46,11 +46,11 @@
             </div></a>
 
             <ul class="p-0 manage">
-                <li class="pl-4"><a href="/dashboard/post" class="text-light"><i class="fas fa-pen-nib mr-2"></i> Posts <span class="badge badge-light ml-2">6</span></a></li>
-                <li class="pl-4"><a href="/dashboard/comment" class="text-light"><i class="fas fa-comments mr-2"></i> Comments <span class="badge badge-light ml-2">4</span></a></li>
-                <li class="pl-4"><a href="/dashboard/category" class="text-light"><i class="fas fa-filter mr-2"></i> Categories <span class="badge badge-light ml-2">3</span></a></li>
-                <li class="pl-4"><a href="/dashboard/tags" class="text-light"><i class="fas fa-tags mr-2"></i> Tags <span class="badge badge-light ml-2">5</span></a></li>
-                <li class="pl-4"><a href="/dashboard/user" class="text-light"><i class="fas fa-user mr-2"></i> Users <span class="badge badge-light ml-2">1</span></a></li>
+                <li class="pl-4"><a href="/dashboard/post" class="text-light"><i class="fas fa-pen-nib mr-2"></i> Posts <span class="badge badge-light ml-2">{{ countPost }}</span></a></li>
+                <li class="pl-4"><a href="/dashboard/comment" class="text-light"><i class="fas fa-comments mr-2"></i> Comments <span class="badge badge-light ml-2">{{ countComment }}</span></a></li>
+                <li class="pl-4"><a href="/dashboard/category" class="text-light"><i class="fas fa-filter mr-2"></i> Categories <span class="badge badge-light ml-2">{{ countCategory }}</span></a></li>
+                <li class="pl-4"><a href="/dashboard/tags" class="text-light"><i class="fas fa-tags mr-2"></i> Tags <span class="badge badge-light ml-2">{{ countTags }}</span></a></li>
+                <li class="pl-4"><a href="/dashboard/user" class="text-light"><i class="fas fa-user mr-2"></i> Users <span class="badge badge-light ml-2">{{ countUser }}</span></a></li>
             </ul>
         </div>
         <div class="col-xl-10 offset-xl-2 bg-light-grey">
@@ -59,7 +59,13 @@
                 <div class="col-xl-4 pl-0">
                     <div class="card bg-white border-white manage-header">
                         <div class="card-body h-100 d-flex justify-content-evenly align-items-center">
-                            <h6 class="m-0 tech-font"><i class="fas fa-exclamation-triangle text-danger mr-1"></i> 2 Reported comments</h6>
+                            <h6 class="m-0 tech-font">
+                                {% if reported == 0 %}
+                                    <i class="fas fa-check text-success mr-1"></i> No reported comments
+                                {% else %}
+                                    <i class="fas fa-exclamation-triangle text-danger mr-1"></i> {{ reported }} reported comments
+                                {% endif %}
+                            </h6>
                         </div>
                     </div>
                 </div>

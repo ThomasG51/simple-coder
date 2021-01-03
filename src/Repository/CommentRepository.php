@@ -193,4 +193,27 @@ class CommentRepository extends AbstractRepository
             'id' => $comment->getId()
         ]);
     }
+
+
+    /**
+     * Return count reported comments
+     *
+     * @return int
+     */
+    public function countReported() : int
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT COUNT(id) AS reported
+            FROM comment
+            WHERE status = :status
+        ');
+
+        $query->execute([
+            'status' => 'reported'
+        ]);
+
+        $comments = $query->fetch();
+
+        return $comments['reported'];
+    }
 }

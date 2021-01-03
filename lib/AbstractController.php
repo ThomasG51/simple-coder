@@ -4,6 +4,8 @@ namespace Lib;
 
 
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
+use App\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,8 +64,18 @@ abstract class AbstractController
         $twig->addGlobal('flash', $this->session->getFlashBag()->all());
         $twig->addGlobal('get', $this->request->query->all());
 
+        $commentManager = new CommentRepository();
+        $twig->addGlobal('reported', $commentManager->countReported());
+
         $categories = new CategoryRepository();
         $twig->addGlobal('global_categories', $categories->findAll());
+
+        $sidebar = new PostRepository();
+        $twig->addGlobal('countPost', $sidebar->countItems('post'));
+        $twig->addGlobal('countComment', $sidebar->countItems('comment'));
+        $twig->addGlobal('countCategory', $sidebar->countItems('category'));
+        $twig->addGlobal('countTags', $sidebar->countItems('tags'));
+        $twig->addGlobal('countUser', $sidebar->countItems('user'));
 
         $render = $twig->render($view, $params);
 
