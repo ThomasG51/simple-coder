@@ -41,8 +41,8 @@ class PostRepository extends AbstractRepository
         $query = $this->getPDO()->prepare('
             SELECT post.*, category.name as category, user.email as user
             FROM post
-            LEFT JOIN category ON post.category_id = category.id 
-            LEFT JOIN user ON post.user_id = user.id 
+            INNER JOIN category ON post.category_id = category.id 
+            INNER JOIN user ON post.user_id = user.id 
             ORDER BY date DESC
             LIMIT '. $currentPage .', '. $perPage .'
         ');
@@ -124,8 +124,8 @@ class PostRepository extends AbstractRepository
         $query = $this->getPDO()->prepare('
             SELECT post.*, category.name as category, user.email as user
             FROM post
-            LEFT JOIN category ON post.category_id = category.id 
-            LEFT JOIN user ON post.user_id = user.id
+            INNER JOIN category ON post.category_id = category.id 
+            INNER JOIN user ON post.user_id = user.id
             WHERE category.name = :category
             ORDER BY date DESC
         ');
@@ -299,8 +299,8 @@ class PostRepository extends AbstractRepository
         $query = $this->getPDO()->prepare('
             SELECT post.*, category.name as category, user.email as user
             FROM post
-            LEFT JOIN category ON post.category_id = category.id 
-            LEFT JOIN user ON post.user_id = user.id 
+            INNER JOIN category ON post.category_id = category.id 
+            INNER JOIN user ON post.user_id = user.id 
             WHERE title LIKE :input
             ORDER BY date DESC
         ');

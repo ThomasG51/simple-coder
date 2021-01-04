@@ -6,6 +6,8 @@ namespace Lib;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
+use Lib\Exceptions\NotAuthorizedException;
+use Lib\Exceptions\TokenNotValidException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -160,13 +162,13 @@ abstract class AbstractController
     /**
      * Check roles
      *
-     * @throws \Exception
+     * @throws NotAuthorizedException
      */
     public function checkIfAdmin()
     {
         if($this->session->get('user')->getRole() != 'ADMIN')
         {
-            throw new \Exception('Vous n\'avez pas les droits pour effectuer cette opération');
+            throw new NotAuthorizedException('Vous n\'avez pas les droits pour effectuer cette opération', 401);
         }
     }
 
@@ -174,13 +176,13 @@ abstract class AbstractController
     /**
      * Check if user is connected
      *
-     * @throws \Exception
+     * @throws NotAuthorizedException
      */
     public function checkIfConnected()
     {
         if($this->session->get('user') === null)
         {
-            throw new \Exception('Vous n\'êtes pas connecté !');
+            throw new NotAuthorizedException('Vous n\'êtes pas connecté !', 401);
         }
     }
 
@@ -191,5 +193,17 @@ abstract class AbstractController
     public function setTokenCsrf() : void
     {
         $this->session->set('csrf_token', md5(bin2hex(openssl_random_pseudo_bytes(8))));
+    }
+
+
+    /**
+     * @throws TokenNotValidException
+     */
+    public function checkTokenCsrf()
+    {
+        if($this->request->request->get('csrf_token') != $this->session->get('csrf_token'))
+        {
+            throw new TokenNotValidException('Token expiré', 498);
+        }
     }
 }

@@ -77,6 +77,7 @@ class TagsController extends AbstractController
         if($this->request->getMethod() != 'POST')
         {
             $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression du tag impossible, le formulaire n\'a pas été soumis']);
+            // TODO Throw error 400 bad request
 
             return $this->redirectToRoute('/');
         }

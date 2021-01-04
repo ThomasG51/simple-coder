@@ -11,7 +11,7 @@
                 <th class="w-15"><i class="fas fa-sort-numeric-down mr-1 text-danger"></i> <i class="fas fa-sort mr-1"></i> Date
                 </th>
                 <th class="w-10"><i class="fas fa-sort mr-1"></i> Status</th>
-                <th class="w-10">Action</th>
+                <th class="w-10 text-center">Action</th>
             </tr>
             {% for post in posts %}
                 <tr>
@@ -40,13 +40,16 @@
                             <span class="badge badge-primary">{{ post.status }}</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="d-flex justify-content-center">
                         <a href="/post/update/{{ post.slug }}"><i class="fas fa-pen text-light-grey pointer"></i></a>
                         {% if post.status == 'available' %}
                             <a href="/post/archiving/{{ post.slug }}"><i class="fas fa-archive text-primary pointer ml-2"></i></a>
                         {% else %}
                             <a href="/post/archiving/{{ post.slug }}"><i class="fas fa-check text-success pointer ml-2"></i></a>
-                            <a href="/post/delete/{{ post.slug }}" onclick="return confirm('Êtes-vous sur de vouloir supprimer le post : {{ post.title }}')"><i class="fas fa-trash text-danger pointer ml-2"></i></a>
+                            <form action="/post/delete/{{ post.slug }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                                <button type="submit" class="btn btn-link p-0 ml-2" onclick="return confirm('Êtes-vous sur de vouloir supprimer le post : {{ post.title }} ?')"><i class="fas fa-trash text-danger"></i></button>
+                            </form>
                         {% endif %}
                     </td>
                 </tr>

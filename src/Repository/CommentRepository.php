@@ -56,8 +56,8 @@ class CommentRepository extends AbstractRepository
         $query = $this->getPDO()->prepare('
             SELECT comment.*, post.slug, user.email
             FROM comment
-            LEFT JOIN post ON comment.post_id = post.id
-            LEFT JOIN user ON comment.user_id = user.id
+            INNER JOIN post ON comment.post_id = post.id
+            INNER JOIN user ON comment.user_id = user.id
             ORDER BY date DESC
         ');
 
@@ -131,8 +131,8 @@ class CommentRepository extends AbstractRepository
         $query = $this->getPDO()->prepare('
             SELECT comment.*, post.slug, user.email
             FROM comment
-            LEFT JOIN post ON comment.post_id = post.id
-            LEFT JOIN user ON comment.user_id = user.id
+            INNER JOIN post ON comment.post_id = post.id
+            INNER JOIN user ON comment.user_id = user.id
             WHERE comment.id = :id
         ');
 

@@ -14,6 +14,8 @@ use App\Repository\TagsLineRepository;
 use App\Repository\TagsRepository;
 use App\Validators\CreatePostValidator;
 use Lib\AbstractController;
+use Lib\Exceptions\BadRequestException;
+use Lib\Exceptions\NotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,14 +107,13 @@ class PostController extends AbstractController
      *
      * @param string $slug
      * @return Response
+     * @throws NotFoundException
      */
     public function show(string $slug): Response
     {
         if($this->postManager->findOne($slug) === null)
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable']);
-
-            return $this->redirectToRoute('/');
+            throw new NotFoundException('Article introuvable', 404);
         }
 
         if($this->session->get('user') != null)
@@ -145,6 +146,7 @@ class PostController extends AbstractController
      *
      * @param string $slug
      * @return Response
+     * @throws NotFoundException
      */
     public function update(string $slug) : Response
     {
@@ -153,52 +155,50 @@ class PostController extends AbstractController
 
         $post = $this->postManager->findOne($slug);
 
-        if($post)
+        if($post === null)
         {
-            if($this->request->getMethod() == 'POST')
-            {
-                $post->setTitle($this->request->request->get('title'));
-                $post->setText($this->request->request->get('content'));
-                $post->setCategory($this->categoryManager->findOne($this->request->request->get('category')));
-                $post->setTags($this->tagsLineManager->findTagsByPost($post->getSlug()));
-
-                if($this->request->files->get('cover') != null)
-                {
-                    unlink('upload/' . $post->getCover());
-                    $post->setCover($this->uploadFile($this->request->files->get('cover')));
-                }
-                else
-                {
-                    $post->setCover($post->getCover());
-                }
-
-                $this->postManager->update($post);
-
-                // Remove tags_line
-                foreach($post->getTags() as $tag)
-                {
-                    $this->tagsLineManager->delete($tag->getId());
-                }
-
-                // Create new tags_line
-                foreach($this->request->request->get('tags') as $tag)
-                {
-                    $this->tagsLineManager->create($tag, $post->getId());
-                }
-
-                return $this->redirectToRoute('/post/'. $post->getSlug());
-            }
-
-            return $this->render('post/update.html.twig', [
-                'post' => $post,
-                'categories' => $this->categoryManager->findAll(),
-                'tags' => $this->tagsManager->findAll()
-            ]);
+            throw new NotFoundException('Article introuvable', 404);
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, modification impossible']);
+        if($this->request->getMethod() == 'POST')
+        {
+            $post->setTitle($this->request->request->get('title'));
+            $post->setText($this->request->request->get('content'));
+            $post->setCategory($this->categoryManager->findOne($this->request->request->get('category')));
+            $post->setTags($this->tagsLineManager->findTagsByPost($post->getSlug()));
 
-        return $this->redirectToRoute('/dashboard/post');
+            if($this->request->files->get('cover') != null)
+            {
+                unlink('upload/' . $post->getCover());
+                $post->setCover($this->uploadFile($this->request->files->get('cover')));
+            }
+            else
+            {
+                $post->setCover($post->getCover());
+            }
+
+            $this->postManager->update($post);
+
+            // Remove tags_line
+            foreach($post->getTags() as $tag)
+            {
+                $this->tagsLineManager->delete($tag->getId());
+            }
+
+            // Create new tags_line
+            foreach($this->request->request->get('tags') as $tag)
+            {
+                $this->tagsLineManager->create($tag, $post->getId());
+            }
+
+            return $this->redirectToRoute('/post/'. $post->getSlug());
+        }
+
+        return $this->render('post/update.html.twig', [
+            'post' => $post,
+            'categories' => $this->categoryManager->findAll(),
+            'tags' => $this->tagsManager->findAll()
+        ]);
     }
 
 
@@ -217,10 +217,10 @@ class PostController extends AbstractController
 
         if($post === null)
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, suppression impossible !']);
-
-            return $this->redirectToRoute('/dashboard/post');
+            throw new NotFoundException('Article introuvable', 404);
         }
+
+        $this->checkTokenCsrf();
 
         unlink('upload/' . $post->getCover());
         $this->postManager->delete($post->getSlug());
@@ -246,9 +246,7 @@ class PostController extends AbstractController
 
         if($post === null)
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, archivage impossible !']);
-
-            return $this->redirectToRoute('/dashboard/post');
+            throw new NotFoundException('Article introuvable', 404);
         }
 
         if($post->getStatus() == 'archived')
@@ -285,9 +283,7 @@ class PostController extends AbstractController
 
         if($post === null)
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, impossible d\'épingler le post']);
-
-            return $this->redirectToRoute('/');
+            throw new NotFoundException('Article introuvable', 404);
         }
 
         if(!empty($this->pinManager->findOne($user, $post)))
@@ -320,9 +316,7 @@ class PostController extends AbstractController
 
         if($post === null)
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Post introuvable, like impossible']);
-
-            return $this->redirectToRoute('/');
+            throw new NotFoundException('Article introuvable', 404);
         }
 
         if($this->likesManager->findOne($user, $post) != null)

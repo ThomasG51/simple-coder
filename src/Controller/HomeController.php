@@ -44,10 +44,6 @@ class HomeController extends AbstractController
         {
             $currentPage = $this->request->query->get('page');
         }
-        else if($this->request->query->get('page') && $this->request->query->get('page') > $countPages)
-        {
-            throw new \Exception('La page demandée n\'existe pas', 404);
-        }
         else
         {
             $currentPage = 1;
