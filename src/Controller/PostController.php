@@ -207,11 +207,17 @@ class PostController extends AbstractController
      *
      * @param string $slug
      * @return Response
+     * @throws BadRequestException
      */
     public function delete(string $slug) : Response
     {
         $this->checkIfConnected();
         $this->checkIfAdmin();
+
+        if($this->request->getMethod() != 'POST')
+        {
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
+        }
 
         $post = $this->postManager->findOne($slug);
 
