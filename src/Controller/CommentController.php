@@ -9,6 +9,8 @@ use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use Lib\AbstractController;
 use App\Validators\CreateCommentValidator;
+use Lib\Exceptions\BadRequestException;
+use Lib\Exceptions\NotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -67,6 +69,8 @@ class CommentController extends AbstractController
      *
      * @param int $id
      * @return Response
+     * @throws BadRequestException
+     * @throws NotFoundException
      */
     public function delete(int $id) : Response
     {
@@ -75,32 +79,23 @@ class CommentController extends AbstractController
 
         if($this->request->getMethod() != 'POST')
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression du commentaire impossible, le formulaire n\'a pas été soumis']);
-
-            return $this->redirectToRoute('/');
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
         }
 
         $comment = $this->commentManager->findOne($id);
 
         if($comment === null)
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Le commentaire est introuvable, suppression impossible']);
-
-            return $this->redirectToRoute('/');
+            throw new NotFoundException('Commentaire introuvable', 404);
         }
 
-        if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
-        {
-            $this->commentManager->delete($comment);
+        $this->checkTokenCsrf();
 
-            $this->session->getFlashBag()->add('alert', ['success' => 'Suppression du commentaire éffectué']);
+        $this->commentManager->delete($comment);
 
-            return $this->redirectToRoute('/dashboard/comment');
-        }
+        $this->session->getFlashBag()->add('alert', ['success' => 'Suppression du commentaire éffectué']);
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Token expiré']);
-
-        return $this->redirectToRoute('/');
+        return $this->redirectToRoute('/dashboard/comment');
     }
 
 
@@ -109,6 +104,7 @@ class CommentController extends AbstractController
      *
      * @param int $id
      * @return Response
+     * @throws NotFoundException
      */
     public function report(int $id) : Response
     {
@@ -116,9 +112,7 @@ class CommentController extends AbstractController
 
         if ($comment === null)
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Commentaire introuvable, signalemenet impossible']);
-
-            return $this->redirectToRoute('/');
+            throw new NotFoundException('Commentaire introuvable', 404);
         }
 
         if($comment->getStatus() === 'available')

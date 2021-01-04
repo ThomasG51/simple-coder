@@ -10,6 +10,8 @@ use Lib\AbstractController;
 use App\Validators\LoginValidator;
 use App\Validators\RegistrationValidator;
 use App\Validators\ResetPasswordValidator;
+use Lib\Exceptions\BadRequestException;
+use Lib\Exceptions\NotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,14 +38,13 @@ class UserController extends AbstractController
      * Create new user
      *
      * @return JsonResponse
+     * @throws BadRequestException
      */
     public function create() : JsonResponse
     {
         if($this->request->getMethod() != 'POST')
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur d\'enreistrement, le formulaire n\'a pas été soumis']);
-
-            return $this->redirectToRoute('/');
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
         }
 
         $registrationValidator = new RegistrationValidator();
@@ -73,14 +74,13 @@ class UserController extends AbstractController
      * User Login
      *
      * @return JsonResponse
+     * @throws BadRequestException
      */
     public function login() : JsonResponse
     {
         if($this->request->getMethod() != 'POST')
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur de connexion, le formulaire n\'a pas été soumis']);
-
-            return $this->redirectToRoute('/');
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
         }
 
         $loginValidator = new LoginValidator();
@@ -118,16 +118,15 @@ class UserController extends AbstractController
      * Reset Password
      *
      * @return JsonResponse
+     * @throws BadRequestException
      */
     public function resetPassword() : JsonResponse
     {
         $this->checkIfConnected();
 
-        if($this->request->getMethod() == 'POST')
+        if($this->request->getMethod() != 'POST')
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur de reinitialisation du mot de passe, le formulaire n\'a pas été soumis']);
-
-            return $this->redirectToRoute('/dashboard/user');
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
         }
 
         $resetPasswordValidator = new ResetPasswordValidator();
@@ -154,6 +153,7 @@ class UserController extends AbstractController
      *
      * @param int $id
      * @return Response
+     * @throws BadRequestException
      */
     public function delete(int $id) : Response
     {
@@ -162,21 +162,14 @@ class UserController extends AbstractController
 
         if($this->request->getMethod() != 'POST')
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression de l\'utilisateur impossible, le formulaire n\'a pas été soumis !']);
-
-            return $this->redirectToRoute('/dashboard/user');
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
         }
 
-        if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
-        {
-            $this->userManager->delete($id);
+        $this->checkTokenCsrf();
 
-            $this->session->getFlashBag()->add('alert', ['success' => 'Utilisateur supprimé']);
+        $this->userManager->delete($id);
 
-            return $this->redirectToRoute('/dashboard/user');
-        }
-
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Token expiré !']);
+        $this->session->getFlashBag()->add('alert', ['success' => 'Utilisateur supprimé']);
 
         return $this->redirectToRoute('/dashboard/user');
     }
@@ -187,7 +180,8 @@ class UserController extends AbstractController
      *
      * @param string $email
      * @return Response
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws NotFoundException
      */
     public function admin() : Response
     {
@@ -196,36 +190,33 @@ class UserController extends AbstractController
 
         if($this->request->getMethod() != 'POST')
         {
-            throw new \Exception('Le formulaire n\'a pas été soumis');
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
         }
 
         $user = $this->userManager->findOne($this->request->request->get('email'));
 
         if($user === null)
         {
-            throw new \Exception('User not found');
+            throw new NotFoundException('User introuvable', 404);
         }
 
-        if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
+        $this->checkTokenCsrf();
+
+        if($user->getRole() === 'USER')
         {
-            if($user->getRole() === 'USER')
-            {
-                $user->setRole('ADMIN');
+            $user->setRole('ADMIN');
 
-                $this->session->getFlashBag()->add('alert', ['success' => $user->getFirstname() . ' ' . $user->getLastname() . ' a maintenant le role ADMIN']);
-            }
-            else
-            {
-                $user->setRole('USER');
+            $this->session->getFlashBag()->add('alert', ['success' => $user->getFirstname() . ' ' . $user->getLastname() . ' a maintenant le role ADMIN']);
+        }
+        else
+        {
+            $user->setRole('USER');
 
-                $this->session->getFlashBag()->add('alert', ['success' => $user->getFirstname() . ' ' . $user->getLastname() . ' a maintenant le role USER']);
-            }
-
-            $this->userManager->adminStatus($user);
-
-            return $this->redirectToRoute('/dashboard/user');
+            $this->session->getFlashBag()->add('alert', ['success' => $user->getFirstname() . ' ' . $user->getLastname() . ' a maintenant le role USER']);
         }
 
-        throw new \Exception('Token expiré');
+        $this->userManager->adminStatus($user);
+
+        return $this->redirectToRoute('/dashboard/user');
     }
 }
