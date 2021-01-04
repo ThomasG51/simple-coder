@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Repository\PostRepository;
 use Lib\AbstractController;
+use Lib\Exceptions\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,9 +61,15 @@ class HomeController extends AbstractController
      * Search post
      *
      * @return Response
+     * @throws BadRequestException
      */
     public function search() : Response
     {
+        if($this->request->getMethod() != 'POST')
+        {
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
+        }
+
         return $this->render('post/sort.html.twig', [
             'posts' => $this->postManager->search($this->request->request->get('search')),
             'type' => 'search'
