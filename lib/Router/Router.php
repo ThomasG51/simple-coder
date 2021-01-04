@@ -2,6 +2,7 @@
 
 namespace Lib\Router;
 
+use Lib\Exceptions\NotFoundException;
 use Lib\Exceptions\RouteNotFoundException;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +37,7 @@ class Router
     /**
      * @param Request $request
      * @return Route|null
+     * @throws NotFoundException
      */
     public function getRouteFromRequest(Request $request) : ?Route
     {
@@ -46,5 +48,6 @@ class Router
                 return $route;
             }
         }
+        throw new NotFoundException('Page introuvable', 404);
     }
 }
