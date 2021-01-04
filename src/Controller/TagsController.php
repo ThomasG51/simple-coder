@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Repository\TagsRepository;
 use Lib\AbstractController;
+use Lib\Exceptions\BadRequestException;
+use Lib\Exceptions\NotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,34 +34,33 @@ class TagsController extends AbstractController
      * Create new tag
      *
      * @return JsonResponse
+     * @throws BadRequestException
      */
     public function create() : JsonResponse
     {
         $this->checkIfConnected();
         $this->checkIfAdmin();
 
-        if($this->request->getMethod() == 'POST')
+        if($this->request->getMethod() != 'POST')
         {
-            $tags = $this->request->request->get('name');
-
-            if(empty($tags))
-            {
-                return new JsonResponse(['error' => 'Veuillez remplir le formulaire']);
-            }
-
-            if($this->tagsManager->findOne($tags))
-            {
-                return new JsonResponse(['error' => 'Le tag existe déjà.']);
-            }
-
-            $this->tagsManager->create($tags);
-
-            return new JsonResponse($this->tagsManager->findLast());
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
         }
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Erreur lors de la création du tag, la formulaire n\'a pas été soumis']);
+        $tags = $this->request->request->get('name');
 
-        return $this->redirectToRoute('/');
+        if(empty($tags))
+        {
+            return new JsonResponse(['error' => 'Veuillez remplir le formulaire']);
+        }
+
+        if($this->tagsManager->findOne($tags))
+        {
+            return new JsonResponse(['error' => 'Le tag existe déjà.']);
+        }
+
+        $this->tagsManager->create($tags);
+
+        return new JsonResponse($this->tagsManager->findLast());
     }
 
 
@@ -68,6 +69,8 @@ class TagsController extends AbstractController
      *
      * @param string $name
      * @return Response
+     * @throws BadRequestException
+     * @throws NotFoundException
      */
     public function delete(string $name) : Response
     {
@@ -76,32 +79,22 @@ class TagsController extends AbstractController
 
         if($this->request->getMethod() != 'POST')
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Suppression du tag impossible, le formulaire n\'a pas été soumis']);
-            // TODO Throw error 400 bad request
-
-            return $this->redirectToRoute('/');
+            throw new BadRequestException('Le formulaire n\'a pas été soumis', 400);
         }
 
         $tags = $this->tagsManager->findOne($name);
 
         if($tags === null)
         {
-            $this->session->getFlashBag()->add('alert', ['danger' => 'Le tag est introuvable, suppression impossible']);
-
-            return $this->redirectToRoute('/');
+            throw new NotFoundException('Tag introuvable', 404);
         }
 
-        if($this->request->request->get('csrf_token') === $this->session->get('csrf_token'))
-        {
-            $this->tagsManager->delete($tags);
+        $this->checkTokenCsrf();
 
-            $this->session->getFlashBag()->add('alert', ['success' => 'Suppression du tag éffectué']);
+        $this->tagsManager->delete($tags);
 
-            return $this->redirectToRoute('/dashboard/tags');
-        }
+        $this->session->getFlashBag()->add('alert', ['success' => 'Suppression du tag éffectué']);
 
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Token expiré']);
-
-        return $this->redirectToRoute('/');
+        return $this->redirectToRoute('/dashboard/tags');
     }
 }
