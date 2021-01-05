@@ -158,3 +158,12 @@ li {
     background-color: #ffbf00;
     color: #1C1C1E;
 }
+
+.page-item.active .page-link {
+    background-color: #505c90;
+    border: 1px solid #505c90;
+}
+
+.page-item:hover .page-link {
+    color: #505c90;
+}
