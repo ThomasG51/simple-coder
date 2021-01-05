@@ -94,10 +94,6 @@ show_comments:
   path: /comments
   controller: App\Controller\CommentController::show
 
-create_comment:
-  path: /comment/create
-  controller: App\Controller\CommentController::create
-
 update_comment:
   path: /comment/update/{slug}
   controller: App\Controller\CommentController::update

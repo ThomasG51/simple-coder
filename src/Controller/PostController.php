@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
@@ -12,6 +13,7 @@ use App\Repository\PinRepository;
 use App\Repository\PostRepository;
 use App\Repository\TagsLineRepository;
 use App\Repository\TagsRepository;
+use App\Validators\CreateCommentValidator;
 use App\Validators\CreatePostValidator;
 use Lib\AbstractController;
 use Lib\Exceptions\BadRequestException;
@@ -127,6 +129,34 @@ class PostController extends AbstractController
             $like = null;
         }
 
+        // Create comment
+        $commentErrors = [];
+        $commentValue = null;
+
+        if($this->request->getMethod() === 'POST')
+        {
+            $this->checkIfConnected();
+
+            $commentValidator = new CreateCommentValidator();
+            $commentValidator->validate($this->request);
+
+            if(empty($commentValidator->getErrors()))
+            {
+                $comment = new Comment();
+                $comment->setText($this->request->request->get('text'));
+                $comment->setStatus('available');
+                $comment->setUser($this->session->get('user'));
+                $comment->setPost($this->postManager->findOne($this->request->request->get('post')));
+
+                $this->commentManager->create($comment);
+
+                return $this->redirectToRoute('/post/' . $this->request->request->get('post'));
+            }
+
+            $commentErrors = $commentValidator->getErrors();
+            $commentValue = $this->request->request->get('text');
+        }
+
         return $this->render('post/show.html.twig', [
             'post' => $this->postManager->findOne($slug),
             'comments' => $this->commentManager->findByPost($this->postManager->findOne($slug)),
@@ -135,7 +165,9 @@ class PostController extends AbstractController
             'like' => $like,
             'count_like' => $this->likesManager->countByPost($this->postManager->findOne($slug)),
             'next_post' => $this->postManager->findNext($this->postManager->findOne($slug)),
-            'previous_post' => $this->postManager->findPrevious($this->postManager->findOne($slug))
+            'previous_post' => $this->postManager->findPrevious($this->postManager->findOne($slug)),
+            'comment_error' => $commentErrors,
+            'comment_value' => $commentValue
         ]);
     }
 

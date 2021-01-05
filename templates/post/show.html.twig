@@ -53,10 +53,13 @@
                 <h2 class="text-right mt-5 mb-3"><i class="far fa-comments mr-2"></i>Commentaires</h2>
 
                 {% if(session.user != null) %}
-                    <form action="/comment/create" method="POST" class="mb-5">
+                    <form action="/post/{{ post.slug }}" method="POST" class="mb-5">
                         <input type="hidden" name="post" value="{{ post.slug }}">
                         <div class="form-group">
-                            <textarea class="form-control" name="text" rows="8"></textarea>
+                            {% if comment_error.comment %}
+                                <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ comment_error.comment }}</small>
+                            {% endif %}
+                            <textarea class="form-control" name="text" rows="8">{{ comment_value }}</textarea>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="form-control btn btn-php"> Enregistrer</button>

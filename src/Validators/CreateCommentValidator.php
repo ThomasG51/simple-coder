@@ -24,16 +24,16 @@ class CreateCommentValidator implements Validators
         try
         {
             Assert::lazy()->tryAll()
-                ->that($request->request->get('text'))
-                ->notEmpty('Votre commentaire ne peut pas être vide')
-                ->string('Veuillez entrer un commentaire valide')
+                ->that($request->request->get('text'), 'comment')
+                    ->notEmpty('Votre commentaire ne peut pas être vide')
+                    ->string('Veuillez entrer un commentaire valide')
                 ->verifyNow();
         }
         catch(LazyAssertionException $exceptions)
         {
             foreach($exceptions->getErrorExceptions() as $exception)
             {
-                $this->errors += $exception->getMessage();
+                $this->errors += [$exception->getPropertyPath() => $exception->getMessage()];
             }
         }
     }

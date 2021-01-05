@@ -31,41 +31,6 @@ class CommentController extends AbstractController
 
 
     /**
-     * Create new comment
-     *
-     * @return Response
-     */
-    public function create() : Response
-    {
-        $this->checkIfConnected();
-
-        if($this->request->getMethod() === 'POST')
-        {
-            // TODO move method into showPost
-            $commentValidator = new CreateCommentValidator();
-            $commentValidator->validate($this->request);
-
-            if(empty($commentValidator->getErrors()))
-            {
-                $comment = new Comment();
-                $comment->setText($this->request->request->get('text'));
-                $comment->setStatus('available');
-                $comment->setUser($this->session->get('user'));
-                $comment->setPost($this->postManager->findOne($this->request->request->get('post')));
-
-                $this->commentManager->create($comment);
-
-                return $this->redirectToRoute('/post/' . $this->request->request->get('post'));
-            }
-        }
-
-        $this->session->getFlashBag()->add('alert', ['danger' => 'Impossible de créer un commentaire, le formulaire n\'a pas été soumis']);
-
-        return $this->redirectToRoute('/');
-    }
-
-
-    /**
      * Delete comment
      *
      * @param int $id
