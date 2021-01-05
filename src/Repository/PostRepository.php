@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use App\Entity\Post;
-use App\Entity\User;
 use Lib\AbstractRepository;
 
 class PostRepository extends AbstractRepository
@@ -76,9 +75,9 @@ class PostRepository extends AbstractRepository
      * Return one post
      *
      * @param string $slug
-     * @return Post|false
+     * @return Post|null
      */
-    public function findOne(string $slug)
+    public function findOne(string $slug) : ?Post
     {
         $query = $this->getPDO()->prepare('
             SELECT post.*, category.name as category, user.email as user
@@ -156,46 +155,90 @@ class PostRepository extends AbstractRepository
 
 
     /**
-     * Find pinned post by user
+     * Return next post
      *
-     * @param User $user
-     * @return array
+     * @param Post $post
+     * @return Post|null
      */
-    public function findPinByUser(User $user) : array
+    public function findNext(Post $post) : ?Post
     {
         $query = $this->getPDO()->prepare('
-            SELECT post.*, user.email AS user, category.name AS category
-            FROM pin
-            INNER JOIN post ON pin.post_id = post.id
+            SELECT post.*, category.name as category, user.email as user
+            FROM post 
+            INNER JOIN category ON post.category_id = category.id 
             INNER JOIN user ON post.user_id = user.id
-            INNER JOIN category ON post.category_id = category.id
-            WHERE pin.user_id = :user
+            WHERE post.id = :id
+            ORDER BY date DESC
         ');
 
         $query->execute([
-            'user' => $user->getId()
+           'id' => $post->getId() + 1
         ]);
 
-        $posts = [];
+        $post = $query->fetch();
 
-        foreach($query->fetchAll() as $post)
+        if(!$post)
         {
-            $instance = new Post();
-            $instance->setId($post['id']);
-            $instance->setTitle($post['title']);
-            $instance->setCover($post['cover']);
-            $instance->setCreatedAt($post['date']);
-            $instance->setText($post['text']);
-            $instance->setSlug($post['slug']);
-            $instance->setStatus($post['status']);
-            $instance->setUser($this->userManager->findOne($post['user']));
-            $instance->setCategory($this->categoryManager->findOne($post['category']));
-            $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
-
-            $posts[] = $instance;
+            return null;
         }
 
-        return $posts;
+        $instance = new Post();
+        $instance->setId($post['id']);
+        $instance->setTitle($post['title']);
+        $instance->setCover($post['cover']);
+        $instance->setCreatedAt($post['date']);
+        $instance->setText($post['text']);
+        $instance->setSlug($post['slug']);
+        $instance->setStatus($post['status']);
+        $instance->setUser($this->userManager->findOne($post['user']));
+        $instance->setCategory($this->categoryManager->findOne($post['category']));
+        $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
+
+        return $instance;
+    }
+
+
+    /**
+     * Return previous post
+     *
+     * @param Post $post
+     * @return Post|null
+     */
+    public function findPrevious(Post $post) : ?Post
+    {
+        $query = $this->getPDO()->prepare('
+            SELECT post.*, category.name as category, user.email as user
+            FROM post 
+            INNER JOIN category ON post.category_id = category.id 
+            INNER JOIN user ON post.user_id = user.id
+            WHERE post.id = :id
+            ORDER BY date DESC
+        ');
+
+        $query->execute([
+            'id' => $post->getId() - 1
+        ]);
+
+        $post = $query->fetch();
+
+        if(!$post)
+        {
+            return null;
+        }
+
+        $instance = new Post();
+        $instance->setId($post['id']);
+        $instance->setTitle($post['title']);
+        $instance->setCover($post['cover']);
+        $instance->setCreatedAt($post['date']);
+        $instance->setText($post['text']);
+        $instance->setSlug($post['slug']);
+        $instance->setStatus($post['status']);
+        $instance->setUser($this->userManager->findOne($post['user']));
+        $instance->setCategory($this->categoryManager->findOne($post['category']));
+        $instance->setTags($this->tagsLineManager->findTagsByPost($post['slug']));
+
+        return $instance;
     }
 
 

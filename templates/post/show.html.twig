@@ -84,27 +84,32 @@
 
             <aside class="col-xl-4 vh-100 mt-2">
                 <div class="row d-flex justify-content-evenly mt-3 mb-4">
+                    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="{{ post.title }}" data-url="" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     <div class="fb-share-button" data-href="http://simple-coder.com/post/{{ post.slug }}" data-layout="button_count" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://simple-coder.com/post/{{ post.slug }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Partager</a></div>
-                    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="{{ post.title }}" data-url="http://simple-coder.com/post/{{ post.slug }}" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <a data-pin-do="buttonPin" href="https://www.pinterest.com/pin/create/button/?url=http://simple-coder.com/post/{{ post.slug }}" data-pin-config="beside" data-pin-tall="true"></a>
                 </div>
-                <div class="row b-t-light b-b-light py-4 mt-3">
-                    <div class="col-xl-2 d-flex flex-column justify-content-center align-items-start">
-                        <i class="fas fa-chevron-left"></i>
+                {% if next_post != null %}
+                    <div class="row b-t-light b-b-light py-4">
+                        <div class="col-xl-10 d-flex flex-column justify-content-center align-items-start">
+                            <p class="text-light-grey mb-0">Article suivant</p>
+                            <p class="mb-0 text-left"><a href="/post/{{ next_post.slug }}">{{ next_post.title }}</a></p>
+                        </div>
+                        <div class="col-xl-2 d-flex flex-column justify-content-center align-items-end">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
                     </div>
-                    <div class="col-xl-10 d-flex flex-column justify-content-center align-items-end">
-                        <p class="text-light-grey mb-0">Article suivant</p>
-                        <p class="mb-0 text-right">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                {% endif %}
+                {% if previous_post != null %}
+                    <div class="row b-t-light b-b-light py-4 mt-3">
+                        <div class="col-xl-2 d-flex flex-column justify-content-center align-items-start">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="col-xl-10 d-flex flex-column justify-content-center align-items-end">
+                            <p class="text-light-grey mb-0">Article précédent</p>
+                            <p class="mb-0 text-right"><a href="/post/{{ previous_post.slug }}">{{ previous_post.title }}</a></p>
+                        </div>
                     </div>
-                </div>
-                <div class="row b-t-light b-b-light py-4">
-                    <div class="col-xl-10 d-flex flex-column justify-content-center align-items-start">
-                        <p class="text-light-grey mb-0">Article précédent</p>
-                        <p class="mb-0 text-left">Lorem ipsum dolor sit amet consectetur.</p>
-                    </div>
-                    <div class="col-xl-2 d-flex flex-column justify-content-center align-items-end">
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                </div>
+                {% endif %}
             </aside>
 
         </div>
@@ -149,10 +154,6 @@
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v9.0" nonce="K6ZYHTpq"></script>
 
 
-    <script
-            type="text/javascript"
-            async defer
-            src="//assets.pinterest.com/js/pinit.js"
-    ></script>
+    <script type="text/javascript" async defer src="//assets.pinterest.com/js/pinit.js"></script>
 
 {% endblock %}

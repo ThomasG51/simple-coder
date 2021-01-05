@@ -133,11 +133,10 @@ class PostController extends AbstractController
             'tags' => $this->tagsLineManager->findTagsByPost($slug),
             'pin' => $pin,
             'like' => $like,
-            'count_like' => $this->likesManager->countByPost($this->postManager->findOne($slug))
+            'count_like' => $this->likesManager->countByPost($this->postManager->findOne($slug)),
+            'next_post' => $this->postManager->findNext($this->postManager->findOne($slug)),
+            'previous_post' => $this->postManager->findPrevious($this->postManager->findOne($slug))
         ]);
-
-        // TODO show next post
-        // TODO show previous post
     }
 
 
@@ -365,7 +364,7 @@ class PostController extends AbstractController
         $this->checkIfConnected();
 
         return $this->render('post/sort.html.twig', [
-            'posts' => $this->postManager->findPinByUser($this->session->get('user')),
+            'posts' => $this->pinManager->findPinByUser($this->session->get('user')),
             'type' => 'pin'
         ]);
     }

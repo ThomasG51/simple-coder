@@ -442,6 +442,22 @@
     background-color: #E60024;
 }
 
+.c-youtube {
+    color: #FF0002;
+}
+
+.bg-youtube {
+    background-color: #FF0002;
+}
+
+.c-twitch {
+    color: #9047FF;
+}
+
+.bg-twitch {
+    background-color: #9047FF;
+}
+
 .c-php {
     color: #505c90;
 }

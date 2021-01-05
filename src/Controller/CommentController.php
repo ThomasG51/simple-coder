@@ -41,6 +41,7 @@ class CommentController extends AbstractController
 
         if($this->request->getMethod() === 'POST')
         {
+            // TODO move method into showPost
             $commentValidator = new CreateCommentValidator();
             $commentValidator->validate($this->request);
 
