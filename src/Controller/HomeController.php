@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Repository\PostRepository;
 use Lib\AbstractController;
 use Lib\Exceptions\BadRequestException;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Lib\Exceptions\BadGatewayException;
+use Lib\Exceptions\ForbiddenException;
+use Lib\mailer\ContactMail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -74,5 +76,48 @@ class HomeController extends AbstractController
             'posts' => $this->postManager->search($this->request->request->get('search')),
             'type' => 'search'
         ]);
+    }
+
+
+    /**
+     * Send contact mail
+     *
+     * @return Response
+     * @throws BadRequestException
+     * @throws BadGatewayException
+     * @throws ForbiddenException
+     */
+    public function sendMail() : Response
+    {
+        if($this->request->getMethod() != 'POST')
+        {
+            throw new BadRequestException('Le formulaire n\'a pas ete soumis', 400);
+        }
+
+        if($this->request->request->get('honeypot') != null)
+        {
+            throw new ForbiddenException('No spam, Thanks!', 403);
+        }
+
+        if($this->request->request->get('agree') === null)
+        {
+            $this->session->getFlashBag()->add('alert', ['danger' => 'Veuillez cocher la case concernant l\'utilisation de vos données.']);
+            return $this->redirectToRoute('/');
+        }
+
+        $from = $this->request->request->get('from');
+        $to = 'hello@simplecoder.fr';
+        $subject = $this->request->request->get('subject');
+        $message = $this->request->request->get('message');
+
+        if(ContactMail::send($from, $to, $subject, $message))
+        {
+            $this->session->getFlashBag()->add('alert', ['success' => 'Votre email a bien été envoyé.']);
+            return $this->redirectToRoute('/');
+        }
+        else
+        {
+            throw new BadGatewayException('Votre e-mail n\'a pas été envoyé', 502);
+        }
     }
 }

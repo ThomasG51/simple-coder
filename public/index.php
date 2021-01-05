@@ -1,6 +1,8 @@
 <?php
 
+use Lib\Exceptions\BadGatewayException;
 use Lib\Exceptions\BadRequestException;
+use Lib\Exceptions\ForbiddenException;
 use Lib\Exceptions\NotAuthorizedException;
 use Lib\Exceptions\NotFoundException;
 use Lib\Exceptions\TokenNotValidException;
@@ -28,7 +30,15 @@ catch(NotFoundException $e)
 {
     echo $e->getCode() . ' ' . $e->getMessage();
 }
+catch(BadGatewayException $e)
+{
+    echo $e->getCode() . ' ' . $e->getMessage();
+}
 catch(BadRequestException $e)
+{
+    echo $e->getCode() . ' ' . $e->getMessage();
+}
+catch(ForbiddenException $e)
 {
     echo $e->getCode() . ' ' . $e->getMessage();
 }

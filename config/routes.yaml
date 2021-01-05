@@ -6,6 +6,10 @@ search_post:
   path: /search
   controller: App\Controller\HomeController::search
 
+contact_mail:
+  path: /mail
+  controller: App\Controller\HomeController::sendMail
+
 dashboard_user:
   path: /dashboard/user
   controller: App\Controller\DashboardController::manageUser
