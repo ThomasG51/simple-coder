@@ -4,6 +4,7 @@ namespace Lib\Router;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class Route
 {
@@ -92,8 +93,10 @@ class Route
 
     /**
      * @param Request $request
+     * @param Session $session
+     * @return false|mixed
      */
-    public function run(Request $request)
+    public function run(Request $request, Session $session)
     {
         preg_match($this->pattern, $request->getPathInfo(), $matches);
 
@@ -101,7 +104,7 @@ class Route
 
         array_shift($matches);
 
-        $controller = new $controller($request);
+        $controller = new $controller($request, $session);
 
         return call_user_func_array([$controller, $method], $matches);
     }

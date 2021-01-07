@@ -11,6 +11,7 @@ use Lib\Exceptions\NotFoundException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class TagsController extends AbstractController
 {
@@ -21,10 +22,11 @@ class TagsController extends AbstractController
      * TagsController constructor.
      *
      * @param Request $request
+     * @param Session $session
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, Session $session)
     {
-        parent::__construct($request);
+        parent::__construct($request, $session);
 
         $this->tagsManager = new TagsRepository();
     }

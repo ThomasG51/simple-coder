@@ -6,7 +6,7 @@ namespace Lib;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
-use Lib\Exceptions\BadRequestException;
+use Lib\Exceptions\BadGatewayException;
 use Lib\Exceptions\NotAuthorizedException;
 use Lib\Exceptions\TokenNotValidException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -27,12 +27,11 @@ abstract class AbstractController
     protected Session $session;
 
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, Session $session)
     {
         $this->request = $request;
 
-        $this->session = new Session();
-        $this->session->start();
+        $this->session = $session;
     }
 
 
@@ -120,7 +119,7 @@ abstract class AbstractController
      *
      * @param UploadedFile $uploadedFile
      * @return string
-     * @throws BadRequestException
+     * @throws BadGatewayException
      */
     public function uploadFile(UploadedFile $uploadedFile) : string
     {
@@ -136,19 +135,19 @@ abstract class AbstractController
         // Check mime type
         if(!in_array($fileMime, $mime))
         {
-            throw new BadRequestException('Type mime not valid', 400);
+            throw new BadGatewayException('Le fichier n\'est pas une image.', 502);
         }
 
         // Check file size
         if($fileSize > $maxSize)
         {
-            throw new BadRequestException('File size too big', 400);
+            throw new BadGatewayException('Le fichier est trop volumineux (3mo max)', 502);
         }
 
         // Upload
         if(!$file->move($directory, $fileName))
         {
-            throw new BadRequestException('Upload Failed', 400);
+            throw new BadGatewayException('Upload du fichier échoué', 502);
         }
 
         return $fileName;

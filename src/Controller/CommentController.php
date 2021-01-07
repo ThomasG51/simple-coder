@@ -13,6 +13,7 @@ use Lib\Exceptions\BadRequestException;
 use Lib\Exceptions\NotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class CommentController extends AbstractController
 {
@@ -21,9 +22,15 @@ class CommentController extends AbstractController
     private PostRepository $postManager;
 
 
-    public function __construct(Request $request)
+    /**
+     * CommentController constructor.
+     *
+     * @param Request $request
+     * @param Session $session
+     */
+    public function __construct(Request $request, Session $session)
     {
-        parent::__construct($request);
+        parent::__construct($request, $session);
 
         $this->commentManager = new CommentRepository();
         $this->postManager = new PostRepository();

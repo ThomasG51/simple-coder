@@ -1,5 +1,6 @@
 <?php
 
+use App\Controller\ErrorsController;
 use Lib\Exceptions\BadGatewayException;
 use Lib\Exceptions\BadRequestException;
 use Lib\Exceptions\ForbiddenException;
@@ -9,6 +10,7 @@ use Lib\Exceptions\TokenNotValidException;
 use Lib\Router\Router;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 
 // Autoloader
@@ -18,35 +20,41 @@ require '../vendor/autoload.php';
 $dotenv = new Dotenv();
 $dotenv->load(__DIR__.'/../.env', __DIR__.'/../.env.local');
 
+$request = Request::createFromGlobals();
+
+$session = new Session();
+$session->start();
+
+$error = new ErrorsController($request, $session);
+
 try
 {
-    $request = Request::createFromGlobals();
     $router = new Router();
     $route = $router->getRouteFromRequest($request);
-    $response = $route->run($request);
+    $response = $route->run($request, $session);
     $response->send();
 }
 catch(NotFoundException $e)
 {
-    echo $e->getCode() . ' ' . $e->getMessage();
+    $notFound = $error->renderException($e->getCode(), $e->getMessage())->send();
 }
 catch(BadGatewayException $e)
 {
-    echo $e->getCode() . ' ' . $e->getMessage();
+    $badGateway = $error->renderException($e->getCode(), $e->getMessage())->send();
 }
 catch(BadRequestException $e)
 {
-    echo $e->getCode() . ' ' . $e->getMessage();
+    $badRequest = $error->renderException($e->getCode(), $e->getMessage())->send();
 }
 catch(ForbiddenException $e)
 {
-    echo $e->getCode() . ' ' . $e->getMessage();
+    $forbidden = $error->renderException($e->getCode(), $e->getMessage())->send();
 }
 catch(NotAuthorizedException $e)
 {
-    echo $e->getCode() . ' ' . $e->getMessage();
+    $notAuthorized = $error->renderException($e->getCode(), $e->getMessage())->send();
 }
 catch(TokenNotValidException $e)
 {
-    echo $e->getCode() . ' ' . $e->getMessage();
+    $tokenNotValid = $error->renderException($e->getCode(), $e->getMessage())->send();
 }
