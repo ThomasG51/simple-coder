@@ -9,7 +9,7 @@
 
     <main class="container">
         <div class="row pt-3 my-5">
-            <h1 class="mx-auto">
+            <h1 class="mx-auto text-center">
             {% if type == 'search' %}
                 <i class="fas fa-search c-php mr-1"></i> Votre recherche
             {% elseif type == 'category' %}
@@ -20,16 +20,16 @@
             </h1>
         </div>
         <div class="row mb-5">
-            <div class="col-xl-12 mt-4 d-flex justify-content-evenly flex-wrap">
-                {% if posts != null %}
-                    {% for post in posts %}
-                        {% if post.status == 'available' %}
-                            <article class="w-45 mb-5 pb-4">
+            {% if posts != null %}
+                {% for post in posts %}
+                    {% if post.status == 'available' %}
+                        <div class="col-12 col-xl-6 mt-4 mx-auto">
+                            <article class="mb-5 pb-4 mx-2">
                                 <div class="row">
                                     <figure class="col-xl-4 mb-0">
                                         <img src="{{ asset('../upload/' ~ post.cover) }}" alt="" class="cover">
                                     </figure>
-                                    <div class="col-xl-8 pl-0">
+                                    <div class="col-xl-8 pl-3 pl-xl-0">
                                         <a href="/post/{{ post.slug }}"><h2 class="text-dark title-font">{{ post.title }}</h2></a>
 
                                         <h6 class="article-infos mb-1">
@@ -48,18 +48,18 @@
 
                                 <p class="mt-1 text-justify">{{ post.text | raw }}</p>
                             </article>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    {% if type == 'search' %}
-                        <h5 class="c-php">Aucun article trouvé pour cette recherche.</h5>
-                    {% elseif type == 'category' %}
-                        <h5 class="c-php">Aucun article trouvé pour cette catégorie.</h5>
-                    {% elseif type == 'pin' %}
-                        <h5 class="c-php">Aucun favoris trouvé.</h5>
+                        </div>
                     {% endif %}
+                {% endfor %}
+            {% else %}
+                {% if type == 'search' %}
+                    <h5 class="c-php mx-auto">Aucun article trouvé pour cette recherche.</h5>
+                {% elseif type == 'category' %}
+                    <h5 class="c-php mx-auto">Aucun article trouvé pour cette catégorie.</h5>
+                {% elseif type == 'pin' %}
+                    <h5 class="c-php mx-auto">Aucun favoris trouvé.</h5>
                 {% endif %}
-            </div>
+            {% endif %}
         </div>
     </main>
 

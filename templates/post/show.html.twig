@@ -9,7 +9,7 @@
 
     <main class="container mb-5">
         <div class="row">
-            <div class="col-xl-12 mb-5 mt-5">
+            <div class="col-12 mb-5 mt-5">
                 <h1 class="title-font">
                     {% if pin == null %}
                         <a href="/post/pin/{{ post.slug }}"><i class="far fa-bookmark c-php mr-1 pointer"></i></a>
@@ -34,8 +34,7 @@
             </div>
         </div>
         <div class="row">
-
-            <div class="col-xl-8">
+            <div class="col-12 col-xl-8">
                 <article class="mb-4">
                     <p class="text-justify">
                         {{ post.text | raw }}
@@ -85,7 +84,7 @@
                 {% endif %}
             </div>
 
-            <aside class="col-xl-4 vh-100 mt-2">
+            <aside class="col-12 col-xl-4 mt-2">
                 <div class="row d-flex justify-content-evenly mt-3 mb-4">
                     <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-text="{{ post.title }}" data-url="" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     <div class="fb-share-button" data-href="http://simple-coder.com/post/{{ post.slug }}" data-layout="button_count" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://simple-coder.com/post/{{ post.slug }}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Partager</a></div>

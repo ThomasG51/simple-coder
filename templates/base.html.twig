@@ -39,14 +39,56 @@
         {% endif %}
     {% endfor %}
 
-    <header class="container">
-        <div class="row vh-25">
-            <div class="col-xl-5 h-100 d-flex justify-content-start align-items-center tech-font">
+    <!-- Header Mobile -->
+    <section class="d-block d-lg-none">
+        <div class="d-flex justify-content-start align-items-center tech-font">
+            {% if session.user %}
                 <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark tech-font" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-user mr-1"></i>{{ session.user.firstname }} {{ session.user.lastname }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                {%  if session.user.role == 'ADMIN' %}
+                                    <a class="dnav-link tech-font" href="/post/create">Rédiger</a>
+                                {% endif %}
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link tech-font" href="/post/pinned">Favoris</a>
+                            </li>
+                            <li class="nav-item">
+                                <div class="dropdown-divider"></div>
+                                <a class="nav-link tech-font text-danger" href="/user/logout"><i class="fas fa-sign-out-alt mr-1"></i>Deconnexion</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            {% else %}
+                <div class="w-100 d-flex justify-content-center my-4">
+                    <button class="btn btn-sm bg-php text-white" data-toggle="modal" data-target="#registration_modal"><i class="fas fa-user-plus mr-1"></i> Inscription</button>
+                    <button class="btn btn-sm btn-outline-dark ml-2" data-toggle="modal" data-target="#login_modal"><i class="fas fa-sign-in-alt ml-1 mr-1"></i> Connexion</button>
+                </div>
+            {% endif %}
+        </div>
+        <div class="d-flex flex-column justify-content-center align-items-center mb-4">
+            <a href="/"><div class="bg-custom-dark rounded-circle php-border text-center px-4 py-3">
+                <i class="fas fa-laptop-code text-white fs-4em mt-2 mb-2"></i>
+                <h5 class="tech-font text-white">Simple Coder</h5>
+            </div></a>
+        </div>
+    </section>
+
+    <header class="container d-none d-lg-block">
+        <div class="row vh-25">
+            <div class="col-lg-4 col-xl-5 h-100 d-flex justify-content-start align-items-center tech-font">
+                <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
+                    <div class="" id="navbarNav">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle tech-font text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -62,16 +104,16 @@
                     </div>
                 </nav>
             </div>
-            <div class="col-xl-2 h-100 d-flex flex-column justify-content-center align-items-center">
+            <div class="col-lg-4 col-xl-2 h-100 d-flex flex-column justify-content-center align-items-center">
                 <a href="/"><div class="bg-custom-dark rounded-circle php-border text-center px-4 py-3">
                     <i class="fas fa-laptop-code text-white fs-4em mt-2 mb-2"></i>
                     <h5 class="tech-font text-white">Simple Coder</h5>
                 </div></a>
             </div>
-            <div class="col-xl-5 h-100 p-0 d-flex justify-content-end align-items-center tech-font">
+            <div class="col-lg-4 col-xl-5 h-100 p-0 d-flex justify-content-end align-items-center tech-font">
                 {% if session.user %}
                     <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
-                        <div class="collapse navbar-collapse">
+                        <div class="">
                             <ul class="navbar-nav mr-auto">
                                 <li class="nav-item dropdown btn-group">
                                     <a class="nav-link dropdown-toggle text-dark tech-font" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -104,7 +146,7 @@
 
     <footer class="container-fluid bg-custom-dark">
         <div class="row h-100 py-4">
-            <div class="col-xl-4 b-r-grey">
+            <div class="col-12 col-xl-4 b-r-grey">
                 <form action="/mail" method="POST" class="w-90 mx-auto my-2">
                     <div class="form-group">
                         <input type="hidden" name="honeypot">
@@ -125,7 +167,7 @@
                     <button type="submit" class="btn btn-light form-control">Envoyer</button>
                 </form>
             </div>
-            <div class="col-xl-4 b-r-grey pt-1">
+            <div class="col-xl-4 d-none d-xl-block b-r-grey pt-1">
                 <h5 class="text-light mb-4">Lien utiles</h5>
                 <ul class="text-light">
                     <li><a href="https://www.twitch.tv/toham" target="_blank" class="text-white"><i class="fab fa-twitch c-twitch mr-1"></i> Thomas Boileau</a></li>
@@ -134,7 +176,7 @@
                     <li><a href="https://github.com/errorname/clean-code-php" target="_blank" class="text-white"><i class="fas fa-wifi mr-1"></i> Clean Code</a></li>
                 </ul>
             </div>
-            <div class="col-xl-4 d-flex flex-column justify-content-evenly align-items-center">
+            <div class="col-xl-4 d-none d-xl-flex flex-column justify-content-evenly align-items-center">
                 <button class="btn text-white bg-php"><i class="fas fa-download mr-1"></i>Télécharger mon CV</button>
 
                 <div class="LI-profile-badge"  data-version="v1" data-size="medium" data-locale="fr_FR" data-type="vertical" data-theme="dark" data-vanity="thomasgeorge51"><a class="LI-simple-link" href='https://fr.linkedin.com/in/thomasgeorge51?trk=profile-badge'>Thomas GEORGE</a></div>
