@@ -18,3 +18,4 @@
 * symfony/error-handler (dev)
 * beberlei/assert
 * psr/container
+* swiftmailer/swiftmailer

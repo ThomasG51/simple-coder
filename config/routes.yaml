@@ -54,6 +54,10 @@ admin_user:
   path: /user/admin
   controller: App\Controller\UserController::admin
 
+update_user:
+  path: /user/update
+  controller: App\Controller\UserController::update
+
 create_post:
   path: /post/create
   controller: App\Controller\PostController::create

@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section class="container-fluid mb-4">
+        <figure class="row vh-55">
+            <img src="{{ asset('images/bg-user-update.jpg') }}" alt="" class="cover">
+        </figure>
+    </section>
+
+    <main class="container my-5">
+        <h3 class="tech-font mb-4">Gestion de mon compte</h3>
+        <div class="row">
+            <div class="col-12 col-xl-7">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="mb-3 tech-font">Mes données personnelles</h6>
+
+                        <form action="/user/update" method="POST">
+                            <div class="form-group">
+                                <label class="d-block">Prénom</label>
+                                {% if errors.firstname %}
+                                    <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ errors.firstname }}</small>
+                                {% endif %}
+                                <input class="form-control" type="text" name="firstname" value="{{ user.firstname }}">
+                            </div>
+                            <small id="lastname" class="text-danger"></small>
+                            <div class="form-group">
+                                <label class="d-block">Nom</label>
+                                {% if errors.lastname %}
+                                    <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ errors.lastname }}</small>
+                                {% endif %}
+                                <input class="form-control" type="text" name="lastname" value="{{ user.lastname }}">
+                            </div>
+                            <small id="email" class="text-danger"></small>
+                            <div class="form-group">
+                                <label class="d-block">Email</label>
+                                {% if errors.email %}
+                                    <small class="text-danger"><i class="fas fa-exclamation-triangle mr-1"></i>{{ errors.email }}</small>
+                                {% endif %}
+                                <input class="form-control" type="text" name="email" value="{{ user.email }}">
+                            </div>
+                            <div class="form-group">
+                                <button id="update_user_btn" class="btn btn-php form-control">Modifier mes données</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xl-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="mb-3 tech-font">Reinitialiser mon mot de passe</h6>
+                        <form action="/user/reset" method="POST">
+                            <small id="old_password_error" class="text-danger"></small>
+                            <div class="form-group">
+                                <input class="form-control" type="password" name="old_password" placeholder="Ancien mot de passe">
+                            </div>
+                            <small id="new_password_error" class="text-danger"></small>
+                            <div class="form-group">
+                                <input class="form-control" type="password" name="new_password" placeholder="Nouveau mot de passe">
+                            </div>
+                            <small id="confirm_password_error" class="text-danger"></small>
+                            <div class="form-group">
+                                <input class="form-control" type="password" name="confirm_password" placeholder="Confirmez le nouveau mot de passe">
+                            </div>
+                            <div class="form-group">
+                                <button id="reset_password_btn" class="btn btn-php form-control">Reinitialiser</button>
+                            </div>
+                            <div id="reset_succeeds"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script type="text/javascript">
+
+        $('#reset_password_btn').click(function(){
+            event.preventDefault();
+
+            $.ajax({
+                method: 'post',
+                url: '/user/reset',
+                data: {
+                    old_password: $('input[name=\'old_password\']').val(),
+                    new_password: $('input[name=\'new_password\']').val(),
+                    confirm_password: $('input[name=\'confirm_password\']').val()
+                }
+            })
+                .done(function(data){
+                    // Reset Errors containers
+                    $('#old_password_error').html('');
+                    $('#new_password_error').html('');
+                    $('#confirm_password_error').html('');
+
+                    if(data['old_password_error']){      $('#old_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['old_password_error']); }
+                    if(data['new_password_error']){      $('#new_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['new_password_error']); }
+                    if(data['confirm_password_error']){  $('#confirm_password_error').html('<i class="fas fa-exclamation-triangle mr-1"></i>' + data['confirm_password_error']); }
+
+                    if(data['reset_succeeds'])
+                    {
+                        $('#reset_password_btn').hide();
+                        $('form :input').val('');
+
+                        $('#reset_succeeds').html('' +
+                            '<div class="alert alert-success" role="alert">' +
+                            '<i class="fas fa-check mr-1"></i>' + data['reset_succeeds'] +
+                            '</div>'
+                        );
+
+                        setTimeout(function(){
+                            window.location.replace("/user/update");
+                        }, 1000);
+                    }
+                });
+        });
+
+    </script>
+
+{% endblock %}

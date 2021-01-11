@@ -120,6 +120,29 @@ class UserRepository extends AbstractRepository
 
 
     /**
+     * Update user data
+     *
+     * @param User $user
+     */
+    public function update(User $user) : void
+    {
+        $query = $this->getPDO()->prepare('
+            UPDATE user
+            SET firstname = :firstname, lastname = :lastname, email = :email
+            WHERE id = :id
+        ');
+
+        $query->execute([
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'email' => $user->getEmail(),
+            'id' => $user->getId()
+        ]);
+    }
+
+
+
+    /**
      * Delete User
      *
      * @param int $id

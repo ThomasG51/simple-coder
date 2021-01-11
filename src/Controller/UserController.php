@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Validators\UpdateUserValidator;
 use Lib\AbstractController;
 use App\Validators\LoginValidator;
 use App\Validators\RegistrationValidator;
@@ -220,5 +221,54 @@ class UserController extends AbstractController
         $this->userManager->adminStatus($user);
 
         return $this->redirectToRoute('/dashboard/user');
+    }
+
+
+    /**
+     * Update user data
+     *
+     * @return Response
+     * @throws NotFoundException
+     */
+    public function update() : Response
+    {
+        $this->checkIfConnected();
+
+        $user = $this->userManager->findOne($this->session->get('user')->getEmail());
+
+        if($user === null)
+        {
+            throw new NotFoundException('Utilisateur introuvable', 404);
+        }
+
+        $errors = [];
+
+        if($this->request->getMethod() === 'POST')
+        {
+            $updateValidator = new UpdateUserValidator();
+            $updateValidator->validate($this->request);
+
+            if(empty($updateValidator->getErrors()))
+            {
+                $user->setFirstname($this->request->request->get('firstname'));
+                $user->setLastname($this->request->request->get('lastname'));
+                $user->setEmail($this->request->request->get('email'));
+
+                $this->userManager->update($user);
+
+                $this->session->set('user', $user);
+
+                $this->session->getFlashBag()->add('alert', ['success' => 'Utilisateur modifié']);
+
+                return $this->redirectToRoute('/user/update');
+            }
+
+            $errors = $updateValidator->getErrors();
+        }
+
+        return $this->render('user/update.html.twig', [
+            'user' => $user,
+            'errors' => $errors
+        ]);
     }
 }
