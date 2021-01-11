@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Repository\PostRepository;
 use Lib\AbstractController;
 use Lib\Exceptions\BadRequestException;
-use Lib\Exceptions\BadGatewayException;
 use Lib\Exceptions\ForbiddenException;
 use Lib\mailer\ContactMail;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +85,6 @@ class HomeController extends AbstractController
      *
      * @return Response
      * @throws BadRequestException
-     * @throws BadGatewayException
      * @throws ForbiddenException
      */
     public function sendMail() : Response
@@ -119,7 +117,7 @@ class HomeController extends AbstractController
         }
         else
         {
-            throw new BadGatewayException('Votre e-mail n\'a pas été envoyé', 502);
+            throw new BadRequestException('Votre e-mail n\'a pas été envoyé', 400);
         }
     }
 }

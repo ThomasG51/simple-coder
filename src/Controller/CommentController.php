@@ -4,11 +4,9 @@
 namespace App\Controller;
 
 
-use App\Entity\Comment;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use Lib\AbstractController;
-use App\Validators\CreateCommentValidator;
 use Lib\Exceptions\BadRequestException;
 use Lib\Exceptions\NotFoundException;
 use Symfony\Component\HttpFoundation\Request;
