@@ -168,7 +168,7 @@
                         <input type="checkbox" class="form-check-input" name="agree" required>
                         <small class="form-text text-muted">Vos données ne seront jamais utilisé en dehors de ce message.</small>
                     </div>
-                    <button type="submit" class="btn btn-light form-control">Envoyer</button>
+                    <button type="submit" class="btn btn-php text-white form-control">Envoyer</button>
                 </form>
             </div>
             <div class="col-xl-4 d-none d-xl-block b-r-grey pt-1">
@@ -181,7 +181,7 @@
                 </ul>
             </div>
             <div class="col-xl-4 d-none d-xl-flex flex-column justify-content-evenly align-items-center">
-                <button class="btn text-white bg-php"><i class="fas fa-download mr-1"></i>Télécharger mon CV</button>
+                <a href="{{ asset('files/cv.pdf') }}" class="btn text-white bg-php" alt="Télécharger mon CV" download><i class="fas fa-download mr-1"></i>Télécharger mon CV</a>
 
                 <div class="LI-profile-badge"  data-version="v1" data-size="medium" data-locale="fr_FR" data-type="vertical" data-theme="dark" data-vanity="thomasgeorge51"><a class="LI-simple-link" href='https://fr.linkedin.com/in/thomasgeorge51?trk=profile-badge'>Thomas GEORGE</a></div>
             </div>

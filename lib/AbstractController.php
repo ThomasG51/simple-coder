@@ -6,10 +6,11 @@ namespace Lib;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
-use Lib\Exceptions\BadGatewayException;
 use Lib\Exceptions\BadRequestException;
 use Lib\Exceptions\NotAuthorizedException;
 use Lib\Exceptions\TokenNotValidException;
+use Swift_Mailer;
+use Swift_SmtpTransport;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -193,6 +194,8 @@ abstract class AbstractController
 
 
     /**
+     * Check token csrf
+     *
      * @throws TokenNotValidException
      */
     public function checkTokenCsrf()
@@ -201,5 +204,21 @@ abstract class AbstractController
         {
             throw new TokenNotValidException('Token expiré', 498);
         }
+    }
+
+
+    /**
+     * Mailer
+     *
+     * @return Swift_Mailer
+     */
+    public function mailer() : Swift_Mailer
+    {
+        $transport = (new Swift_SmtpTransport($_ENV['MAILER_HOST'], 465, 'ssl'))
+            ->setUsername($_ENV['MAILER_USERNAME'])
+            ->setPassword($_ENV['MAILER_PASSWORD'])
+        ;
+
+        return new Swift_Mailer($transport);
     }
 }
