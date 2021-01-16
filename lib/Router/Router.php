@@ -3,21 +3,12 @@
 namespace Lib\Router;
 
 use Lib\Exceptions\NotFoundException;
-use Lib\Exceptions\RouteNotFoundException;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\HttpFoundation\Request;
 
 class Router 
 {
-    /**
-     * @var Request
-     */
-    private $request;
-    
-    /**
-     * @var array
-     */
-    private $routesCollection;
+    private array $routesCollection;
     
     public function __construct()
     {
