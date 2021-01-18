@@ -17,7 +17,5 @@
 * symfony/dotenv
 * symfony/yaml
 * symfony/var-dumper (dev)
-* symfony/error-handler (dev)
 * beberlei/assert
-* psr/container
 * swiftmailer/swiftmailer
