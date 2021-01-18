@@ -7,7 +7,7 @@
 ###### How to install ?
     git clone https://github.com/ThomasG51/simple-coder.git
 
-    cd OC_DAS_P5
+    cd simple-coder
 
     composer install
 
