@@ -5,7 +5,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/650f670a97e113d20684/maintainability)](https://codeclimate.com/github/ThomasG51/OC_DAS_P5/maintainability)
 
 ###### How to install ?
-    git clone https://github.com/ThomasG51/OC_DAS_P5.git
+    git clone https://github.com/ThomasG51/simple-coder.git
 
     cd OC_DAS_P5
 
